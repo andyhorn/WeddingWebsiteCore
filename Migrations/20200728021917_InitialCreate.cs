@@ -55,21 +55,6 @@ namespace WeddingWebsiteCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "rsvps",
-                columns: table => new
-                {
-                    RsvpId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    HasResponded = table.Column<bool>(nullable: false),
-                    IsAttending = table.Column<bool>(nullable: false),
-                    GuestId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_rsvps", x => x.RsvpId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "users",
                 columns: table => new
                 {
@@ -179,6 +164,28 @@ namespace WeddingWebsiteCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "rsvps",
+                columns: table => new
+                {
+                    RsvpId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    HasResponded = table.Column<bool>(nullable: false),
+                    IsAttending = table.Column<bool>(nullable: false),
+                    GuestId = table.Column<int>(nullable: false),
+                    EventId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_rsvps", x => x.RsvpId);
+                    table.ForeignKey(
+                        name: "FK_rsvps_events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "events",
+                        principalColumn: "EventId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "guests",
                 columns: table => new
                 {
@@ -252,6 +259,16 @@ namespace WeddingWebsiteCore.Migrations
             migrationBuilder.InsertData(
                 table: "wedding_roles",
                 columns: new[] { "WeddingRoleId", "Description", "Name" },
+                values: new object[] { 17, null, "Grandfather of the Groom" });
+
+            migrationBuilder.InsertData(
+                table: "wedding_roles",
+                columns: new[] { "WeddingRoleId", "Description", "Name" },
+                values: new object[] { 16, null, "Grandmother of the Groom" });
+
+            migrationBuilder.InsertData(
+                table: "wedding_roles",
+                columns: new[] { "WeddingRoleId", "Description", "Name" },
                 values: new object[] { 15, null, "Grandfather of the Bride" });
 
             migrationBuilder.InsertData(
@@ -277,17 +294,17 @@ namespace WeddingWebsiteCore.Migrations
             migrationBuilder.InsertData(
                 table: "wedding_roles",
                 columns: new[] { "WeddingRoleId", "Description", "Name" },
+                values: new object[] { 18, null, "Junior Bridesmaid" });
+
+            migrationBuilder.InsertData(
+                table: "wedding_roles",
+                columns: new[] { "WeddingRoleId", "Description", "Name" },
                 values: new object[] { 10, null, "Father of the Bride" });
 
             migrationBuilder.InsertData(
                 table: "wedding_roles",
                 columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 16, null, "Grandmother of the Groom" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 9, null, "Officiant" });
+                values: new object[] { 8, null, "Ring Bearer" });
 
             migrationBuilder.InsertData(
                 table: "wedding_roles",
@@ -322,12 +339,12 @@ namespace WeddingWebsiteCore.Migrations
             migrationBuilder.InsertData(
                 table: "wedding_roles",
                 columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 8, null, "Ring Bearer" });
+                values: new object[] { 9, null, "Officiant" });
 
             migrationBuilder.InsertData(
                 table: "wedding_roles",
                 columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 17, null, "Grandfather of the Groom" });
+                values: new object[] { 19, null, "Usher" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_events_AddressId",
@@ -356,6 +373,11 @@ namespace WeddingWebsiteCore.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_rsvps_EventId",
+                table: "rsvps",
+                column: "EventId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_vendors_AddressId",
                 table: "vendors",
                 column: "AddressId");
@@ -379,9 +401,6 @@ namespace WeddingWebsiteCore.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "events");
-
             migrationBuilder.DropTable(
                 name: "images");
 
@@ -408,6 +427,9 @@ namespace WeddingWebsiteCore.Migrations
 
             migrationBuilder.DropTable(
                 name: "rsvps");
+
+            migrationBuilder.DropTable(
+                name: "events");
 
             migrationBuilder.DropTable(
                 name: "addresses");

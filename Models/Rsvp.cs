@@ -12,5 +12,9 @@ namespace WeddingWebsiteCore.Models
         [ForeignKey(nameof(GuestId))]
         public Guest Guest { get; set; }
         public int GuestId { get; set; }
+
+        [ForeignKey(nameof(EventId))]
+        public Event Event { get; set; }
+        public int EventId { get; set; }
     }
 }

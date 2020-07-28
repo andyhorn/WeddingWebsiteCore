@@ -248,6 +248,9 @@ namespace WeddingWebsiteCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("EventId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("GuestId")
                         .HasColumnType("INTEGER");
 
@@ -258,6 +261,8 @@ namespace WeddingWebsiteCore.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("RsvpId");
+
+                    b.HasIndex("EventId");
 
                     b.ToTable("rsvps");
                 });
@@ -418,6 +423,16 @@ namespace WeddingWebsiteCore.Migrations
                         {
                             WeddingRoleId = 17,
                             Name = "Grandfather of the Groom"
+                        },
+                        new
+                        {
+                            WeddingRoleId = 18,
+                            Name = "Junior Bridesmaid"
+                        },
+                        new
+                        {
+                            WeddingRoleId = 19,
+                            Name = "Usher"
                         });
                 });
 
@@ -463,6 +478,15 @@ namespace WeddingWebsiteCore.Migrations
                     b.HasOne("WeddingWebsiteCore.Models.Rsvp", "Rsvp")
                         .WithOne("Guest")
                         .HasForeignKey("WeddingWebsiteCore.Models.Guest", "RsvpId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WeddingWebsiteCore.Models.Rsvp", b =>
+                {
+                    b.HasOne("WeddingWebsiteCore.Models.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
