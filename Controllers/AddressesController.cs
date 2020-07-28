@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WeddingWebsiteCore.Contracts;
 using WeddingWebsiteCore.DataAccess;
 using WeddingWebsiteCore.Models;
 
@@ -18,7 +19,7 @@ namespace WeddingWebsiteCore.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet(RouteContracts.GetAll)]
         public async Task<IActionResult> GetAllAddresses()
         {
             var addresses = await _context.Addresses.ToListAsync();
@@ -26,7 +27,7 @@ namespace WeddingWebsiteCore.Controllers
             return Ok(addresses);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet(RouteContracts.GetItem)]
         public async Task<IActionResult> GetAddress(int id)
         {
             var address = await _context.Addresses.FindAsync(id);
@@ -39,13 +40,18 @@ namespace WeddingWebsiteCore.Controllers
             return Ok(address);
         }
 
-        [HttpPost]
+        [HttpPost(RouteContracts.PostItem)]
         public async Task<IActionResult> PostNewAddress([FromBody]Address address)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
             var existing = await _context.Addresses.FindAsync(address.AddressId);
             if (existing != null)
             {
-                return BadRequest("An object with that ID already exists.");
+                return BadRequest(ErrorMessageContracts.IdConflict);
             }
 
             try
@@ -62,9 +68,14 @@ namespace WeddingWebsiteCore.Controllers
             return CreatedAtAction("PostNewAddress", address, address.AddressId);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut(RouteContracts.PutItem)]
         public async Task<IActionResult> UpdateAddress(int id, [FromBody]Address address)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
             var existing = await _context.Addresses.FindAsync(id);
             if (existing == null)
             {
@@ -85,7 +96,7 @@ namespace WeddingWebsiteCore.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete(RouteContracts.DeleteItem)]
         public async Task<IActionResult> DeleteAddress(int id)
         {
             var address = await _context.Addresses.FindAsync(id);

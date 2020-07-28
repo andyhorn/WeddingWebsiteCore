@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WeddingWebsiteCore.Contracts;
 using WeddingWebsiteCore.DataAccess;
 using WeddingWebsiteCore.Models;
 
@@ -13,13 +14,12 @@ namespace WeddingWebsiteCore.Controllers
     public class EventsController : ControllerBase
     {
         private readonly WeddingContext _context;
-
         public EventsController(WeddingContext context)
         {
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet(RouteContracts.GetAll)]
         public async Task<IActionResult> GetAllEvents()
         {
             var events = await _context.Events.ToListAsync();
@@ -27,7 +27,7 @@ namespace WeddingWebsiteCore.Controllers
             return Ok(events);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet(RouteContracts.GetItem)]
         public async Task<IActionResult> GetEvent(int id)
         {
             var @event = await _context.Events.FindAsync(id);
@@ -40,13 +40,18 @@ namespace WeddingWebsiteCore.Controllers
             return Ok(@event);
         }
 
-        [HttpPost]
+        [HttpPost(RouteContracts.PostItem)]
         public async Task<IActionResult> PostNewEvent([FromBody]Event @event)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
             var existing = await _context.Events.FindAsync(@event.EventId);
             if (existing != null)
             {
-                return BadRequest("An object with that ID already exists");
+                return BadRequest(ErrorMessageContracts.IdConflict);
             }
 
             try
@@ -63,9 +68,14 @@ namespace WeddingWebsiteCore.Controllers
             return CreatedAtAction("PostNewEvent", @event, @event.EventId);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut(RouteContracts.PutItem)]
         public async Task<IActionResult> UpdateEvent(int id, [FromBody]Event @event)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
             var existing = await _context.Events.FindAsync(id);
             if (existing == null)
             {
@@ -86,7 +96,7 @@ namespace WeddingWebsiteCore.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete(RouteContracts.DeleteItem)]
         public async Task<IActionResult> DeleteEvent(int id)
         {
             var @event = await _context.Events.FindAsync(id);

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WeddingWebsiteCore.Contracts;
 using WeddingWebsiteCore.DataAccess;
 using WeddingWebsiteCore.Models;
 
@@ -18,7 +19,7 @@ namespace WeddingWebsiteCore.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet(RouteContracts.GetAll)]
         public async Task<IActionResult> GetAllFamilies()
         {
             var families = await _context.Families.ToListAsync();
@@ -26,7 +27,7 @@ namespace WeddingWebsiteCore.Controllers
             return Ok(families);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet(RouteContracts.GetItem)]
         public async Task<IActionResult> GetFamily(int id)
         {
             var family = await _context.Families.FindAsync(id);
@@ -39,13 +40,18 @@ namespace WeddingWebsiteCore.Controllers
             return Ok(family);
         }
 
-        [HttpPost]
+        [HttpPost(RouteContracts.PostItem)]
         public async Task<IActionResult> PostNewFamily([FromBody]Family family)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
             var existing = await _context.Families.FindAsync(family.FamilyId);
             if (existing != null)
             {
-                return BadRequest("An object already exists with that ID");
+                return BadRequest(ErrorMessageContracts.IdConflict);
             }
 
             try
@@ -62,9 +68,14 @@ namespace WeddingWebsiteCore.Controllers
             return CreatedAtAction(nameof(PostNewFamily), family, family.FamilyId);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut(RouteContracts.PutItem)]
         public async Task<IActionResult> UpdateFamily(int id, [FromBody]Family family)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
             var existing = await _context.Families.FindAsync(id);
             if (existing == null)
             {
@@ -85,7 +96,7 @@ namespace WeddingWebsiteCore.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete(RouteContracts.DeleteItem)]
         public async Task<IActionResult> DeleteFamily(int id)
         {
             var family = await _context.Families.FindAsync(id);
