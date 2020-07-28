@@ -76,6 +76,11 @@ namespace WeddingWebsiteCore.Controllers
                 return BadRequest(ModelState.Values);
             }
 
+            if (id != @event.EventId)
+            {
+                return BadRequest(ErrorMessageContracts.MismatchedId);
+            }
+
             var existing = await _context.Events.FindAsync(id);
             if (existing == null)
             {
