@@ -30,14 +30,14 @@ namespace WeddingWebsiteCore.Migrations
                 name: "images",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    ImageId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(nullable: true),
                     Url = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_images", x => x.Id);
+                    table.PrimaryKey("PK_images", x => x.ImageId);
                 });
 
             migrationBuilder.CreateTable(

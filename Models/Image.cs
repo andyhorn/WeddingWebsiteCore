@@ -5,7 +5,7 @@ namespace WeddingWebsiteCore.Models
     [Table("images")]
     public class Image
     {
-        public int Id { get; set; }
+        public int ImageId { get; set; }
         public string Name { get; set; }
         public string Url { get; set; }
     }

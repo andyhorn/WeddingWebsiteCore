@@ -210,7 +210,7 @@ namespace WeddingWebsiteCore.Migrations
 
             modelBuilder.Entity("WeddingWebsiteCore.Models.Image", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ImageId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -220,7 +220,7 @@ namespace WeddingWebsiteCore.Migrations
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("ImageId");
 
                     b.ToTable("images");
                 });

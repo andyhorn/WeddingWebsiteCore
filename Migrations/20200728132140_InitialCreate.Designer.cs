@@ -9,7 +9,7 @@ using WeddingWebsiteCore.DataAccess;
 namespace WeddingWebsiteCore.Migrations
 {
     [DbContext(typeof(SqlLiteWeddingContext))]
-    [Migration("20200728021917_InitialCreate")]
+    [Migration("20200728132140_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -212,7 +212,7 @@ namespace WeddingWebsiteCore.Migrations
 
             modelBuilder.Entity("WeddingWebsiteCore.Models.Image", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ImageId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -222,7 +222,7 @@ namespace WeddingWebsiteCore.Migrations
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("ImageId");
 
                     b.ToTable("images");
                 });
