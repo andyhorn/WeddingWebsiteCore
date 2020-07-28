@@ -137,6 +137,16 @@ namespace WeddingWebsiteCore.DataAccess
                     {
                         WeddingRoleId = 17,
                         Name = "Grandfather of the Groom"
+                    },
+                    new WeddingRole
+                    {
+                        WeddingRoleId = 18,
+                        Name = "Junior Bridesmaid"
+                    },
+                    new WeddingRole
+                    {
+                        WeddingRoleId = 19,
+                        Name = "Usher"
                     }
                 });
         }
