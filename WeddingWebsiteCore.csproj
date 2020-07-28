@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Folder Include="client\" />
+    <Folder Include="Extensions\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
