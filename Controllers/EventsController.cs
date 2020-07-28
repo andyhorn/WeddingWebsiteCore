@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WeddingWebsiteCore.DataAccess;
+using WeddingWebsiteCore.Models;
 
 namespace WeddingWebsiteCore.Controllers
 {
@@ -11,5 +12,102 @@ namespace WeddingWebsiteCore.Controllers
     [ApiController]
     public class EventsController : ControllerBase
     {
+        private readonly WeddingContext _context;
+
+        public EventsController(WeddingContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllEvents()
+        {
+            var events = await _context.Events.ToListAsync();
+
+            return Ok(events);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetEvent(int id)
+        {
+            var @event = await _context.Events.FindAsync(id);
+
+            if (@event == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(@event);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostNewEvent([FromBody]Event @event)
+        {
+            var existing = await _context.Events.FindAsync(@event.EventId);
+            if (existing != null)
+            {
+                return BadRequest("An object with that ID already exists");
+            }
+
+            try
+            {
+                await _context.AddAsync(@event);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return CreatedAtAction("PostNewEvent", @event, @event.EventId);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateEvent(int id, [FromBody]Event @event)
+        {
+            var existing = await _context.Events.FindAsync(id);
+            if (existing == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _context.Entry(@event).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEvent(int id)
+        {
+            var @event = await _context.Events.FindAsync(id);
+
+            if (@event == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _context.Remove(@event);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return NoContent();
+        }
     }
 }
