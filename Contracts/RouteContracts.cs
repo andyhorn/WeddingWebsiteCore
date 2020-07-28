@@ -2,10 +2,10 @@
 {
     public static class RouteContracts
     {
-        public static string GetAll = "";
-        public static string GetItem = "{id}";
-        public static string PostItem = "";
-        public static string PutItem = "{id}";
-        public static string DeleteItem = "{id}";
+        public const string GetAll = "";
+        public const string GetItem = "{id}";
+        public const string PostItem = "";
+        public const string PutItem = "{id}";
+        public const string DeleteItem = "{id}";
     }
 }
