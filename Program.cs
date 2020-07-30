@@ -8,7 +8,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using WeddingWebsiteCore.Contracts;
 using WeddingWebsiteCore.DataAccess;
+using WeddingWebsiteCore.Extensions;
+using WeddingWebsiteCore.Models;
 
 namespace WeddingWebsiteCore
 {
@@ -24,6 +27,8 @@ namespace WeddingWebsiteCore
                 var context = scope.ServiceProvider.GetRequiredService<WeddingContext>();
                 await context.Database.MigrateAsync();
             }
+
+            await host.Seed();
 
             await host.RunAsync();
         }

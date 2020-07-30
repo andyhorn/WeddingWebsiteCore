@@ -8,12 +8,6 @@ namespace WeddingWebsiteCore.DataAccess
 {
     public class WeddingContext : DbContext
     {
-        private Services.IAuthenticationService _authenticationService;
-        public WeddingContext(Services.IAuthenticationService authenticationService)
-        {
-            _authenticationService = authenticationService;
-        }
-
         public DbSet<Address> Addresses { get; set; }
         public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<Event> Events { get; set; }
@@ -157,27 +151,6 @@ namespace WeddingWebsiteCore.DataAccess
                         Name = "Usher"
                     }
                 });
-
-            modelBuilder.Entity<ApplicationUser>()
-                .HasData(GetDefaultUser());
-        }
-
-        private ApplicationUser GetDefaultUser()
-        {
-            var email = Environment.GetEnvironmentVariable(ApplicationConstants.DEFAULT_EMAIL);
-            var password = Environment.GetEnvironmentVariable(ApplicationConstants.DEFAULT_PASSWORD);
-
-            var defaultUser = new ApplicationUser
-            {
-                UserId = 1,
-                FirstName = "DEFAULT",
-                LastName = "DEFAULT",
-                Email = email
-            };
-
-            _authenticationService.SetUserPassword(defaultUser, password);
-
-            return defaultUser;
         }
     }
 }

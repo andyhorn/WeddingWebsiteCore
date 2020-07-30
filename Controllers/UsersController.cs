@@ -24,6 +24,14 @@ namespace WeddingWebsiteCore.Controllers
             _authenticationService = authenticationService;
         }
 
+        [HttpGet(RouteContracts.GetAll)]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _context.Users.ToListAsync();
+
+            return Ok(users);
+        }
+
         [HttpPost(RouteContracts.Login)]
         public async Task<IActionResult> LoginUser([FromBody]LoginRequest loginRequest)
         {

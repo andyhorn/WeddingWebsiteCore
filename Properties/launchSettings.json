@@ -23,7 +23,10 @@
       "launchUrl": "",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DEFAULT_EMAIL": "andyjhorn@gmail.com",
+        "DEFAULT_PASSWORD": "B0r1sC@t0891",
+        "TOKEN_KEY": "THISisAlongSTRINGofRANDOMtextFORtheSECURITYtokenKEY"
       }
     }
   }
