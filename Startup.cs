@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WeddingWebsiteCore.DataAccess;
+using WeddingWebsiteCore.Middleware;
 
 namespace WeddingWebsiteCore
 {
@@ -52,6 +53,8 @@ namespace WeddingWebsiteCore
             });
 
             app.UseAuthorization();
+
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

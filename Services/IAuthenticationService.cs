@@ -1,4 +1,5 @@
-﻿using WeddingWebsiteCore.Models;
+﻿using System.IdentityModel.Tokens.Jwt;
+using WeddingWebsiteCore.Models;
 
 namespace WeddingWebsiteCore.Services
 {
@@ -6,6 +7,7 @@ namespace WeddingWebsiteCore.Services
     {
         string MakeToken(ApplicationUser user);
         bool AuthenticateToken(string token);
+        JwtSecurityToken DecodeToken(string token);
         bool AuthenticatePassword(ApplicationUser user, string password);
         void SetUserPassword(ApplicationUser user, string password);
     }

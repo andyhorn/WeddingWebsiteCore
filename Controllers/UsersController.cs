@@ -48,13 +48,7 @@ namespace WeddingWebsiteCore.Controllers
                     // return JWT
                     var token = _authenticationService.MakeToken(user);
 
-                    var response = new LoginSuccessResponse
-                    {
-                        UserId = user.UserId,
-                        Token = token,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName
-                    };
+                    var response = new LoginSuccessResponse(user, token);
 
                     return Ok(response);
                 }

@@ -2,6 +2,8 @@
 using JWT.Builder;
 using JWT.Exceptions;
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Policy;
 using System.Text;
 using WeddingWebsiteCore.Contracts;
 using WeddingWebsiteCore.Models;
@@ -21,13 +23,35 @@ namespace WeddingWebsiteCore.Services
             var secret = GetApplicationSecret();
 
             var token = new JwtBuilder()
-                .WithAlgorithm(new HMACSHA256Algorithm())
+                .WithAlgorithm(GetSecurityAlgorithm())
                 .WithSecret(secret)
                 .AddClaim(Claims.Expiration, DateTimeOffset.UtcNow.AddMonths(1).ToUnixTimeSeconds())
                 .AddClaim(Claims.UserId, user.UserId)
                 .Encode();
 
             return token;
+        }
+
+        public JwtSecurityToken DecodeToken(string token)
+        {
+            var secret = GetApplicationSecret();
+
+            try
+            {
+                var json = new JwtBuilder()
+                    .WithAlgorithm(GetSecurityAlgorithm())
+                    .WithSecret(secret)
+                    .MustVerifySignature()
+                    .Decode(token);
+
+                var jwtSecurityToken = new JwtSecurityToken(json);
+
+                return jwtSecurityToken;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public bool AuthenticateToken(string token)
@@ -37,7 +61,7 @@ namespace WeddingWebsiteCore.Services
             try
             {
                 var json = new JwtBuilder()
-                    .WithAlgorithm(new HMACSHA256Algorithm())
+                    .WithAlgorithm(GetSecurityAlgorithm())
                     .WithSecret(secret)
                     .MustVerifySignature()
                     .Decode(token);
@@ -65,6 +89,11 @@ namespace WeddingWebsiteCore.Services
             var secret = System.Environment.GetEnvironmentVariable(ApplicationConstants.TOKEN_KEY);
             
             return secret;
+        }
+
+        private HMACSHA256Algorithm GetSecurityAlgorithm()
+        {
+            return new HMACSHA256Algorithm();
         }
     }
 }

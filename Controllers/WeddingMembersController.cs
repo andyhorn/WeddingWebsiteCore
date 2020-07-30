@@ -130,7 +130,7 @@ namespace WeddingWebsiteCore.Controllers
 
         private async Task<bool> ExistsAsync(int id)
         {
-            var weddingMember = await _context.FindAsync(id);
+            var weddingMember = await _context.WeddingMembers.FindAsync(id);
 
             return weddingMember != null;
         }
