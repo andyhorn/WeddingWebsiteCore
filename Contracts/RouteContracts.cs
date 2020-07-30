@@ -8,5 +8,6 @@
         public const string PutItem = "{id}";
         public const string DeleteItem = "{id}";
         public const string Login = "login";
+        public const string GetSelf = "self";
     }
 }

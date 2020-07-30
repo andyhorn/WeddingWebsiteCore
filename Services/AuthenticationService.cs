@@ -34,24 +34,8 @@ namespace WeddingWebsiteCore.Services
 
         public JwtSecurityToken DecodeToken(string token)
         {
-            var secret = GetApplicationSecret();
-
-            try
-            {
-                var json = new JwtBuilder()
-                    .WithAlgorithm(GetSecurityAlgorithm())
-                    .WithSecret(secret)
-                    .MustVerifySignature()
-                    .Decode(token);
-
-                var jwtSecurityToken = new JwtSecurityToken(json);
-
-                return jwtSecurityToken;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            var decoded = new JwtSecurityToken(token);
+            return decoded;
         }
 
         public bool AuthenticateToken(string token)
