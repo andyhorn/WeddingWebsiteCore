@@ -7,5 +7,6 @@
         public const string PostItem = "";
         public const string PutItem = "{id}";
         public const string DeleteItem = "{id}";
+        public const string Login = "login";
     }
 }

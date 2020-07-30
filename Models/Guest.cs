@@ -6,8 +6,13 @@ namespace WeddingWebsiteCore.Models
     [Table("guests")]
     public class Guest
     {
+        [Key]
         public int GuestId { get; set; }
+
+        [Required]
         public string FirstName { get; set; }
+
+        [Required]
         public string LastName { get; set; }
         
         [DataType(DataType.EmailAddress)]
