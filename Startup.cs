@@ -31,7 +31,7 @@ namespace WeddingWebsiteCore
             services.AddControllers();
 
             services.AddDbContext<WeddingContext, SqlLiteWeddingContext>();
-            services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddTransient<Services.IAuthenticationService, Services.AuthenticationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,7 +54,7 @@ namespace WeddingWebsiteCore
 
             app.UseAuthorization();
 
-            app.UseMiddleware<JwtMiddleware>();
+            //app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
