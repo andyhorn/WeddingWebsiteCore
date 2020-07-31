@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div :style="style">
+    <div :style="style" class="header">
       <h1>Krystal &amp; Andy</h1>
       <div :class="{sticky: isSticky}" ref="header">
         <b-navbar>
@@ -21,32 +21,29 @@
 </template>
 
 <script>
-import StickyHeader from "@/components/StickyHeader";
-
 export default {
   name: "App",
-  components: {
-    StickyHeader
-  },
   data() {
     return {
       isSticky: false,
       style: {
         paddingBottom: 0
       },
-      stickyHeight: 0
+      stickyHeight: 0,
+      triggerPosition: 0
     };
   },
   mounted() {
     const header = this.$refs.header;
     const app = this.$refs.app;
 
-    this.stickyHeight = header.offsetTop;
+    this.triggerPosition = header.offsetTop;
+    this.stickyHeight = header.offsetHeight;
     console.log(this.stickyHeight);
 
     const vm = this;
     window.onscroll = function() {
-      if (window.pageYOffset > vm.stickyHeight) {
+      if (window.pageYOffset > vm.triggerPosition) {
         vm.isSticky = true;
         vm.style.paddingBottom = vm.stickyHeight + 1 + "px";
       } else {
