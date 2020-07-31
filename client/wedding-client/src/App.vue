@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <div :style="style" class="header">
-      <h1>Krystal &amp; Andy</h1>
-      <div :class="{sticky: isSticky}" ref="header">
+    <div :style="style" class="header bg-light">
+      <h1 class="text-center pt-3">Krystal &amp; Andy</h1>
+      <div :class="{sticky: isSticky}" class="border-bottom bg-light" ref="header">
         <b-navbar>
           <b-navbar-nav class="mx-auto">
             <b-nav-item to="/">Home</b-nav-item>
@@ -15,8 +15,9 @@
         </b-navbar>
       </div>
     </div>
-    <hr />
-    <router-view />
+    <div class="pt-3 container">
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -39,13 +40,12 @@ export default {
 
     this.triggerPosition = header.offsetTop;
     this.stickyHeight = header.offsetHeight;
-    console.log(this.stickyHeight);
 
     const vm = this;
     window.onscroll = function() {
       if (window.pageYOffset > vm.triggerPosition) {
         vm.isSticky = true;
-        vm.style.paddingBottom = vm.stickyHeight + 1 + "px";
+        vm.style.paddingBottom = vm.stickyHeight + "px";
       } else {
         vm.isSticky = false;
         vm.style.paddingBottom = 0;
@@ -67,5 +67,6 @@ export default {
   position: fixed;
   top: 0;
   width: 100%;
+  z-index: 100;
 }
 </style>
