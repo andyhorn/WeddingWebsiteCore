@@ -7,15 +7,15 @@ Vue.use(Vuex);
 export const TOKEN_IDENTIFIER = "x-kaw-auth-token-x";
 
 const defaultState = {
-  error = "",
-  token = "",
-  user = {
-    id = "",
-    firstName = "",
-    lastName = "",
-    email = ""
+  error: "",
+  token: "",
+  user: {
+    id: "",
+    firstName: "",
+    lastName: "",
+    email: ""
   },
-  status = ""
+  status: ""
 };
 
 function initialState() {
@@ -27,7 +27,7 @@ export default new Vuex.Store({
   mutations: {
     reset(state) {
       const s = initialState();
-      Object.keys(s).forEach(key => state[key] = s[key);]
+      Object.keys(s).forEach(key => state[key] = s[key]);
     },
     authenticationAttempt(state) {
       state.status = "Authenticating user...";
