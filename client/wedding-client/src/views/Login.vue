@@ -28,9 +28,9 @@ export default {
       } catch (e) {
         let errorMessage = "";
 
-        if (e.data.status == 404) {
+        if (e.status == 404) {
           errorMessage = "Email not found.";
-        } else if ((e.data.status = 401)) {
+        } else if (e.status == 401) {
           errorMessage = "Email or password were incorrect - try again.";
         } else {
           errorMessage =

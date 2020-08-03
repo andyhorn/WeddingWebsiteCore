@@ -10,7 +10,7 @@ const defaultState = {
   error: "",
   token: "",
   user: {
-    id: "",
+    userId: "",
     firstName: "",
     lastName: "",
     email: ""
@@ -56,7 +56,7 @@ export default new Vuex.Store({
       state.status = "Saved user's email.";
     },
     setUserId(state, userId) {
-      state.user.id = userId;
+      state.user.userId = userId;
       state.status = "Saved user's ID.";
     },
     setToken(state, token) {
@@ -101,13 +101,13 @@ export default new Vuex.Store({
           .then(res => {
             console.log(res);
             const data = res.data;
-            const id = data.id;
+            const userId = data.userId;
             const firstName = data.firstName;
             const lastName = data.lastName;
             const token = data.token;
 
             const userData = {
-              id,
+              userId,
               firstName,
               lastName,
               email
