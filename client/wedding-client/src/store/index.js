@@ -4,14 +4,29 @@ import { http, addToken, stripToken } from "@/axios";
 
 Vue.use(Vuex);
 
-const defaultState = {
+export const TOKEN_IDENTIFIER = "x-kaw-auth-token-x";
 
+const defaultState = {
+  token = "",
+  user = {
+    id = "",
+    firstName = "",
+    lastName = "",
+    email = ""
+  }
 };
 
+function initialState() {
+  return defaultState;
+}
+
 export default new Vuex.Store({
-  state: {
-  },
+  state: initialState,
   mutations: {
+    reset(state) {
+      const s = initialState();
+      Object.keys(s).forEach(key => state[key] = s[key);]
+    }
   },
   actions: {
   },
