@@ -11,7 +11,7 @@ const http = axios.create({
     headers
 });
 
-const addToken = function (token) {
+const setToken = function (token) {
     if (!http.defaults.headers)
         http.defaults.headers = headers;
 
@@ -25,6 +25,6 @@ const stripToken = function () {
 
 export {
     http,
-    addToken,
+    setToken,
     stripToken
 };

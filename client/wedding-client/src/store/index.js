@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { http, addToken, stripToken } from "@/axios";
+import { http, setToken, stripToken } from "@/axios";
+import Toast from "@/services/toast";
 
 Vue.use(Vuex);
 
@@ -61,11 +62,13 @@ export default new Vuex.Store({
     },
     setToken(state, token) {
       state.token = token;
+      setToken(token);
       state.status = "Saved JWT.";
     },
     resetToken(state) {
       state.token = "";
       state.status = "Reset JWT.";
+      stripToken();
     },
     resetUserData(state) {
       state.user = {};
@@ -80,16 +83,25 @@ export default new Vuex.Store({
   },
   actions: {
     login({ commit }, payload) {
-      return new Promise(async (resolve, reject) => {
+      return new Promise(async (resolve) => {
+        const toast = new Toast();
         const email = payload.email;
         const password = payload.password;
 
         if (!email) {
-          return reject("Email is required.");
+          toast.setTitle("Authentication error.");
+          toast.setMessage("Email is required.");
+          toast.setVariant("danger");
+          toast.show();
+          return resolve(false);
         }
 
         if (!password) {
-          return reject("Password is required.");
+          toast.setTitle("Authentication error.");
+          toast.setMessage("Password is required.");
+          toast.setVariant("danger");
+          toast.show();
+          return resolve(false);
         }
 
         commit("authenticationAttempt");
@@ -99,7 +111,6 @@ export default new Vuex.Store({
           password
         })
           .then(res => {
-            console.log(res);
             const data = res.data;
             const userId = data.userId;
             const firstName = data.firstName;
@@ -118,11 +129,30 @@ export default new Vuex.Store({
 
             commit("authenticationSuccess");
 
-            return resolve();
+            toast.setTitle("Logged in!");
+            toast.setMessage("Authentication successful!");
+            toast.setVariant("success");
+            toast.show();
+
+            return resolve(true);
           })
           .catch(err => {
+            const status = err.response.data.status;
+
+            toast.setTitle("Authentication error.");
+            toast.setVariant("danger");
+
+            if (status == 401) {
+              toast.setMessage("Password does not match. Try again.");
+            } else if (status == 404) {
+              toast.setMessage("Email not found.");
+            } else {
+              toast.setMessage("Unable to log in. Check your credentials and try again.");
+            }
+
             commit("authenticationFailure", err);
-            return reject(err);
+            toast.show();
+            return resolve(false);
           });
       })
     },
