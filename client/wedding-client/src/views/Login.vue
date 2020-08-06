@@ -17,7 +17,7 @@ export default {
       const authenticated = await this.$store.dispatch("login", formData);
 
       if (authenticated) {
-        this.$router.push({ name: "Admin" });
+        this.$router.push({ name: "Home" });
       }
     }
   }

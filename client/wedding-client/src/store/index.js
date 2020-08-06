@@ -10,6 +10,7 @@ export const TOKEN_IDENTIFIER = "x-kaw-auth-token-x";
 const defaultState = {
   error: "",
   token: "",
+  isLoggedIn: false,
   user: {
     userId: "",
     firstName: "",
@@ -35,6 +36,7 @@ export default new Vuex.Store({
     },
     authenticationSuccess(state) {
       state.status = "Authentication successful!";
+      state.isLoggedIn = true;
     },
     authenticationFailure(state, err) {
       state.status = "Authentication unsuccessful.";
@@ -79,6 +81,7 @@ export default new Vuex.Store({
       state.token = "";
       state.status = "Logged out.";
       state.error = "";
+      state.isLoggedIn = false;
     }
   },
   actions: {
@@ -158,6 +161,11 @@ export default new Vuex.Store({
     },
     logout({ commit }) {
       commit("logout");
+      const toast = new Toast();
+      toast.setMessage("You have successfully logged out.");
+      toast.setVariant("success");
+      toast.setTitle("Logged out!");
+      toast.show();
     }
   },
   modules: {

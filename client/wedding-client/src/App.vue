@@ -11,6 +11,8 @@
             <b-nav-item to>Events</b-nav-item>
             <b-nav-item to>Wedding Party</b-nav-item>
             <b-nav-item to>Gift Registries</b-nav-item>
+            <b-nav-item v-if="isLoggedIn" :to="{ name: 'Admin' }">Admin</b-nav-item>
+            <b-nav-item v-if="isLoggedIn" @click="logout">Logout</b-nav-item>
           </b-navbar-nav>
         </b-navbar>
       </div>
@@ -33,6 +35,16 @@ export default {
       stickyHeight: 0,
       triggerPosition: 0
     };
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch("logout");
+    }
+  },
+  computed: {
+    isLoggedIn() {
+      return this.$store.state.isLoggedIn;
+    }
   },
   mounted() {
     const header = this.$refs.header;
