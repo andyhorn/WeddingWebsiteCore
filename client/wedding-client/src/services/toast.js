@@ -30,7 +30,8 @@ export default class Toast {
             this.message, {
             'title': this.title,
             'variant': this.variant,
-            'no-auto-hide': !this.isDismissable
+            'no-auto-hide': !this.isDismissable,
+            duration: 3000
         }
         );
     }

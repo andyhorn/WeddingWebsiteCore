@@ -36,6 +36,16 @@ export default {
       triggerPosition: 0
     };
   },
+  watch: {
+    isLoggedIn: {
+      immediate: true,
+      handler: function(isLoggedIn) {
+        if (!isLoggedIn && this.$route.name.includes("Admin")) {
+          this.$router.push({ name: "Home" });
+        }
+      }
+    }
+  },
   methods: {
     logout() {
       this.$store.dispatch("logout");

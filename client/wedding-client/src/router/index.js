@@ -1,7 +1,9 @@
+import store from "@/store"
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from "../views/Login.vue";
+import Admin from "../views/Admin.vue";
 
 Vue.use(VueRouter)
 
@@ -15,6 +17,11 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login
+  },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: Admin
   }
   // {
   //   path: '/about',
@@ -28,6 +35,14 @@ const routes = [
 
 const router = new VueRouter({
   routes
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.name.includes("Admin") && !store.state.isLoggedIn) {
+    return next({ name: "Home" });
+  }
+
+  return next()
 })
 
 export default router
