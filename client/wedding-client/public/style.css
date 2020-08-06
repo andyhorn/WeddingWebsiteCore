@@ -33,3 +33,7 @@ a:hover {
 .sticky {
   position: sticky;
 }
+
+.centered {
+  margin: 0 auto;
+}

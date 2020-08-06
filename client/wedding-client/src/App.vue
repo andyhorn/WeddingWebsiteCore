@@ -11,7 +11,6 @@
             <b-nav-item to>Events</b-nav-item>
             <b-nav-item to>Wedding Party</b-nav-item>
             <b-nav-item to>Gift Registries</b-nav-item>
-            <!-- <b-nav-item v-if="isLoggedIn" :to="{ name: 'Admin' }">Admin</b-nav-item> -->
             <b-nav-item-dropdown v-if="isLoggedIn" id="nav-dropdown-admin" text="Admin" left>
               <b-dropdown-item :to="{ name: 'Admin-Guests' }">Guests</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'Admin-RSVP' }">RSVPs</b-dropdown-item>

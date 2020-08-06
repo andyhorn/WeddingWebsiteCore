@@ -7,6 +7,7 @@
         v-model="email"
         placeholder="Enter email address"
         required
+        focus
       />
     </b-form-group>
     <b-form-group id="password-input-group" label="Password" label-for="password">
