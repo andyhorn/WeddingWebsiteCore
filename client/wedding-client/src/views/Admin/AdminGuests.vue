@@ -18,6 +18,7 @@
                   id="first-name-input"
                   v-model="newGuest.firstName"
                   :state="states.firstNameState"
+                  @input="onFirstNameInput"
                   trim
                   required
                 />
@@ -35,6 +36,7 @@
                   id="last-name-input"
                   v-model="newGuest.lastName"
                   :state="states.lastNameState"
+                  @input="onLastNameInput"
                   trim
                   required
                 />
@@ -44,21 +46,11 @@
           <b-row>
             <b-col cols="9">
               <b-form-group
-                id="email-input-group"
-                label="Email address"
-                label-for="email-address-input"
-                :invalid-feedback="messages.invalidEmail"
+                id="family-select-group"
+                label="Family"
+                label-for="family-select-input"
                 :state="states.emailAddressState"
-              >
-                <b-form-input
-                  id="email-address-input"
-                  v-model="newGuest.email"
-                  type="email"
-                  :state="states.emailAddressState"
-                  trim
-                  required
-                />
-              </b-form-group>
+              ></b-form-group>
             </b-col>
             <b-col>
               <b-form-group
@@ -94,18 +86,15 @@ export default {
       newGuest: {
         firstName: "",
         lastName: "",
-        email: "",
         isChild: false
       },
       states: {
         firstNameState: null,
-        lastNameState: null,
-        emailAddressState: null
+        lastNameState: null
       },
       messages: {
         invalidFirstName: "First name is required.",
-        invalidLastName: "Last name is required.",
-        invalidEmail: "Email address is required."
+        invalidLastName: "Last name is required."
       }
     };
   },
@@ -119,15 +108,28 @@ export default {
       await this.$store.dispatch("fetchAllGuests");
     },
     async onCreateGuest() {
-      console.log("create guest");
-      console.log(this.newGuest);
       await this.$store.dispatch("createNewGuest", this.newGuest);
       this.$store.dispatch("fetchAllGuests");
       this.$bvModal.hide(this.modalId);
     },
     onCancel() {
       this.newGuest = {};
-      console.log("modal closed");
+      this.states.firstNameState = null;
+      this.states.lastNameState = null;
+    },
+    onFirstNameInput() {
+      if (this.newGuest.firstName && this.newGuest.firstName.length) {
+        this.states.firstNameState = true;
+      } else {
+        this.states.firstNameState = false;
+      }
+    },
+    onLastNameInput() {
+      if (this.newGuest.lastName && this.newGuest.lastName.length) {
+        this.states.lastNameState = true;
+      } else {
+        this.states.lastNameState = false;
+      }
     }
   },
   mounted() {
