@@ -22,7 +22,8 @@ namespace WeddingWebsiteCore.Controllers
         [HttpGet(RouteContracts.GetAll)]
         public async Task<IActionResult> GetAllGuests()
         {
-            var guests = await _context.Guests.ToListAsync();
+            var guests = await _context.Guests
+                .ToListAsync();
 
             return Ok(guests);
         }

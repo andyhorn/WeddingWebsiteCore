@@ -9,7 +9,7 @@ using WeddingWebsiteCore.DataAccess;
 namespace WeddingWebsiteCore.Migrations
 {
     [DbContext(typeof(SqlLiteWeddingContext))]
-    [Migration("20200807183434_InitialCreate")]
+    [Migration("20200807203649_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,7 +115,7 @@ namespace WeddingWebsiteCore.Migrations
                     b.Property<int>("AdditionalGuests")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AddressId")
+                    b.Property<int?>("AddressId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -431,9 +431,7 @@ namespace WeddingWebsiteCore.Migrations
                 {
                     b.HasOne("WeddingWebsiteCore.Models.Address", "Address")
                         .WithMany("Families")
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AddressId");
                 });
 
             modelBuilder.Entity("WeddingWebsiteCore.Models.Guest", b =>

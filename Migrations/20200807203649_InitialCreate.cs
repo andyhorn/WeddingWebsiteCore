@@ -115,7 +115,7 @@ namespace WeddingWebsiteCore.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(nullable: true),
                     AdditionalGuests = table.Column<int>(nullable: false),
-                    AddressId = table.Column<int>(nullable: false)
+                    AddressId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -125,7 +125,7 @@ namespace WeddingWebsiteCore.Migrations
                         column: x => x.AddressId,
                         principalTable: "addresses",
                         principalColumn: "AddressId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(

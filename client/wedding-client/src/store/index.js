@@ -247,7 +247,28 @@ export default new Vuex.Store({
             resolve(true);
           })
           .catch(() => resolve(false));
-      })
+      });
+    },
+    createNewFamily({ commit }, family) {
+      let success, toast = new Toast();
+      return new Promise(async (resolve) => {
+        http.post("families", family)
+          .then(res => {
+            success = true;
+            toast.setVariant("success");
+            toast.setTitle("Success!");
+            toast.setMessage("Family created successfully.");
+            toast.show();
+          })
+          .catch(err => {
+            success = false;
+            toast.setVariant("danger");
+            toast.setTitle("Error!");
+            toast.setMessage("Unable to create family.");
+            toast.show();
+          })
+          .finally(() => resolve(success));
+      });
     }
   },
   modules: {

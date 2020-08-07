@@ -1,6 +1,6 @@
 <template>
   <div class="container pt-3">
-    <h1 class="text-center mb-3">Guest List</h1>
+    <h1 class="text-center mb-3">Guest List ({{guestList.length}})</h1>
     <b-button block variant="success" v-b-modal="createGuestModal">Add Guest</b-button>
     <b-button block variant="success" v-b-modal="createFamilyModal">Add Family</b-button>
     <b-modal :id="createGuestModal" title="Add New Guest" @hide="onGuestCancel" hide-footer>
@@ -64,7 +64,35 @@
         <b-button type="submit">Save</b-button>
       </form>
     </b-modal>
-    <b-modal :id="createFamilyModal" title="Create a Family" @hide="onFamilyCancel" hide-footer></b-modal>
+    <b-modal :id="createFamilyModal" title="Create a Family" @hide="onFamilyCancel" hide-footer>
+      <b-form @submit.prevent="onCreateFamily">
+        <b-container>
+          <b-row>
+            <b-col>
+              <b-form-group
+                id="family-name-input-group"
+                label="Family Name"
+                label-for="family-name-input"
+                :invalid-feedback="messages.invalidFamilyNameMessage"
+                :state="states.familyNameState"
+              >
+                <b-form-input
+                  id="family-name-input"
+                  v-model="newFamily.name"
+                  @input="onFamilyNameInput"
+                  :state="states.familyNameState"
+                />
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <b-button variant="success" type="submit">Save</b-button>
+            </b-col>
+          </b-row>
+        </b-container>
+      </b-form>
+    </b-modal>
     <div class="py-5">
       <GuestList :guests="guestList" :families="families" />
     </div>
@@ -89,13 +117,18 @@ export default {
         familyId: null,
         isChild: false
       },
+      newFamily: {
+        name: ""
+      },
       states: {
         firstNameState: null,
-        lastNameState: null
+        lastNameState: null,
+        familyNameState: null
       },
       messages: {
         invalidFirstName: "First name is required.",
-        invalidLastName: "Last name is required."
+        invalidLastName: "Last name is required.",
+        invalidFamilyName: "Family name is required."
       }
     };
   },
@@ -127,10 +160,19 @@ export default {
       this.$store.dispatch("fetchAllGuests");
       this.$bvModal.hide(this.createGuestModal);
     },
+    async onCreateFamily() {
+      await this.$store.dispatch("createNewFamily", this.newFamily);
+      this.$store.dispatch("fetchAllFamilies");
+      this.$bvModal.hide(this.createFamilyModal);
+    },
     onGuestCancel() {
       this.newGuest = {};
       this.states.firstNameState = null;
       this.states.lastNameState = null;
+    },
+    onFamilyCancel() {
+      this.newFamily = {};
+      this.states.familyNameState = null;
     },
     onFirstNameInput() {
       if (this.newGuest.firstName && this.newGuest.firstName.length) {
@@ -145,10 +187,18 @@ export default {
       } else {
         this.states.lastNameState = false;
       }
+    },
+    onFamilyNameInput() {
+      if (this.newFamily.name && this.newFamily.name.length) {
+        this.states.familyNameState = true;
+      } else {
+        this.states.familyNameState = false;
+      }
     }
   },
   mounted() {
     this.fetchAllGuests();
+    this.fetchAllFamilies();
   }
 };
 </script>

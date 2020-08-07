@@ -113,7 +113,7 @@ namespace WeddingWebsiteCore.Migrations
                     b.Property<int>("AdditionalGuests")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AddressId")
+                    b.Property<int?>("AddressId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -429,9 +429,7 @@ namespace WeddingWebsiteCore.Migrations
                 {
                     b.HasOne("WeddingWebsiteCore.Models.Address", "Address")
                         .WithMany("Families")
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AddressId");
                 });
 
             modelBuilder.Entity("WeddingWebsiteCore.Models.Guest", b =>
