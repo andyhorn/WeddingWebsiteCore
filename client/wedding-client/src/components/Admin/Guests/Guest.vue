@@ -1,8 +1,17 @@
 <template>
-  <div class="d-flex justify-content-between align-items-center">
-    <p class="m-0 p-0">{{ guest.firstName }} {{ guest.lastName}}</p>
-    <b-button variant="danger" @click="onDelete">Delete</b-button>
-  </div>
+  <b-container>
+    <b-row>
+      <b-col class="d-flex align-items-center justify-content-begin">
+        <p class="m-0 p-0">{{ guest.firstName }} {{ guest.lastName}}</p>
+      </b-col>
+      <b-col v-if="guest.family" class="d-flex align-items-center justify-content-center">
+        <p class="m-0 p-0">Family: {{ guest.family }}</p>
+      </b-col>
+      <b-col class="d-flex align-items-center justify-content-end">
+        <b-button variant="danger" @click="onDelete">Delete</b-button>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
