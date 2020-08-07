@@ -11,6 +11,7 @@ const defaultState = {
   error: "",
   token: "",
   isLoggedIn: false,
+  guestList: [],
   user: {
     userId: "",
     firstName: "",
@@ -82,6 +83,9 @@ export default new Vuex.Store({
       state.status = "Logged out.";
       state.error = "";
       state.isLoggedIn = false;
+    },
+    setGuestList(state, guestList) {
+      state.guestList = guestList;
     }
   },
   actions: {
@@ -166,6 +170,45 @@ export default new Vuex.Store({
       toast.setVariant("success");
       toast.setTitle("Logged out!");
       toast.show();
+    },
+    createNewGuest({ commit }, guest) {
+      return new Promise(async (resolve) => {
+        const toast = new Toast();
+        let success;
+        http.post("guests", guest)
+          .then(res => {
+            toast.setTitle("Success!");
+            toast.setMessage("Guest created successfully.");
+            toast.setVariant("success");
+            toast.show();
+            success = true;
+          })
+          .catch(err => {
+            toast.setTitle("Error!");
+            toast.setMessage("Something went wrong. Try again.");
+            toast.setVariant("danger");
+            toast.show();
+            success = false;
+          })
+          .finally(() => resolve(success));
+      })
+    },
+    fetchAllGuests({ commit }) {
+      return new Promise(async (resolve) => {
+        let success;
+        http.get("guests")
+          .then(res => {
+            if (res.data) {
+              const guests = res.data;
+              commit("setGuestList", guests);
+            }
+            success = true;
+          })
+          .catch(err => {
+            success = false;
+          })
+          .finally(() => resolve(success));
+      })
     }
   },
   modules: {
