@@ -1,8 +1,9 @@
 <template>
   <div class="container pt-3">
     <h1 class="text-center mb-3">Guest List</h1>
-    <b-button block variant="success" v-b-modal.create-guest-modal>Add Guest</b-button>
-    <b-modal :id="modalId" title="Add New Guest" @hide="onCancel" hide-footer>
+    <b-button block variant="success" v-b-modal="createGuestModal">Add Guest</b-button>
+    <b-button block variant="success" v-b-modal="createFamilyModal">Add Family</b-button>
+    <b-modal :id="createGuestModal" title="Add New Guest" @hide="onGuestCancel" hide-footer>
       <form @submit.prevent="onCreateGuest">
         <b-container>
           <b-row>
@@ -63,6 +64,7 @@
         <b-button type="submit">Save</b-button>
       </form>
     </b-modal>
+    <b-modal :id="createFamilyModal" title="Create a Family" @hide="onFamilyCancel" hide-footer></b-modal>
     <div class="py-5">
       <GuestList :guests="guestList" :families="families" />
     </div>
@@ -79,7 +81,8 @@ export default {
   },
   data() {
     return {
-      modalId: "create-guest-modal",
+      createGuestModal: "create-guest-modal",
+      createFamilyModal: "create-family-modal",
       newGuest: {
         firstName: "",
         lastName: "",
@@ -122,9 +125,9 @@ export default {
     async onCreateGuest() {
       await this.$store.dispatch("createNewGuest", this.newGuest);
       this.$store.dispatch("fetchAllGuests");
-      this.$bvModal.hide(this.modalId);
+      this.$bvModal.hide(this.createGuestModal);
     },
-    onCancel() {
+    onGuestCancel() {
       this.newGuest = {};
       this.states.firstNameState = null;
       this.states.lastNameState = null;
