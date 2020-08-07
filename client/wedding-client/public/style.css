@@ -1,6 +1,9 @@
 body {
   color: #201e1f;
   background-color: #c9cfcf;
+}
+
+body * {
   font-family: "Lora", serif;
 }
 

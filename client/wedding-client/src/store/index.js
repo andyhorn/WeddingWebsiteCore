@@ -193,6 +193,28 @@ export default new Vuex.Store({
           .finally(() => resolve(success));
       })
     },
+    deleteGuest({ commit }, guestId) {
+      return new Promise(async (resolve) => {
+        let success;
+        let toast = new Toast();
+        http.delete("guests/" + guestId)
+          .then(res => {
+            success = true;
+            toast.setVariant("success");
+            toast.setTitle("Success!");
+            toast.setMessage("Guest deleted successfully.");
+            toast.show();
+          })
+          .catch(err => {
+            success = false;
+            toast.setVariant("danger");
+            toast.setTitle("Error!");
+            toast.setMessage("Unable to delete guest. Try again.");
+            toast.show();
+          })
+          .finally(() => resolve(success));
+      })
+    },
     fetchAllGuests({ commit }) {
       return new Promise(async (resolve) => {
         let success;
