@@ -12,6 +12,7 @@ const defaultState = {
   token: "",
   isLoggedIn: false,
   guestList: [],
+  families: [],
   user: {
     userId: "",
     firstName: "",
@@ -86,6 +87,9 @@ export default new Vuex.Store({
     },
     setGuestList(state, guestList) {
       state.guestList = guestList;
+    },
+    setFamilies(state, families) {
+      state.families = families;
     }
   },
   actions: {
@@ -230,6 +234,19 @@ export default new Vuex.Store({
             success = false;
           })
           .finally(() => resolve(success));
+      })
+    },
+    fetchAllFamilies({ commit }) {
+      return new Promise(async (resolve) => {
+        http.get("families")
+          .then(res => {
+            if (res.data) {
+              const families = res.data;
+              commit("setFamilies", families);
+            }
+            resolve(true);
+          })
+          .catch(() => resolve(false));
       })
     }
   },

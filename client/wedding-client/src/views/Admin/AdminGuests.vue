@@ -45,12 +45,9 @@
           </b-row>
           <b-row>
             <b-col cols="9">
-              <b-form-group
-                id="family-select-group"
-                label="Family"
-                label-for="family-select-input"
-                :state="states.emailAddressState"
-              ></b-form-group>
+              <b-form-group id="family-select-group" label="Family" label-for="family-select-input">
+                <b-form-select v-model="newGuest.familyId" :options="familyValues" />
+              </b-form-group>
             </b-col>
             <b-col>
               <b-form-group
@@ -67,7 +64,7 @@
       </form>
     </b-modal>
     <div class="py-5">
-      <GuestList :guests="guestList" />
+      <GuestList :guests="guestList" :families="families" />
     </div>
   </div>
 </template>
@@ -86,6 +83,7 @@ export default {
       newGuest: {
         firstName: "",
         lastName: "",
+        familyId: null,
         isChild: false
       },
       states: {
@@ -101,11 +99,25 @@ export default {
   computed: {
     guestList() {
       return this.$store.state.guestList;
+    },
+    families() {
+      return this.$store.state.families;
+    },
+    familyValues() {
+      return this.families.map(x => {
+        return {
+          value: x.familyId,
+          text: x.name
+        };
+      });
     }
   },
   methods: {
     async fetchAllGuests() {
       await this.$store.dispatch("fetchAllGuests");
+    },
+    async fetchAllFamilies() {
+      await this.$store.dispatch("fetchAllFamilies");
     },
     async onCreateGuest() {
       await this.$store.dispatch("createNewGuest", this.newGuest);
