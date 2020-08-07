@@ -186,8 +186,8 @@ namespace WeddingWebsiteCore.Migrations
                     Phone = table.Column<string>(nullable: true),
                     IsWeddingMember = table.Column<bool>(nullable: false),
                     IsChild = table.Column<bool>(nullable: false),
-                    RsvpId = table.Column<int>(nullable: false),
-                    FamilyId = table.Column<int>(nullable: false),
+                    RsvpId = table.Column<int>(nullable: true),
+                    FamilyId = table.Column<int>(nullable: true),
                     Discriminator = table.Column<string>(nullable: false),
                     FamilyId1 = table.Column<int>(nullable: true)
                 },
@@ -199,7 +199,7 @@ namespace WeddingWebsiteCore.Migrations
                         column: x => x.FamilyId,
                         principalTable: "families",
                         principalColumn: "FamilyId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_guests_families_FamilyId1",
                         column: x => x.FamilyId1,
@@ -211,7 +211,7 @@ namespace WeddingWebsiteCore.Migrations
                         column: x => x.RsvpId,
                         principalTable: "rsvps",
                         principalColumn: "RsvpId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(

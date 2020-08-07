@@ -9,7 +9,7 @@ using WeddingWebsiteCore.DataAccess;
 namespace WeddingWebsiteCore.Migrations
 {
     [DbContext(typeof(SqlLiteWeddingContext))]
-    [Migration("20200730030816_InitialCreate")]
+    [Migration("20200807183434_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,7 +141,7 @@ namespace WeddingWebsiteCore.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("FamilyId")
+                    b.Property<int?>("FamilyId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("FamilyId1")
@@ -164,7 +164,7 @@ namespace WeddingWebsiteCore.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("RsvpId")
+                    b.Property<int?>("RsvpId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("GuestId");
@@ -440,9 +440,7 @@ namespace WeddingWebsiteCore.Migrations
                 {
                     b.HasOne("WeddingWebsiteCore.Models.Family", "Family")
                         .WithMany("Members")
-                        .HasForeignKey("FamilyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FamilyId");
 
                     b.HasOne("WeddingWebsiteCore.Models.Family", null)
                         .WithMany("Children")
@@ -450,9 +448,7 @@ namespace WeddingWebsiteCore.Migrations
 
                     b.HasOne("WeddingWebsiteCore.Models.Rsvp", "Rsvp")
                         .WithOne("Guest")
-                        .HasForeignKey("WeddingWebsiteCore.Models.Guest", "RsvpId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WeddingWebsiteCore.Models.Guest", "RsvpId");
                 });
 
             modelBuilder.Entity("WeddingWebsiteCore.Models.Rsvp", b =>

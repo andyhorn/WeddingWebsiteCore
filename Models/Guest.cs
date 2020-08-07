@@ -27,10 +27,10 @@ namespace WeddingWebsiteCore.Models
 
         [ForeignKey(nameof(RsvpId))]
         public Rsvp Rsvp { get; set; }
-        public int RsvpId { get; set; }
+        public int? RsvpId { get; set; }
 
         [ForeignKey(nameof(FamilyId))]
         public Family Family { get; set; }
-        public int FamilyId { get; set; }
+        public int? FamilyId { get; set; }
     }
 }
