@@ -32,9 +32,15 @@ namespace WeddingWebsiteCore.DataAccess
                 .HasMany(address => address.Vendors)
                 .WithOne(vendor => vendor.Address);
 
-            modelBuilder.Entity<Guest>()
-                .HasOne(guest => guest.Family)
-                .WithMany(family => family.Members);
+            modelBuilder.Entity<Family>()
+                .HasMany(family => family.Members)
+                .WithOne(member => member.Family);
+
+            //modelBuilder.Entity<Guest>()
+            //    .HasOne(guest => guest.Family)
+            //    .WithMany(family => family.Members);
+            //modelBuilder.Entity<Guest>()
+            //    .Ignore(guest => guest.Family);
 
             modelBuilder.Entity<Guest>()
                 .HasOne(guest => guest.Rsvp)

@@ -23,13 +23,17 @@ namespace WeddingWebsiteCore.Models
 
         public bool IsWeddingMember { get; set; } = false;
         public bool IsChild { get; set; } = false;
-        
+
 
         [ForeignKey(nameof(RsvpId))]
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         public Rsvp Rsvp { get; set; }
         public int? RsvpId { get; set; }
 
         [ForeignKey(nameof(FamilyId))]
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         public Family Family { get; set; }
         public int? FamilyId { get; set; }
     }

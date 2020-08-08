@@ -22,7 +22,10 @@ namespace WeddingWebsiteCore.Controllers
         [HttpGet(RouteContracts.GetAll)]
         public async Task<IActionResult> GetAllFamilies()
         {
-            var families = await _context.Families.ToListAsync();
+            var families = await _context.Families
+                .Include(family => family.Members)
+                .Include(family => family.Address)
+                .ToListAsync();
 
             return Ok(families);
         }

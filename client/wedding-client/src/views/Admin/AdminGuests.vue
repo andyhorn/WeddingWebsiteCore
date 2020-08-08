@@ -158,6 +158,7 @@ export default {
     async onCreateGuest() {
       await this.$store.dispatch("createNewGuest", this.newGuest);
       this.$store.dispatch("fetchAllGuests");
+      this.$store.dispatch("fetchAllFamilies");
       this.$bvModal.hide(this.createGuestModal);
     },
     async onCreateFamily() {

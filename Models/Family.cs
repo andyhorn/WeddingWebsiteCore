@@ -9,11 +9,8 @@ namespace WeddingWebsiteCore.Models
         public int FamilyId { get; set; }
         public string Name { get; set; }
         public ICollection<Guest> Members { get; set; }
-        public ICollection<Guest> Children { get; set; }
         public int AdditionalGuests { get; set; }
 
-        [ForeignKey(nameof(AddressId))]
         public Address Address { get; set; }
-        public int? AddressId { get; set; }
     }
 }
