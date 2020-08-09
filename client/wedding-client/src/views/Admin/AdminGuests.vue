@@ -125,56 +125,9 @@
             >
               <Guest :guest="member" />
             </Box>
-            <!-- <Box
-              v-for="member in family.members.filter(x => x.guestId != family.headMemberId)"
-              :key="member.guestId"
-            >
-              <b-row>
-                <b-col class="d-flex justify-content-start align-items-center">
-                  <p class="m-0 p-0">{{ member.firstName }} {{ member.lastName }}</p>
-                </b-col>
-                <b-col class="d-flex justify-content-end align-items-center">
-
-                </b-col>
-              </b-row>
-            </Box>-->
           </b-collapse>
         </b-container>
       </Box>
-      <!-- <Box v-for="family in families" :key="family.familyId" class="py-2 mb-2">
-        {{ family }}
-        <b-container>
-          <b-row class="py-2">
-            <b-col>
-              <Box>
-                <p
-                  class="m-0 p-0"
-                >{{ family.headMember.firstName }} {{ family.headMember.lastName }} ({{ family.members.length }})</p>
-              </Box>
-            </b-col>
-            <b-col class="d-flex justify-content-end">
-              <a href @click.prevent="onDeleteFamily(family)">
-                <b-icon-x-circle />
-              </a>
-            </b-col>
-          </b-row>
-          <b-row>
-            <a href @click.prevent="openGuestModal(family)">
-              <b-icon-plus />New Member
-            </a>
-          </b-row>
-          <b-row>
-            <b-col>
-              <Box
-                v-for="member in family.members.filter(member => member.guestId != family.headMemberId)"
-                :key="member.guestId"
-              >
-                <Guest :guest="member" />
-              </Box>
-            </b-col>
-          </b-row>
-        </b-container>
-      </Box>-->
     </div>
   </div>
 </template>
