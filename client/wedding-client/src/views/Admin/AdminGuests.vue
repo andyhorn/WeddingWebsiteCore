@@ -1,8 +1,9 @@
 <template>
   <div class="container pt-3">
     <h1 class="text-center mb-3">Guest List ({{guestList.length}})</h1>
-    <b-button block variant="success" v-b-modal="createGuestModal">Add Guest</b-button>
-    <b-button block variant="success" v-b-modal="createFamilyModal">Add Family</b-button>
+    <a href @click.prevent="openGuestModal(null)">
+      <b-icon-plus />New Family
+    </a>
     <b-modal :id="createGuestModal" title="Add New Guest" @hide="onGuestCancel" hide-footer>
       <form @submit.prevent="onCreateGuest">
         <b-container>
@@ -25,6 +26,8 @@
                 />
               </b-form-group>
             </b-col>
+          </b-row>
+          <b-row>
             <b-col>
               <b-form-group
                 id="last-name-input-group"
@@ -44,12 +47,7 @@
               </b-form-group>
             </b-col>
           </b-row>
-          <b-row>
-            <b-col cols="9">
-              <b-form-group id="family-select-group" label="Family" label-for="family-select-input">
-                <b-form-select v-model="newGuest.familyId" :options="familyValues" />
-              </b-form-group>
-            </b-col>
+          <b-row v-if="selectedFamilyId">
             <b-col>
               <b-form-group
                 id="is-child-switch-group"
@@ -94,21 +92,108 @@
       </b-form>
     </b-modal>
     <div class="py-5">
-      <GuestList :guests="guestList" :families="families" />
+      <p v-if="guestList.length == 0" class="text-center">No guests.</p>
+      <Box v-for="family in families" :key="family.familyId" class="py-2 mb-3">
+        <b-container>
+          <b-row>
+            <b-col class="d-flex justify-content-start align-items-center">
+              <b-button v-b-toggle="family.familyId.toString()" class="mr-3">
+                <b-icon-chevron-down />
+              </b-button>
+              <p
+                class="m-0 p-0"
+              >{{ family.headMember.firstName }} {{ family.headMember.lastName }} ({{ family.members.length }})</p>
+            </b-col>
+            <b-col class="d-flex justify-content-end align-items-center">
+              <a href @click.prevent="onDeleteFamily(family)">
+                <b-icon-x-circle />
+              </a>
+            </b-col>
+          </b-row>
+          <b-collapse :id="family.familyId.toString()" class="mt-3">
+            <p v-if="family.members.length == 1" class="m-0 p-0">No other members.</p>
+            <b-button
+              squared
+              size="sm"
+              variant="success"
+              class="my-2"
+              @click="openGuestModal(family)"
+            >Add member</b-button>
+            <Box
+              v-for="member in family.members.filter(x => x.guestId != family.headMemberId)"
+              :key="member.guestId"
+            >
+              <Guest :guest="member" />
+            </Box>
+            <!-- <Box
+              v-for="member in family.members.filter(x => x.guestId != family.headMemberId)"
+              :key="member.guestId"
+            >
+              <b-row>
+                <b-col class="d-flex justify-content-start align-items-center">
+                  <p class="m-0 p-0">{{ member.firstName }} {{ member.lastName }}</p>
+                </b-col>
+                <b-col class="d-flex justify-content-end align-items-center">
+
+                </b-col>
+              </b-row>
+            </Box>-->
+          </b-collapse>
+        </b-container>
+      </Box>
+      <!-- <Box v-for="family in families" :key="family.familyId" class="py-2 mb-2">
+        {{ family }}
+        <b-container>
+          <b-row class="py-2">
+            <b-col>
+              <Box>
+                <p
+                  class="m-0 p-0"
+                >{{ family.headMember.firstName }} {{ family.headMember.lastName }} ({{ family.members.length }})</p>
+              </Box>
+            </b-col>
+            <b-col class="d-flex justify-content-end">
+              <a href @click.prevent="onDeleteFamily(family)">
+                <b-icon-x-circle />
+              </a>
+            </b-col>
+          </b-row>
+          <b-row>
+            <a href @click.prevent="openGuestModal(family)">
+              <b-icon-plus />New Member
+            </a>
+          </b-row>
+          <b-row>
+            <b-col>
+              <Box
+                v-for="member in family.members.filter(member => member.guestId != family.headMemberId)"
+                :key="member.guestId"
+              >
+                <Guest :guest="member" />
+              </Box>
+            </b-col>
+          </b-row>
+        </b-container>
+      </Box>-->
     </div>
   </div>
 </template>
 
 <script>
 import GuestList from "@/components/Admin/Guests/GuestList.vue";
+import Box from "@/components/Box.vue";
+import Guest from "@/components/Admin/Guests/Guest.vue";
 
 export default {
   name: "AdminGuests",
   components: {
-    GuestList
+    GuestList,
+    Guest,
+    Box
   },
   data() {
     return {
+      selectedFamilyId: 0,
       createGuestModal: "create-guest-modal",
       createFamilyModal: "create-family-modal",
       newGuest: {
@@ -129,7 +214,8 @@ export default {
         invalidFirstName: "First name is required.",
         invalidLastName: "Last name is required.",
         invalidFamilyName: "Family name is required."
-      }
+      },
+      chevrons: {}
     };
   },
   computed: {
@@ -149,6 +235,22 @@ export default {
     }
   },
   methods: {
+    onDeleteFamily(family) {
+      this.$http.delete("families/" + family.familyId).then(() => this.fetch());
+    },
+    openGuestModal(family) {
+      if (family) {
+        this.selectedFamilyId = family.familyId;
+        this.newGuest.lastName = family.headMember.lastName;
+      } else {
+        this.selectedFamilyId = 0;
+      }
+
+      this.$bvModal.show(this.createGuestModal);
+    },
+    openFamilyModal() {
+      this.$bvModal.show(this.createFamilyModal);
+    },
     async fetchAllGuests() {
       await this.$store.dispatch("fetchAllGuests");
     },
@@ -156,20 +258,28 @@ export default {
       await this.$store.dispatch("fetchAllFamilies");
     },
     async onCreateGuest() {
+      if (this.selectedFamilyId) {
+        this.newGuest.familyId = this.selectedFamilyId;
+      }
+
       await this.$store.dispatch("createNewGuest", this.newGuest);
-      this.$store.dispatch("fetchAllGuests");
-      this.$store.dispatch("fetchAllFamilies");
+
+      // this.$store.dispatch("fetchAllGuests");
+      // this.$store.dispatch("fetchAllFamilies");
+      this.fetch();
       this.$bvModal.hide(this.createGuestModal);
     },
     async onCreateFamily() {
       await this.$store.dispatch("createNewFamily", this.newFamily);
-      this.$store.dispatch("fetchAllFamilies");
+      // this.$store.dispatch("fetchAllFamilies");
+      this.fetch();
       this.$bvModal.hide(this.createFamilyModal);
     },
     onGuestCancel() {
       this.newGuest = {};
       this.states.firstNameState = null;
       this.states.lastNameState = null;
+      this.selectedFamilyId = 0;
     },
     onFamilyCancel() {
       this.newFamily = {};
@@ -195,11 +305,17 @@ export default {
       } else {
         this.states.familyNameState = false;
       }
+    },
+    async fetch() {
+      await this.fetchAllFamilies();
+      await this.fetchAllGuests();
     }
   },
   mounted() {
-    this.fetchAllGuests();
-    this.fetchAllFamilies();
+    this.fetch();
   }
 };
 </script>
+
+<style scoped>
+</style>

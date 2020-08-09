@@ -24,7 +24,6 @@ namespace WeddingWebsiteCore.Models
         public bool IsWeddingMember { get; set; } = false;
         public bool IsChild { get; set; } = false;
 
-
         [ForeignKey(nameof(RsvpId))]
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]

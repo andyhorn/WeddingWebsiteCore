@@ -272,5 +272,8 @@ export default new Vuex.Store({
     }
   },
   modules: {
+  },
+  getters: {
+    guests: state => state.families.map(family => family.members)
   }
 })

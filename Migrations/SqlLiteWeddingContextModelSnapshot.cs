@@ -116,6 +116,9 @@ namespace WeddingWebsiteCore.Migrations
                     b.Property<int?>("AddressId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("HeadMemberId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
@@ -142,9 +145,6 @@ namespace WeddingWebsiteCore.Migrations
                     b.Property<int?>("FamilyId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("FamilyId1")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -168,8 +168,6 @@ namespace WeddingWebsiteCore.Migrations
                     b.HasKey("GuestId");
 
                     b.HasIndex("FamilyId");
-
-                    b.HasIndex("FamilyId1");
 
                     b.HasIndex("RsvpId")
                         .IsUnique();
@@ -436,15 +434,13 @@ namespace WeddingWebsiteCore.Migrations
                 {
                     b.HasOne("WeddingWebsiteCore.Models.Family", "Family")
                         .WithMany("Members")
-                        .HasForeignKey("FamilyId");
-
-                    b.HasOne("WeddingWebsiteCore.Models.Family", null)
-                        .WithMany("Children")
-                        .HasForeignKey("FamilyId1");
+                        .HasForeignKey("FamilyId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WeddingWebsiteCore.Models.Rsvp", "Rsvp")
                         .WithOne("Guest")
-                        .HasForeignKey("WeddingWebsiteCore.Models.Guest", "RsvpId");
+                        .HasForeignKey("WeddingWebsiteCore.Models.Guest", "RsvpId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("WeddingWebsiteCore.Models.Rsvp", b =>

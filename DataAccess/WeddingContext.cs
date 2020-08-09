@@ -34,17 +34,13 @@ namespace WeddingWebsiteCore.DataAccess
 
             modelBuilder.Entity<Family>()
                 .HasMany(family => family.Members)
-                .WithOne(member => member.Family);
-
-            //modelBuilder.Entity<Guest>()
-            //    .HasOne(guest => guest.Family)
-            //    .WithMany(family => family.Members);
-            //modelBuilder.Entity<Guest>()
-            //    .Ignore(guest => guest.Family);
+                .WithOne(member => member.Family)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Guest>()
                 .HasOne(guest => guest.Rsvp)
-                .WithOne(rsvp => rsvp.Guest);
+                .WithOne(rsvp => rsvp.Guest)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<WeddingMemberRole>()
                 .HasOne(weddingMemberRole => weddingMemberRole.WeddingRole)

@@ -114,6 +114,7 @@ namespace WeddingWebsiteCore.Migrations
                     FamilyId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(nullable: true),
+                    HeadMemberId = table.Column<int>(nullable: false),
                     AdditionalGuests = table.Column<int>(nullable: false),
                     AddressId = table.Column<int>(nullable: true)
                 },
@@ -188,8 +189,7 @@ namespace WeddingWebsiteCore.Migrations
                     IsChild = table.Column<bool>(nullable: false),
                     RsvpId = table.Column<int>(nullable: true),
                     FamilyId = table.Column<int>(nullable: true),
-                    Discriminator = table.Column<string>(nullable: false),
-                    FamilyId1 = table.Column<int>(nullable: true)
+                    Discriminator = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -199,19 +199,13 @@ namespace WeddingWebsiteCore.Migrations
                         column: x => x.FamilyId,
                         principalTable: "families",
                         principalColumn: "FamilyId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_guests_families_FamilyId1",
-                        column: x => x.FamilyId1,
-                        principalTable: "families",
-                        principalColumn: "FamilyId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_guests_rsvps_RsvpId",
                         column: x => x.RsvpId,
                         principalTable: "rsvps",
                         principalColumn: "RsvpId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -349,11 +343,6 @@ namespace WeddingWebsiteCore.Migrations
                 name: "IX_guests_FamilyId",
                 table: "guests",
                 column: "FamilyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_guests_FamilyId1",
-                table: "guests",
-                column: "FamilyId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_guests_RsvpId",
