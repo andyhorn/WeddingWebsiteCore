@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace WeddingWebsiteCore.Migrations
 {
@@ -12,7 +13,7 @@ namespace WeddingWebsiteCore.Migrations
                 columns: table => new
                 {
                     AddressId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: true),
                     StreetNumber = table.Column<string>(nullable: true),
                     StreetName = table.Column<string>(nullable: true),
@@ -31,7 +32,7 @@ namespace WeddingWebsiteCore.Migrations
                 columns: table => new
                 {
                     ImageId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: true),
                     Url = table.Column<string>(nullable: true)
                 },
@@ -45,7 +46,7 @@ namespace WeddingWebsiteCore.Migrations
                 columns: table => new
                 {
                     RegistryId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: true),
                     Url = table.Column<string>(nullable: true)
                 },
@@ -55,11 +56,24 @@ namespace WeddingWebsiteCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tiers",
+                columns: table => new
+                {
+                    TierId = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tiers", x => x.TierId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "users",
                 columns: table => new
                 {
                     UserId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FirstName = table.Column<string>(nullable: false),
                     LastName = table.Column<string>(nullable: false),
                     Email = table.Column<string>(nullable: false),
@@ -75,7 +89,7 @@ namespace WeddingWebsiteCore.Migrations
                 columns: table => new
                 {
                     WeddingRoleId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true)
                 },
@@ -89,7 +103,7 @@ namespace WeddingWebsiteCore.Migrations
                 columns: table => new
                 {
                     EventId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     StartTime = table.Column<DateTime>(nullable: false),
@@ -108,33 +122,11 @@ namespace WeddingWebsiteCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "families",
-                columns: table => new
-                {
-                    FamilyId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true),
-                    HeadMemberId = table.Column<int>(nullable: false),
-                    AdditionalGuests = table.Column<int>(nullable: false),
-                    AddressId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_families", x => x.FamilyId);
-                    table.ForeignKey(
-                        name: "FK_families_addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "addresses",
-                        principalColumn: "AddressId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "vendors",
                 columns: table => new
                 {
                     VendorId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     ContactPhone = table.Column<string>(nullable: true),
@@ -154,11 +146,40 @@ namespace WeddingWebsiteCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "families",
+                columns: table => new
+                {
+                    FamilyId = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(nullable: true),
+                    HeadMemberId = table.Column<int>(nullable: false),
+                    AdditionalGuests = table.Column<int>(nullable: false),
+                    AddressId = table.Column<int>(nullable: true),
+                    TierId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_families", x => x.FamilyId);
+                    table.ForeignKey(
+                        name: "FK_families_addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "addresses",
+                        principalColumn: "AddressId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_families_tiers_TierId",
+                        column: x => x.TierId,
+                        principalTable: "tiers",
+                        principalColumn: "TierId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "rsvps",
                 columns: table => new
                 {
                     RsvpId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     HasResponded = table.Column<bool>(nullable: false),
                     IsAttending = table.Column<bool>(nullable: false),
                     GuestId = table.Column<int>(nullable: false),
@@ -180,7 +201,7 @@ namespace WeddingWebsiteCore.Migrations
                 columns: table => new
                 {
                     GuestId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FirstName = table.Column<string>(nullable: false),
                     LastName = table.Column<string>(nullable: false),
                     Email = table.Column<string>(nullable: true),
@@ -213,7 +234,7 @@ namespace WeddingWebsiteCore.Migrations
                 columns: table => new
                 {
                     WeddingMemberRoleId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     WeddingMemberId = table.Column<int>(nullable: false),
                     WeddingRoleId = table.Column<int>(nullable: false)
                 },
@@ -237,97 +258,28 @@ namespace WeddingWebsiteCore.Migrations
             migrationBuilder.InsertData(
                 table: "wedding_roles",
                 columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 1, null, "Bride" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 17, null, "Grandfather of the Groom" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 16, null, "Grandmother of the Groom" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 15, null, "Grandfather of the Bride" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 14, null, "Grandmother of the Bride" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 13, null, "Mother of the Groom" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 12, null, "Father of the Groom" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 11, null, "Mother of the Bride" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 18, null, "Junior Bridesmaid" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 10, null, "Father of the Bride" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 8, null, "Ring Bearer" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 7, null, "Flower Girl" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 6, null, "Groomsman" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 5, null, "Bridesmaid" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 4, null, "Best Man" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 3, null, "Maid of Honor" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 2, null, "Groom" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 9, null, "Officiant" });
-
-            migrationBuilder.InsertData(
-                table: "wedding_roles",
-                columns: new[] { "WeddingRoleId", "Description", "Name" },
-                values: new object[] { 19, null, "Usher" });
+                values: new object[,]
+                {
+                    { 1, null, "Bride" },
+                    { 17, null, "Grandfather of the Groom" },
+                    { 16, null, "Grandmother of the Groom" },
+                    { 15, null, "Grandfather of the Bride" },
+                    { 14, null, "Grandmother of the Bride" },
+                    { 13, null, "Mother of the Groom" },
+                    { 12, null, "Father of the Groom" },
+                    { 11, null, "Mother of the Bride" },
+                    { 18, null, "Junior Bridesmaid" },
+                    { 10, null, "Father of the Bride" },
+                    { 8, null, "Ring Bearer" },
+                    { 7, null, "Flower Girl" },
+                    { 6, null, "Groomsman" },
+                    { 5, null, "Bridesmaid" },
+                    { 4, null, "Best Man" },
+                    { 3, null, "Maid of Honor" },
+                    { 2, null, "Groom" },
+                    { 9, null, "Officiant" },
+                    { 19, null, "Usher" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_events_AddressId",
@@ -338,6 +290,11 @@ namespace WeddingWebsiteCore.Migrations
                 name: "IX_families_AddressId",
                 table: "families",
                 column: "AddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_families_TierId",
+                table: "families",
+                column: "TierId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_guests_FamilyId",
@@ -405,6 +362,9 @@ namespace WeddingWebsiteCore.Migrations
 
             migrationBuilder.DropTable(
                 name: "rsvps");
+
+            migrationBuilder.DropTable(
+                name: "tiers");
 
             migrationBuilder.DropTable(
                 name: "events");

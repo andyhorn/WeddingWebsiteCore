@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using WeddingWebsiteCore.DataAccess;
 
 namespace WeddingWebsiteCore
@@ -21,7 +23,12 @@ namespace WeddingWebsiteCore
         {
             services.AddControllers();
 
-            services.AddDbContext<WeddingContext, SqlLiteWeddingContext>();
+            var connectionString = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
+                ? "host=localhost;database=weddingDb;username=postgres;password=postgres;"
+                : Configuration.GetConnectionString("PostgreSQLConnectionString");
+
+            services.AddDbContext<WeddingContext>(options =>
+                options.UseNpgsql(connectionString));
             services.AddScoped<Services.IAuthenticationService, Services.AuthenticationService>();
         }
 

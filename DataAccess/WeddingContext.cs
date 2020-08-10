@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using WeddingWebsiteCore.Contracts;
 using WeddingWebsiteCore.Models;
 
 namespace WeddingWebsiteCore.DataAccess
@@ -20,6 +19,9 @@ namespace WeddingWebsiteCore.DataAccess
         public DbSet<WeddingMember> WeddingMembers { get; set; }
         public DbSet<WeddingRole> WeddingRoles { get; set; }
 
+        public WeddingContext(DbContextOptions options)
+            : base(options) { }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Address>()
@@ -36,6 +38,9 @@ namespace WeddingWebsiteCore.DataAccess
                 .HasMany(family => family.Members)
                 .WithOne(member => member.Family)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Family>()
+                .HasOne(family => family.Tier)
+                .WithMany(tier => tier.Families);
 
             modelBuilder.Entity<Guest>()
                 .HasOne(guest => guest.Rsvp)

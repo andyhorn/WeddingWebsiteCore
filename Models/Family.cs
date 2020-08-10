@@ -14,5 +14,6 @@ namespace WeddingWebsiteCore.Models
         public Guest HeadMember { get => Members.ToList().FirstOrDefault(member => member.GuestId.Equals(HeadMemberId)); }
         public int AdditionalGuests { get; set; }
         public Address Address { get; set; }
+        public Tier Tier { get; set; }
     }
 }
