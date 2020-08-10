@@ -40,3 +40,7 @@ a:hover {
 .centered {
   margin: 0 auto;
 }
+
+.text-italic {
+  font-style: italic !important;
+}

@@ -93,16 +93,18 @@
     </b-modal>
     <div class="py-5">
       <p v-if="guestList.length == 0" class="text-center">No guests.</p>
-      <Box v-for="family in families" :key="family.familyId" class="py-2 mb-3">
+      <Family v-for="family in families" :key="family.familyId" :family="family" />
+      <!-- <Box v-for="family in families" :key="family.familyId" class="py-2 mb-3">
         <b-container>
           <b-row>
             <b-col class="d-flex justify-content-start align-items-center">
               <b-button v-b-toggle="family.familyId.toString()" class="mr-3">
                 <b-icon-chevron-down />
               </b-button>
-              <p
-                class="m-0 p-0"
-              >{{ family.headMember.firstName }} {{ family.headMember.lastName }} ({{ family.members.length }})</p>
+              <p class="m-0 p-0">
+                <span class="text-italic">Family of</span>
+                {{ family.headMember.firstName }} {{ family.headMember.lastName }} ({{ family.members.length }})
+              </p>
             </b-col>
             <b-col class="d-flex justify-content-end align-items-center">
               <a href @click.prevent="onDeleteFamily(family)">
@@ -127,13 +129,14 @@
             </Box>
           </b-collapse>
         </b-container>
-      </Box>
+      </Box>-->
     </div>
   </div>
 </template>
 
 <script>
 import GuestList from "@/components/Admin/Guests/GuestList.vue";
+import Family from "@/components/Admin/Guests/Family.vue";
 import Box from "@/components/Box.vue";
 import Guest from "@/components/Admin/Guests/Guest.vue";
 
@@ -142,6 +145,7 @@ export default {
   components: {
     GuestList,
     Guest,
+    Family,
     Box
   },
   data() {
