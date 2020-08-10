@@ -93,7 +93,12 @@
     </b-modal>
     <div class="py-5">
       <p v-if="guestList.length == 0" class="text-center">No guests.</p>
-      <Family v-for="family in families" :key="family.familyId" :family="family" />
+      <Family
+        v-for="family in families"
+        :key="family.familyId"
+        :family="family"
+        @update="onUpdate"
+      />
       <!-- <Box v-for="family in families" :key="family.familyId" class="py-2 mb-3">
         <b-container>
           <b-row>
@@ -262,6 +267,9 @@ export default {
       } else {
         this.states.familyNameState = false;
       }
+    },
+    onUpdate() {
+      this.fetch();
     },
     async fetch() {
       await this.fetchAllFamilies();

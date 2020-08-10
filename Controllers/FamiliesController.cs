@@ -90,9 +90,14 @@ namespace WeddingWebsiteCore.Controllers
                 return NotFound();
             }
 
+            existing.AdditionalGuests = family.AdditionalGuests;
+            existing.Address = family.Address;
+            existing.HeadMemberId = family.HeadMemberId;
+            existing.Name = family.Name;
+
             try
             {
-                _context.Entry(family).State = EntityState.Modified;
+                _context.Families.Update(existing);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)

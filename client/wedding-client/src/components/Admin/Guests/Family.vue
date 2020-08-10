@@ -30,7 +30,12 @@
           v-for="member in family.members.filter(x => x.guestId != family.headMemberId)"
           :key="member.guestId"
         >
-          <Guest :guest="member" />
+          <div class="d-flex align-items-center">
+            <a @click="promoteGuest(member.guestId)">
+              <b-icon-arrow-bar-up />
+            </a>
+            <Guest :guest="member" />
+          </div>
         </Box>
       </b-collapse>
     </b-container>
@@ -62,6 +67,14 @@ export default {
     toggleCollapse() {
       this.$root.$emit("bv::toggle::collapse", this.collapseId);
       this.collapseOpen = !this.collapseOpen;
+    },
+    async promoteGuest(guestId) {
+      let putFamily = { ...this.family };
+      putFamily.headMemberId = guestId;
+      await this.$http
+        .put("families/" + this.family.familyId, putFamily)
+        .then(() => this.$emit("update"))
+        .catch(err => console.log(err));
     }
   }
 };
