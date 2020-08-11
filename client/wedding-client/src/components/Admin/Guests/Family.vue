@@ -31,7 +31,7 @@
           :key="member.guestId"
         >
           <div class="d-flex align-items-center">
-            <a @click="promoteGuest(member.guestId)">
+            <a @click="promoteGuest(member.guestId)" v-if="!member.isChild">
               <b-icon-arrow-bar-up />
             </a>
             <Guest :guest="member" />
