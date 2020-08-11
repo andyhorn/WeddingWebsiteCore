@@ -3,7 +3,7 @@
     <b-container>
       <b-row>
         <b-col class="d-flex justify-content-start align-items-center">
-          <b-button class="mr-3" @click="toggleCollapse">
+          <b-button size="sm" class="mr-3" variant="primary" @click="toggleCollapse">
             <b-icon :icon="collapseOpen ? 'chevron-up' : 'chevron-down'" />
           </b-button>
           <p class="m-0 p-0">
