@@ -65,6 +65,13 @@ namespace WeddingWebsiteCore.Controllers
             {
                 await _context.AddAsync(family);
                 await _context.SaveChangesAsync();
+
+                if (family.HeadMemberId.HasValue)
+                {
+                    var headMember = await _context.Guests.FindAsync(family.HeadMemberId);
+                    headMember.FamilyId = family.FamilyId;
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception e)
             {
@@ -113,7 +120,10 @@ namespace WeddingWebsiteCore.Controllers
         [HttpDelete(RouteContracts.DeleteItem)]
         public async Task<IActionResult> DeleteFamily(int id)
         {
-            var family = await _context.Families.FindAsync(id);
+            var family = await _context.Families
+                .Include(family => family.Members)
+                .FirstOrDefaultAsync(family => family.FamilyId.Equals(id));
+
             if (family == null)
             {
                 return NotFound();

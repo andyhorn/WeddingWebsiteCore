@@ -3,6 +3,7 @@
     :visible="visible"
     id="new-guest-modal"
     title="Add New Guest"
+    @show="onOpen"
     @hide="onCancel"
     hide-footer
   >
@@ -50,6 +51,19 @@
         </b-row>
         <b-row>
           <b-col>
+            <b-form-group id="family-select-group" label="Family" label-for="family-select">
+              <b-select v-model="familyId">
+                <b-select-option
+                  v-for="family in families"
+                  :key="family.familyId"
+                  :value="family.familyId"
+                >{{ family.name }}</b-select-option>
+              </b-select>
+            </b-form-group>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col>
             <b-form-group id="is-child-switch-group" label="Is a Child" label-for="is-child-switch">
               <b-form-checkbox id="is-child-switch" v-model="isChild" switch />
             </b-form-group>
@@ -69,7 +83,7 @@ import { ACTIONS } from "@/store";
 
 export default {
     name: "NewGuestModal",
-    props: ['families', 'visible'],
+    props: ['families', 'selectedFamilyId', 'visible'],
     data() {
         return {
             firstName: "",
@@ -82,6 +96,11 @@ export default {
         }
     },
     methods: {
+        onOpen() {
+            if (this.selectedFamilyId) {
+                this.familyId = this.selectedFamilyId;
+            }
+        },
         onCancel() {
             this.close();
         },

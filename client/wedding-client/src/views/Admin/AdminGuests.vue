@@ -1,7 +1,6 @@
 <template>
   <div class="container pt-3">
     <h1 class="text-center mb-3">Guest List ({{ guests.length }})</h1>
-    <p>{{ families.length }} families</p>
     <b-row>
       <b-col>
         <b-button size="sm" squared variant="success" @click="isNewGuestModalVisible = true">
@@ -14,16 +13,11 @@
         </b-button>
       </b-col>
     </b-row>
-    <b-row>
-      <p
-        v-for="guest in guests"
-        :key="guest.id"
-      >{{ guest.firstName }} {{ guest.lastName }} {{ guest.familyId }}</p>
-    </b-row>
     <NewGuestModal
       :families="families"
+      :selectedFamilyId="selectedFamilyId"
       :visible="isNewGuestModalVisible"
-      @closed="isNewGuestModalVisible = false"
+      @closed="closeGuestModal"
     />
     <NewFamilyModal
       :guests="guests"
@@ -32,14 +26,18 @@
     />
     <div class="py-5">
       <p v-if="guests.length == 0" class="text-center">No guests.</p>
-      <!-- <Family
+      <p
+        v-if="guestsWithoutFamilies.length"
+      >{{ guestsWithoutFamilies.length }} guests without families</p>
+      <Box v-for="guest in guestsWithoutFamilies" :key="guest.guestId">
+        <Guest :guest="guest" />
+      </Box>
+      <Family
         v-for="family in families"
         :key="family.familyId"
         :family="family"
-        @update="onUpdate"
-        @delete="onDeleteFamily"
-        @newGuest="openGuestModal"
-      />-->
+        @newGuest="addGuestToFamily"
+      />
     </div>
   </div>
 </template>
@@ -66,7 +64,8 @@ export default {
   data() {
     return {
       isNewGuestModalVisible: false,
-      isNewFamilyModalVisible: false
+      isNewFamilyModalVisible: false,
+      selectedFamilyId: null
     };
   },
   computed: {
@@ -78,9 +77,20 @@ export default {
     },
     guests() {
       return this.$store.getters.guests;
+    },
+    guestsWithoutFamilies() {
+      return this.$store.getters.guestsWithoutFamilies;
     }
   },
   methods: {
+    addGuestToFamily(familyId) {
+      this.selectedFamilyId = familyId;
+      this.isNewGuestModalVisible = true;
+    },
+    closeGuestModal() {
+      this.selectedFamilyId = null;
+      this.isNewGuestModalVisible = false;
+    },
     async onDeleteFamily(familyId) {
       await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.DELETE);
     },

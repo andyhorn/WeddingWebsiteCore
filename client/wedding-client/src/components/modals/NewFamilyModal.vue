@@ -19,7 +19,7 @@
             >
               <b-form-input
                 id="family-name-input"
-                v-model="familyName"
+                v-model="name"
                 :state="familyNameState"
                 @input="onFamilyNameInput"
                 trim
@@ -62,7 +62,7 @@ export default {
     props: ["guests", "visible"],
     data() {
         return {
-            familyName: "",
+            name: "",
             headMemberId: null,
             familyNameState: null,
             isBusy: false
@@ -75,31 +75,23 @@ export default {
         async onSubmit() {
             this.isBusy = true;
             const family = {
-                familyName: this.familyName,
+                name: this.name,
                 headMemberId: this.headMemberId
             };
 
             const familyId = await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.CREATE, family);
 
-            if (familyId && this.headMemberId) {
-                const headMember = await this.$store.getters.findGuest(this.headMemberId);
-                if (headMember) {
-                    headMember.familyId = familyId;
-                    await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, headMember);
-                }
-            }
-
             this.close();
         },
         onFamilyNameInput() {
-            if (this.familyName && this.familyName.length) {
+            if (this.name && this.name.length) {
                 this.familyNameState = true;
             } else {
                 this.familyNameState = false;
             }
         },
         close() {
-            this.familyName = "";
+            this.name = "";
             this.headMemberId = null;
             this.familyNameState = null;
             this.isBusy = false;

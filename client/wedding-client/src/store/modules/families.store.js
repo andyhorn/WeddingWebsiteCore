@@ -68,11 +68,11 @@ const actions = {
             resolve(deleted);
         });
     },
-    [FAMILY_ACTIONS.UPDATE]({ commit }, data) {
+    [FAMILY_ACTIONS.UPDATE]({ commit }, family) {
         return new Promise(async (resolve) => {
-            const updated = await familyService.update(data.familyId, data.family);
+            const updated = await familyService.update(family.familyId, family);
             if (updated) {
-                const family = await familyService.getOne(data.familyId);
+                family = await familyService.getOne(family.familyId);
                 commit(FAMILY_MUTATIONS.ADD_FAMILY, family);
             }
 

@@ -37,6 +37,9 @@ const getters = {
     },
     guestsWithoutFamilies: (state) => {
         return state.guests.filter(g => !g.familyId);
+    },
+    guestsInFamily: (state) => (id) => {
+        return state.guests.filter(g => g.familyId == id);
     }
 }
 

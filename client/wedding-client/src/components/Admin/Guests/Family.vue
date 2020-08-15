@@ -6,9 +6,12 @@
           <b-button size="sm" class="mr-3" variant="primary" @click="toggleCollapse">
             <b-icon :icon="collapseOpen ? 'chevron-up' : 'chevron-down'" />
           </b-button>
-          <p class="m-0 p-0">
-            <span class="text-italic">Family of</span>
-            {{ family.headMember.firstName }} {{ family.headMember.lastName }} ({{ family.members.length }})
+          <p class="m-0 p-0" v-if="headMember">
+            Family of
+            <span class="text-italic">{{ headMember.firstName }} {{ headMember.lastName }}</span>
+          </p>
+          <p class="m-0 p-0" v-else>
+            <span class="text-italic">{{ family.name }}</span> family
           </p>
         </b-col>
         <b-col class="d-flex justify-content-end align-items-center">
@@ -18,7 +21,7 @@
         </b-col>
       </b-row>
       <b-collapse :id="collapseId" class="mt-3">
-        <p v-if="family.members.length == 1" class="m-0 p-0">No other members.</p>
+        <p v-if="members.length == 1" class="m-0 p-0">No other members.</p>
         <b-button
           squared
           size="sm"
@@ -27,7 +30,7 @@
           @click="openGuestModal"
         >Add member</b-button>
         <Box
-          v-for="member in family.members.filter(x => x.guestId != family.headMemberId)"
+          v-for="member in members.filter(x => x.guestId != family.headMemberId)"
           :key="member.guestId"
         >
           <div class="d-flex align-items-center">
@@ -43,7 +46,7 @@
 </template>
 
 <script>
-import familyService from "@/services/familyService.js";
+import { ACTIONS } from "@/store";
 import Box from "@/components/Box.vue";
 import Guest from "@/components/Admin/Guests/Guest.vue";
 
@@ -62,6 +65,12 @@ export default {
   computed: {
     collapseId() {
       return this.family.familyId.toString();
+    },
+    headMember() {
+      return this.members.find(m => m.guestId == this.family.headMemberId);
+    },
+    members() {
+      return this.$store.getters.guestsInFamily(this.family.familyId);
     }
   },
   methods: {
@@ -70,18 +79,15 @@ export default {
       this.collapseOpen = !this.collapseOpen;
     },
     openGuestModal() {
-      this.$emit("newGuest", this.family);
+      this.$emit("newGuest", this.family.familyId);
     },
     async promoteGuest(guestId) {
-      let putFamily = { ...this.family };
-      putFamily.headMemberId = guestId;
-      await this.$http
-        .put("families/" + this.family.familyId, putFamily)
-        .then(() => this.$emit("update", this.family.familyId))
-        .catch(err => console.log(err));
+      let family = {... this.family};
+      family.headMemberId = guestId;
+      await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.UPDATE, family);
     },
     onDeleteFamily() {
-      this.$emit("delete", this.family.familyId);
+      this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.DELETE, this.family.familyId);
     }
   }
 };
