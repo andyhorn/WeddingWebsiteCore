@@ -6,7 +6,7 @@
     @hide="onCancel"
     hide-footer
   >
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="onSubmit" :disabled="isBusy">
       <b-container>
         <b-row>
           <b-col>
@@ -56,7 +56,10 @@
           </b-col>
         </b-row>
       </b-container>
-      <b-button type="Submit">Save</b-button>
+      <b-button type="Submit" :disabled="isBusy">
+        <b-spinner small v-if="isBusy" />
+        <span v-else>Save</span>
+      </b-button>
     </form>
   </b-modal>
 </template>
@@ -75,6 +78,7 @@ export default {
             familyId: null,
             firstNameState: null,
             lastNameState: null,
+            isBusy: false
         }
     },
     methods: {
@@ -82,6 +86,7 @@ export default {
             this.close();
         },
         async onSubmit() {
+            this.isBusy = true;
             const guest = {
                 firstName: this.firstName,
                 lastName: this.lastName,
@@ -113,6 +118,7 @@ export default {
             this.familyId = null
             this.firstNameState = null;
             this.lastNameState = null;
+            this.isBusy = false;
             this.$emit("closed");
         }
     }
