@@ -52,6 +52,8 @@
 </template>
 
 <script>
+import { ACTIONS } from "@/store";
+
 export default {
     name: "NewFamilyModal",
     props: ["guests", "visible"],
@@ -64,17 +66,25 @@ export default {
     },
     methods: {
         onCancel() {
-            this.familyName = "";
-            this.headMemberId = null;
-            this.familyNameState = null;
+            this.close();
         },
-        onSubmit() {
+        async onSubmit() {
             const family = {
                 familyName: this.familyName,
                 headMemberId: this.headMemberId
             };
 
-            this.$emit("submit", family);
+            const familyId = await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.CREATE, family);
+
+            if (familyId && this.headMemberId) {
+                const headMember = await this.$store.getters.findGuest(this.headMemberId);
+                if (headMember) {
+                    headMember.familyId = familyId;
+                    await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, headMember);
+                }
+            }
+
+            this.close();
         },
         onFamilyNameInput() {
             if (this.familyName && this.familyName.length) {
@@ -82,6 +92,12 @@ export default {
             } else {
                 this.familyNameState = false;
             }
+        },
+        close() {
+            this.familyName = "";
+            this.headMemberId = null;
+            this.familyNameState = null;
+            this.$emit("closed");
         }
     }
 }

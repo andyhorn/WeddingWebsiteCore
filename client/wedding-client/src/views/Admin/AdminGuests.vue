@@ -24,13 +24,11 @@
       :families="families"
       :visible="isNewGuestModalVisible"
       @closed="isNewGuestModalVisible = false"
-      @submit="onCreateGuest"
     />
     <NewFamilyModal
       :guests="guests"
       :visible="isNewFamilyModalVisible"
       @closed="isNewFamilyModalVisible = false"
-      @submit="onCreateFamily"
     />
     <div class="py-5">
       <p v-if="guests.length == 0" class="text-center">No guests.</p>
@@ -95,29 +93,9 @@ export default {
     async fetchAllGuests() {
       await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.FETCH_ALL);
     },
-    async onCreateGuest(data) {
-      await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.CREATE, data);
-      this.isNewGuestModalVisible = false;
-    },
-    async onCreateFamily(data) {
-      this.isNewFamilyModalVisible = false;
-
-      const familyId = await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.CREATE, data);
-
-      if (data.headMemberId) {
-        const guest = this.$store.getters.findGuest(data.headMemberId);
-        if (guest) {
-          guest.familyId = familyId;
-          await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, guest);
-        }
-      }
-    },
     async fetch() {
       await this.fetchAllFamilies();
       await this.fetchAllGuests();
-    },
-    closeModal(modalName) {
-      this.$bvModal.hide(modalName);
     }
   },
   mounted() {

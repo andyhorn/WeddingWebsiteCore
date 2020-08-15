@@ -82,7 +82,7 @@ const actions = {
                 commit(GUEST_MUTATIONS.ADD_GUEST, guest);
             }
 
-            resolve(update);
+            resolve(updated);
         });
     },
     [GUEST_ACTIONS.CREATE]({ commit }, guest) {
