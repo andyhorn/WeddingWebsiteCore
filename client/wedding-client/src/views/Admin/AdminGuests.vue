@@ -1,10 +1,25 @@
 <template>
   <div class="container pt-3">
     <h1 class="text-center mb-3">Guest List ({{ guests.length }})</h1>
-    <a href @click.prevent="openGuestModal(null)">
-      <b-icon-plus />New Family
-    </a>
-    <b-modal :id="createGuestModal" title="Add New Guest" @hide="onGuestCancel" hide-footer>
+    <b-row>
+      <b-col>
+        <b-button size="sm" squared variant="success" @click="isNewGuestModalVisible = true">
+          <b-icon-plus />New Guest
+        </b-button>
+      </b-col>
+      <b-col class="d-flex justify-content-end">
+        <b-button size="sm" squared variant="success">
+          <b-icon-plus />New Family
+        </b-button>
+      </b-col>
+    </b-row>
+    <NewGuestModal
+      :families="families"
+      :visible="isNewGuestModalVisible"
+      @closed="isNewGuestModalVisible = false"
+      @submit="onCreateGuest"
+    />
+    <!-- <b-modal :id="createGuestModal" title="Add New Guest" @hide="onGuestCancel" hide-footer>
       <form @submit.prevent="onCreateGuest">
         <b-container>
           <b-row>
@@ -61,7 +76,7 @@
         </b-container>
         <b-button type="submit">Save</b-button>
       </form>
-    </b-modal>
+    </b-modal>-->
     <div class="py-5">
       <p v-if="guests.length == 0" class="text-center">No guests.</p>
       <Family
@@ -81,6 +96,7 @@ import GuestList from "@/components/Admin/Guests/GuestList.vue";
 import Family from "@/components/Admin/Guests/Family.vue";
 import Box from "@/components/Box.vue";
 import Guest from "@/components/Admin/Guests/Guest.vue";
+import NewGuestModal from "@/components/modals/NewGuestModal.vue";
 import { ACTIONS } from "@/store";
 
 export default {
@@ -89,29 +105,12 @@ export default {
     GuestList,
     Guest,
     Family,
-    Box
+    Box,
+    NewGuestModal
   },
   data() {
     return {
-      selectedFamilyId: 0,
-      createGuestModal: "create-guest-modal",
-      newGuest: {
-        firstName: "",
-        lastName: "",
-        familyId: null,
-        isChild: false
-      },
-      states: {
-        firstNameState: null,
-        lastNameState: null,
-        familyNameState: null
-      },
-      messages: {
-        invalidFirstName: "First name is required.",
-        invalidLastName: "Last name is required.",
-        invalidFamilyName: "Family name is required."
-      },
-      chevrons: {}
+      isNewGuestModalVisible: false,
     };
   },
   computed: {
@@ -138,58 +137,9 @@ export default {
     async fetchAllGuests() {
       await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.FETCH_ALL);
     },
-    async onCreateGuest() {
-      const guestData = this.newGuest;
-
-      if (this.selectedFamilyId) {
-        guestData.familyId = this.selectedFamilyId;
-      }
-
-      await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.CREATE, guestData);
-    },
-    openGuestModal(family) {
-      if (family) {
-        this.selectedFamilyId = family.familyId;
-        this.newGuest.lastName = family.headMember.lastName;
-      } else {
-        this.selectedFamilyId = 0;
-      }
-
-      this.$bvModal.show(this.createGuestModal);
-    },
-    openFamilyModal() {
-      this.$bvModal.show(this.createFamilyModal);
-    },
-    onGuestCancel() {
-      this.newGuest = {};
-      this.states.firstNameState = null;
-      this.states.lastNameState = null;
-      this.selectedFamilyId = 0;
-    },
-    onFamilyCancel() {
-      this.newFamily = {};
-      this.states.familyNameState = null;
-    },
-    onFirstNameInput() {
-      if (this.newGuest.firstName && this.newGuest.firstName.length) {
-        this.states.firstNameState = true;
-      } else {
-        this.states.firstNameState = false;
-      }
-    },
-    onLastNameInput() {
-      if (this.newGuest.lastName && this.newGuest.lastName.length) {
-        this.states.lastNameState = true;
-      } else {
-        this.states.lastNameState = false;
-      }
-    },
-    onFamilyNameInput() {
-      if (this.newFamily.name && this.newFamily.name.length) {
-        this.states.familyNameState = true;
-      } else {
-        this.states.familyNameState = false;
-      }
+    async onCreateGuest(data) {
+      await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.CREATE, data);
+      this.isNewGuestModalVisible = false;
     },
     async fetch() {
       await this.fetchAllFamilies();
