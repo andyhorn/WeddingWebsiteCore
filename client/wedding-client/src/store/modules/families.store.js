@@ -31,6 +31,9 @@ const getters = {
     },
     family: (state) => (familyId) => {
         return state.families.find(f => f.familyId == familyId);
+    },
+    familiesWithoutMembers: (state) => {
+        return state.families.filter(f => !(f.members.length));
     }
 }
 
@@ -82,7 +85,7 @@ const actions = {
             if (familyId) {
                 const family = await familyService.getOne(familyId);
                 commit(FAMILY_MUTATIONS.ADD_FAMILY, family);
-                resolve(family);
+                resolve(familyId);
             } else {
                 resolve(null);
             }

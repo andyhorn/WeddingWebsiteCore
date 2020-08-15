@@ -29,15 +29,14 @@ const getters = {
     guests: (state) => {
         return state.guests
     },
-    guest: (state) => (id) => {
+    findGuest: (state) => (id) => {
         return state.guests.find(g => g.guestId == id);
     },
     children: (state) => {
         return state.guests.filter(g => g.isChild);
     },
-    familyIds: (state) => {
-        const ids = state.guests.map(guest => guest.familyId);
-        return [... new Set(ids)];
+    guestsWithoutFamilies: (state) => {
+        return state.guests.filter(g => !g.familyId);
     }
 }
 
@@ -75,11 +74,11 @@ const actions = {
             resolve(deleted);
         });
     },
-    [GUEST_ACTIONS.UPDATE]({ commit }, payload) {
+    [GUEST_ACTIONS.UPDATE]({ commit }, guest) {
         return new Promise(async (resolve) => {
-            const updated = await guestService.update(payload.guestId, payload.guest);
+            const updated = await guestService.update(guest.guestId, guest);
             if (updated) {
-                const guest = await guestService.getOne(payload.guestId);
+                guest = await guestService.getOne(guest.guestId);
                 commit(GUEST_MUTATIONS.ADD_GUEST, guest);
             }
 

@@ -91,16 +91,21 @@ namespace WeddingWebsiteCore.Controllers
 
             try
             {
-                _context.Entry(guest).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                var updated = await UpdateGuest(guest);
+                if (updated)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-            return NoContent();
         }
 
         [HttpDelete(RouteContracts.DeleteItem)]
@@ -125,6 +130,23 @@ namespace WeddingWebsiteCore.Controllers
             }
 
             return NoContent();
+        }
+
+        private async Task<bool> UpdateGuest(Guest guest)
+        {
+            try
+            {
+                var original = await _context.Guests.FindAsync(guest.GuestId);
+                _context.Entry(original).State = EntityState.Detached;
+                _context.Entry(guest).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
