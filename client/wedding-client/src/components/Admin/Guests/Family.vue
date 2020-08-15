@@ -12,7 +12,7 @@
           </p>
         </b-col>
         <b-col class="d-flex justify-content-end align-items-center">
-          <a href @click.prevent="onDeleteFamily(family)">
+          <a href @click.prevent="onDeleteFamily">
             <b-icon-x-circle />
           </a>
         </b-col>
@@ -24,7 +24,7 @@
           size="sm"
           variant="success"
           class="my-2"
-          @click="openGuestModal(family)"
+          @click="openGuestModal"
         >Add member</b-button>
         <Box
           v-for="member in family.members.filter(x => x.guestId != family.headMemberId)"
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import familyService from "@/services/familyService.js";
 import Box from "@/components/Box.vue";
 import Guest from "@/components/Admin/Guests/Guest.vue";
 
@@ -68,13 +69,19 @@ export default {
       this.$root.$emit("bv::toggle::collapse", this.collapseId);
       this.collapseOpen = !this.collapseOpen;
     },
+    openGuestModal() {
+      this.$emit("newGuest", this.family);
+    },
     async promoteGuest(guestId) {
       let putFamily = { ...this.family };
       putFamily.headMemberId = guestId;
       await this.$http
         .put("families/" + this.family.familyId, putFamily)
-        .then(() => this.$emit("update"))
+        .then(() => this.$emit("update", this.family.familyId))
         .catch(err => console.log(err));
+    },
+    onDeleteFamily() {
+      this.$emit("delete", this.family.familyId);
     }
   }
 };

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WeddingWebsiteCore.Contracts;
 using WeddingWebsiteCore.DataAccess;
+using WeddingWebsiteCore.Helpers;
 using WeddingWebsiteCore.Models;
 
 namespace WeddingWebsiteCore.Controllers
@@ -33,7 +34,10 @@ namespace WeddingWebsiteCore.Controllers
         [HttpGet(RouteContracts.GetItem)]
         public async Task<IActionResult> GetFamily(int id)
         {
-            var family = await _context.Families.FindAsync(id);
+            var family = await _context.Families
+                .Include(family => family.Members)
+                .Include(family => family.Address)
+                .FirstOrDefaultAsync(family => family.FamilyId.Equals(id));
 
             if (family == null)
             {
@@ -90,10 +94,7 @@ namespace WeddingWebsiteCore.Controllers
                 return NotFound();
             }
 
-            existing.AdditionalGuests = family.AdditionalGuests;
-            existing.Address = family.Address;
-            existing.HeadMemberId = family.HeadMemberId;
-            existing.Name = family.Name;
+            FamilyHelper.UpdateFamily(existing, family);
 
             try
             {

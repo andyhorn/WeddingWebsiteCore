@@ -1,18 +1,22 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { http, setToken, stripToken } from "@/axios";
-import Toast from "@/services/toast";
+import Toast from "@/services/toast.js";
+import guests from "@/store/modules/guests.store.js";
+import families from "@/store/modules/families.store.js";
 
 Vue.use(Vuex);
 
 export const TOKEN_IDENTIFIER = "x-kaw-auth-token-x";
+export const ACTIONS = {
+  FAMILY_ACTIONS: families.FAMILY_ACTIONS,
+  GUEST_ACTIONS: guests.GUEST_ACTIONS
+}
 
 const defaultState = {
   error: "",
   token: "",
   isLoggedIn: false,
-  guestList: [],
-  families: [],
   user: {
     userId: "",
     firstName: "",
@@ -85,12 +89,6 @@ export default new Vuex.Store({
       state.error = "";
       state.isLoggedIn = false;
     },
-    setGuestList(state, guestList) {
-      state.guestList = guestList;
-    },
-    setFamilies(state, families) {
-      state.families = families;
-    }
   },
   actions: {
     login({ commit }, payload) {
@@ -175,105 +173,12 @@ export default new Vuex.Store({
       toast.setTitle("Logged out!");
       toast.show();
     },
-    createNewGuest({ commit }, guest) {
-      return new Promise(async (resolve) => {
-        const toast = new Toast();
-        let success;
-        http.post("guests", guest)
-          .then(res => {
-            toast.setTitle("Success!");
-            toast.setMessage("Guest created successfully.");
-            toast.setVariant("success");
-            toast.show();
-            success = true;
-          })
-          .catch(err => {
-            toast.setTitle("Error!");
-            toast.setMessage("Something went wrong. Try again.");
-            toast.setVariant("danger");
-            toast.show();
-            success = false;
-          })
-          .finally(() => resolve(success));
-      })
-    },
-    deleteGuest({ commit }, guestId) {
-      return new Promise(async (resolve) => {
-        let success;
-        let toast = new Toast();
-        http.delete("guests/" + guestId)
-          .then(res => {
-            success = true;
-            toast.setVariant("success");
-            toast.setTitle("Success!");
-            toast.setMessage("Guest deleted successfully.");
-            toast.show();
-          })
-          .catch(err => {
-            success = false;
-            toast.setVariant("danger");
-            toast.setTitle("Error!");
-            toast.setMessage("Unable to delete guest. Try again.");
-            toast.show();
-          })
-          .finally(() => resolve(success));
-      })
-    },
-    fetchAllGuests({ commit }) {
-      return new Promise(async (resolve) => {
-        let success;
-        http.get("guests")
-          .then(res => {
-            if (res.data) {
-              const guests = res.data;
-              commit("setGuestList", guests);
-            }
-            success = true;
-          })
-          .catch(err => {
-            success = false;
-          })
-          .finally(() => resolve(success));
-      })
-    },
-    fetchAllFamilies({ commit }) {
-      return new Promise(async (resolve) => {
-        http.get("families")
-          .then(res => {
-            if (res.data) {
-              const families = res.data;
-              commit("setFamilies", families);
-            }
-            resolve(true);
-          })
-          .catch(() => resolve(false));
-      });
-    },
-    createNewFamily({ commit }, family) {
-      let success, toast = new Toast();
-      return new Promise(async (resolve) => {
-        http.post("families", family)
-          .then(res => {
-            success = true;
-            toast.setVariant("success");
-            toast.setTitle("Success!");
-            toast.setMessage("Family created successfully.");
-            toast.show();
-          })
-          .catch(err => {
-            success = false;
-            toast.setVariant("danger");
-            toast.setTitle("Error!");
-            toast.setMessage("Unable to create family.");
-            toast.show();
-          })
-          .finally(() => resolve(success));
-      });
-    }
   },
   modules: {
+    guests,
+    families
   },
   getters: {
-    guests: state => state.families.map(family => family.members)
+
   }
 })

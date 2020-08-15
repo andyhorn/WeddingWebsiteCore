@@ -23,9 +23,7 @@ namespace WeddingWebsiteCore
         {
             services.AddControllers();
 
-            var connectionString = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
-                ? "host=localhost;database=weddingDb;username=postgres;password=postgres;"
-                : Configuration.GetConnectionString("PostgreSQLConnectionString");
+            var connectionString = Configuration.GetConnectionString("PostgreSQLConnectionString");
 
             services.AddDbContext<WeddingContext>(options =>
                 options.UseNpgsql(connectionString));

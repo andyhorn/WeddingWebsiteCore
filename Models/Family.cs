@@ -10,8 +10,10 @@ namespace WeddingWebsiteCore.Models
         public int FamilyId { get; set; }
         public string Name { get; set; }
         public ICollection<Guest> Members { get; set; }
-        public int HeadMemberId { get; set; }
-        public Guest HeadMember { get => Members.ToList().FirstOrDefault(member => member.GuestId.Equals(HeadMemberId)); }
+        public int? HeadMemberId { get; set; }
+        public Guest HeadMember { get => HeadMemberId.HasValue 
+                ? Members.ToList().FirstOrDefault(member => member.GuestId.Equals(HeadMemberId))
+                : null; }
         public int AdditionalGuests { get; set; }
         public Address Address { get; set; }
         public Tier Tier { get; set; }

@@ -60,18 +60,6 @@ namespace WeddingWebsiteCore.Controllers
             {
                 await _context.AddAsync(guest);
                 await _context.SaveChangesAsync();
-
-                if (!guest.FamilyId.HasValue)
-                {
-                    var newFamily = new Family
-                    {
-                        HeadMemberId = guest.GuestId,
-                        Members = new List<Guest> { guest }
-                    };
-
-                    await _context.AddAsync(newFamily);
-                    await _context.SaveChangesAsync();
-                }
             }
             catch (Exception e)
             {

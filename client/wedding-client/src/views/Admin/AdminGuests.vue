@@ -1,6 +1,6 @@
 <template>
   <div class="container pt-3">
-    <h1 class="text-center mb-3">Guest List ({{guestList.length}})</h1>
+    <h1 class="text-center mb-3">Guest List ({{ guests.length }})</h1>
     <a href @click.prevent="openGuestModal(null)">
       <b-icon-plus />New Family
     </a>
@@ -62,79 +62,16 @@
         <b-button type="submit">Save</b-button>
       </form>
     </b-modal>
-    <b-modal :id="createFamilyModal" title="Create a Family" @hide="onFamilyCancel" hide-footer>
-      <b-form @submit.prevent="onCreateFamily">
-        <b-container>
-          <b-row>
-            <b-col>
-              <b-form-group
-                id="family-name-input-group"
-                label="Family Name"
-                label-for="family-name-input"
-                :invalid-feedback="messages.invalidFamilyNameMessage"
-                :state="states.familyNameState"
-              >
-                <b-form-input
-                  id="family-name-input"
-                  v-model="newFamily.name"
-                  @input="onFamilyNameInput"
-                  :state="states.familyNameState"
-                />
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              <b-button variant="success" type="submit">Save</b-button>
-            </b-col>
-          </b-row>
-        </b-container>
-      </b-form>
-    </b-modal>
     <div class="py-5">
-      <p v-if="guestList.length == 0" class="text-center">No guests.</p>
+      <p v-if="guests.length == 0" class="text-center">No guests.</p>
       <Family
         v-for="family in families"
         :key="family.familyId"
         :family="family"
         @update="onUpdate"
+        @delete="onDeleteFamily"
+        @newGuest="openGuestModal"
       />
-      <!-- <Box v-for="family in families" :key="family.familyId" class="py-2 mb-3">
-        <b-container>
-          <b-row>
-            <b-col class="d-flex justify-content-start align-items-center">
-              <b-button v-b-toggle="family.familyId.toString()" class="mr-3">
-                <b-icon-chevron-down />
-              </b-button>
-              <p class="m-0 p-0">
-                <span class="text-italic">Family of</span>
-                {{ family.headMember.firstName }} {{ family.headMember.lastName }} ({{ family.members.length }})
-              </p>
-            </b-col>
-            <b-col class="d-flex justify-content-end align-items-center">
-              <a href @click.prevent="onDeleteFamily(family)">
-                <b-icon-x-circle />
-              </a>
-            </b-col>
-          </b-row>
-          <b-collapse :id="family.familyId.toString()" class="mt-3">
-            <p v-if="family.members.length == 1" class="m-0 p-0">No other members.</p>
-            <b-button
-              squared
-              size="sm"
-              variant="success"
-              class="my-2"
-              @click="openGuestModal(family)"
-            >Add member</b-button>
-            <Box
-              v-for="member in family.members.filter(x => x.guestId != family.headMemberId)"
-              :key="member.guestId"
-            >
-              <Guest :guest="member" />
-            </Box>
-          </b-collapse>
-        </b-container>
-      </Box>-->
     </div>
   </div>
 </template>
@@ -144,6 +81,7 @@ import GuestList from "@/components/Admin/Guests/GuestList.vue";
 import Family from "@/components/Admin/Guests/Family.vue";
 import Box from "@/components/Box.vue";
 import Guest from "@/components/Admin/Guests/Guest.vue";
+import { ACTIONS } from "@/store";
 
 export default {
   name: "AdminGuests",
@@ -157,15 +95,11 @@ export default {
     return {
       selectedFamilyId: 0,
       createGuestModal: "create-guest-modal",
-      createFamilyModal: "create-family-modal",
       newGuest: {
         firstName: "",
         lastName: "",
         familyId: null,
         isChild: false
-      },
-      newFamily: {
-        name: ""
       },
       states: {
         firstNameState: null,
@@ -181,24 +115,37 @@ export default {
     };
   },
   computed: {
-    guestList() {
-      return this.$store.state.guestList;
+    familyIds() {
+      return this.$store.getters.familyIds;
     },
     families() {
-      return this.$store.state.families;
+      return this.$store.getters.families;
     },
-    familyValues() {
-      return this.families.map(x => {
-        return {
-          value: x.familyId,
-          text: x.name
-        };
-      });
+    guests() {
+      return this.$store.getters.guests;
     }
   },
   methods: {
-    onDeleteFamily(family) {
-      this.$http.delete("families/" + family.familyId).then(() => this.fetch());
+    async onDeleteFamily(familyId) {
+      await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.DELETE);
+    },
+    async onDeleteGuest(guestId) {
+      await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.DELETE);
+    },
+    async fetchAllFamilies() {
+      await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.FETCH_ALL);
+    },
+    async fetchAllGuests() {
+      await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.FETCH_ALL);
+    },
+    async onCreateGuest() {
+      const guestData = this.newGuest;
+
+      if (this.selectedFamilyId) {
+        guestData.familyId = this.selectedFamilyId;
+      }
+
+      await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.CREATE, guestData);
     },
     openGuestModal(family) {
       if (family) {
@@ -212,30 +159,6 @@ export default {
     },
     openFamilyModal() {
       this.$bvModal.show(this.createFamilyModal);
-    },
-    async fetchAllGuests() {
-      await this.$store.dispatch("fetchAllGuests");
-    },
-    async fetchAllFamilies() {
-      await this.$store.dispatch("fetchAllFamilies");
-    },
-    async onCreateGuest() {
-      if (this.selectedFamilyId) {
-        this.newGuest.familyId = this.selectedFamilyId;
-      }
-
-      await this.$store.dispatch("createNewGuest", this.newGuest);
-
-      // this.$store.dispatch("fetchAllGuests");
-      // this.$store.dispatch("fetchAllFamilies");
-      this.fetch();
-      this.$bvModal.hide(this.createGuestModal);
-    },
-    async onCreateFamily() {
-      await this.$store.dispatch("createNewFamily", this.newFamily);
-      // this.$store.dispatch("fetchAllFamilies");
-      this.fetch();
-      this.$bvModal.hide(this.createFamilyModal);
     },
     onGuestCancel() {
       this.newGuest = {};
@@ -268,12 +191,12 @@ export default {
         this.states.familyNameState = false;
       }
     },
-    onUpdate() {
-      this.fetch();
-    },
     async fetch() {
       await this.fetchAllFamilies();
       await this.fetchAllGuests();
+    },
+    closeModal(modalName) {
+      this.$bvModal.hide(modalName);
     }
   },
   mounted() {
