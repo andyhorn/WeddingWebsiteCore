@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import { ACTIONS } from "@/store";
+
 export default {
     name: "NewGuestModal",
     props: ['families', 'visible'],
@@ -77,15 +79,9 @@ export default {
     },
     methods: {
         onCancel() {
-            this.firstName = "",
-            this.lastName = "",
-            this.isChild = false,
-            this.familyId = null
-            this.firstNameState = null;
-            this.lastNameState = null;
-            this.$emit("closed");
+            this.close();
         },
-        onSubmit() {
+        async onSubmit() {
             const guest = {
                 firstName: this.firstName,
                 lastName: this.lastName,
@@ -93,7 +89,8 @@ export default {
                 familyId: this.familyId
             };
 
-            this.$emit("submit", guest);
+            await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.CREATE, guest);
+            this.close();
         },
         onFirstNameInput() {
             if (this.firstName && this.firstName.length) {
@@ -108,6 +105,15 @@ export default {
             } else {
                 this.lastNameState = false;
             }
+        },
+        close() {
+            this.firstName = "",
+            this.lastName = "",
+            this.isChild = false,
+            this.familyId = null
+            this.firstNameState = null;
+            this.lastNameState = null;
+            this.$emit("closed");
         }
     }
 }
