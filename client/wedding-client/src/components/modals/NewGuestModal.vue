@@ -52,7 +52,7 @@
         <b-row>
           <b-col>
             <b-form-group id="family-select-group" label="Family" label-for="family-select">
-              <b-select v-model="familyId">
+              <b-select v-model="familyId" :disabled="families.length == 0">
                 <b-select-option
                   v-for="family in families"
                   :key="family.familyId"
