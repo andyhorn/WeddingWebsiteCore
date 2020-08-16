@@ -63,9 +63,18 @@
           </b-col>
         </b-row>
         <b-row>
-          <b-col>
+          <b-col cols="3">
             <b-form-group id="is-child-switch-group" label="Is a Child" label-for="is-child-switch">
               <b-form-checkbox id="is-child-switch" v-model="isChild" switch />
+            </b-form-group>
+          </b-col>
+          <b-col>
+            <b-form-group
+              id="wedding-member-switch-group"
+              label="Is a Wedding Party member"
+              label-for="wedding-member-switch"
+            >
+              <b-form-checkbox switch id="wedding-member-switch" v-model="isWeddingMember" />
             </b-form-group>
           </b-col>
         </b-row>
@@ -89,6 +98,7 @@ export default {
             firstName: "",
             lastName: "",
             isChild: false,
+            isWeddingMember: false,
             familyId: null,
             firstNameState: null,
             lastNameState: null,
@@ -110,6 +120,7 @@ export default {
                 firstName: this.firstName,
                 lastName: this.lastName,
                 isChild: this.isChild,
+                isWeddingMember: this.isWeddingMember,
                 familyId: this.familyId
             };
 
@@ -136,10 +147,11 @@ export default {
             }
         },
         close() {
-            this.firstName = "",
-            this.lastName = "",
-            this.isChild = false,
-            this.familyId = null
+            this.firstName = "";
+            this.lastName = "";
+            this.isChild = false;
+            this.isWeddingMember = false;
+            this.familyId = null;
             this.firstNameState = null;
             this.lastNameState = null;
             this.isBusy = false;

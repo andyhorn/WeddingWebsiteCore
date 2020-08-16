@@ -79,7 +79,7 @@ export default {
       return this.$store.getters.guests;
     },
     guestsWithoutFamilies() {
-      return this.$store.getters.guestsWithoutFamilies;
+      return this.$store.getters.guestsWithoutFamilies.sort((a, b) => a.firstName - b.firstName);
     }
   },
   methods: {

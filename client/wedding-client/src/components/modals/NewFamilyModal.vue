@@ -81,6 +81,12 @@ export default {
 
             const familyId = await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.CREATE, family);
 
+            if (this.headMemberId) {
+              const guest = this.$store.getters.findGuest(this.headMemberId);
+              guest.familyId = familyId;
+              await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, guest);
+            }
+
             this.close();
         },
         onFamilyNameInput() {
