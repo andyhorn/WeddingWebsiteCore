@@ -60,6 +60,7 @@ namespace WeddingWebsiteCore.Controllers
             {
                 await _context.AddAsync(guest);
                 await _context.SaveChangesAsync();
+                await SetAsHeadMemberIfAvailable(guest);
             }
             catch (Exception e)
             {
@@ -94,6 +95,7 @@ namespace WeddingWebsiteCore.Controllers
                 var updated = await UpdateGuest(guest);
                 if (updated)
                 {
+                    await SetAsHeadMemberIfAvailable(guest);
                     return NoContent();
                 }
                 else
@@ -147,6 +149,23 @@ namespace WeddingWebsiteCore.Controllers
             }
 
             return true;
+        }
+
+        private async Task SetAsHeadMemberIfAvailable(Guest guest)
+        {
+            if (!guest.FamilyId.HasValue)
+                return;
+
+            var family = await _context.Families
+                .Include(family => family.Members)
+                .FirstOrDefaultAsync(family => family.FamilyId.Equals(guest.FamilyId));
+
+            if (family == null || family.HeadMemberId.HasValue)
+                return;
+
+            family.HeadMemberId = guest.GuestId;
+
+            await _context.SaveChangesAsync();
         }
     }
 }

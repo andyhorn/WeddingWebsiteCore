@@ -86,8 +86,19 @@ export default {
       family.headMemberId = guestId;
       await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.UPDATE, family);
     },
-    onDeleteFamily() {
-      this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.DELETE, this.family.familyId);
+    async onDeleteFamily() {
+      const name = this.family.name;
+
+      if (confirm("Are you sure you want to delete the " + name + " family?")) {
+        const id = this.family.familyId;
+        await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.DELETE, id);
+  
+        const affectedGuests = this.$store.getters.guestsInFamily(id);
+        for (let guest of affectedGuests) {
+          guest.familyId = null;
+          await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, guest);
+        }
+      }
     }
   }
 };

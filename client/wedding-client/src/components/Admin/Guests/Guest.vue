@@ -14,21 +14,35 @@
 
 <script>
 import Box from "@/components/Box.vue";
+import { ACTIONS } from "@/store";
 
 export default {
   name: "Guest",
   props: ["guest"],
   methods: {
     async onDelete() {
-      if (confirm("Are you sure you want to remove this guest?")) {
-        const deleted = await this.$store.dispatch(
-          "deleteGuest",
-          this.guest.guestId
-        );
-        this.$store.dispatch("fetchAllGuests");
-        this.$store.dispatch("fetchAllFamilies");
+      const name = this.guest.firstName + " " + this.guest.lastName;
+      if (confirm("Are you sure you want to remove " + name)) {
+        const familyId = this.guest.familyId;
+        const guestId = this.guest.guestId;
+
+        await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.DELETE, guestId);
+
+        if (familyId) {
+          await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.FETCH, familyId);
+        }
       }
     }
+    // async onDelete() {
+    //   if (confirm("Are you sure you want to remove this guest?")) {
+    //     const deleted = await this.$store.dispatch(
+    //       "deleteGuest",
+    //       this.guest.guestId
+    //     );
+    //     this.$store.dispatch("fetchAllGuests");
+    //     this.$store.dispatch("fetchAllFamilies");
+    //   }
+    // }
   }
 };
 </script>

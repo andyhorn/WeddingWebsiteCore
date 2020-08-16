@@ -91,12 +91,6 @@ export default {
       this.selectedFamilyId = null;
       this.isNewGuestModalVisible = false;
     },
-    async onDeleteFamily(familyId) {
-      await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.DELETE);
-    },
-    async onDeleteGuest(guestId) {
-      await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.DELETE);
-    },
     async fetchAllFamilies() {
       await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.FETCH_ALL);
     },

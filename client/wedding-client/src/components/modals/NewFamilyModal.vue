@@ -35,7 +35,7 @@
               label="Family Head"
               label-for="head-member-select"
             >
-              <b-select v-model="headMemberId">
+              <b-select v-model="headMemberId" :disabled="guests.length == 0">
                 <b-select-option
                   v-for="guest in guests"
                   :key="guest.guestId"

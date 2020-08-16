@@ -114,6 +114,11 @@ export default {
             };
 
             await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.CREATE, guest);
+            
+            if (guest.familyId) {
+                await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.FETCH, guest.familyId);
+            }
+
             this.close();
         },
         onFirstNameInput() {
