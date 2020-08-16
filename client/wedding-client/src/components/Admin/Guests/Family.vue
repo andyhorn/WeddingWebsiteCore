@@ -7,8 +7,8 @@
             <b-icon :icon="collapseOpen ? 'chevron-up' : 'chevron-down'" />
           </b-button>
           <p class="m-0 p-0" v-if="headMember">
-            Family of
             <span class="text-italic">{{ headMember.firstName }} {{ headMember.lastName }}</span>
+            and family
           </p>
           <p class="m-0 p-0" v-else>
             <span class="text-italic">{{ family.name }}</span> family
@@ -29,12 +29,18 @@
           class="my-2"
           @click="openGuestModal"
         >Add member</b-button>
+        <Box class="mb-3">
+          <Guest :guest="members.find(g => g.guestId == family.headMemberId)" />
+        </Box>
         <Box
-          v-for="member in members.filter(x => x.guestId != family.headMemberId)"
+          v-for="member in members.filter(g => g.guestId != family.headMemberId)"
           :key="member.guestId"
         >
           <div class="d-flex align-items-center">
-            <a @click="promoteGuest(member.guestId)" v-if="!member.isChild">
+            <a
+              @click="promoteGuest(member.guestId)"
+              v-if="!member.isChild && family.headMemberId != member.guestId"
+            >
               <b-icon-arrow-bar-up />
             </a>
             <Guest :guest="member" />
@@ -46,6 +52,7 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from "uuid";
 import { ACTIONS } from "@/store";
 import Box from "@/components/Box.vue";
 import Guest from "@/components/Admin/Guests/Guest.vue";
@@ -59,13 +66,11 @@ export default {
   },
   data() {
     return {
-      collapseOpen: false
+      collapseOpen: false,
+      collapseId: uuidv4()
     };
   },
   computed: {
-    collapseId() {
-      return this.family.familyId.toString();
-    },
     headMember() {
       return this.members.find(m => m.guestId == this.family.headMemberId);
     },

@@ -24,20 +24,23 @@
       :visible="isNewFamilyModalVisible"
       @closed="isNewFamilyModalVisible = false"
     />
-    <div class="py-5">
+    <div>
       <p v-if="guests.length == 0" class="text-center">No guests.</p>
-      <p
-        v-if="guestsWithoutFamilies.length"
-      >{{ guestsWithoutFamilies.length }} guests without families</p>
-      <Box v-for="guest in guestsWithoutFamilies" :key="guest.guestId">
-        <Guest :guest="guest" />
-      </Box>
-      <Family
-        v-for="family in families"
-        :key="family.familyId"
-        :family="family"
-        @newGuest="addGuestToFamily"
-      />
+      <div v-if="guestsWithoutFamilies.length" class="my-4">
+        <h2>Guests (without families)</h2>
+        <Box v-for="guest in guestsWithoutFamilies" :key="guest.guestId">
+          <Guest :guest="guest" />
+        </Box>
+      </div>
+      <div class="my-4">
+        <h2>Families</h2>
+        <Family
+          v-for="family in families"
+          :key="family.familyId"
+          :family="family"
+          @newGuest="addGuestToFamily"
+        />
+      </div>
     </div>
   </div>
 </template>
