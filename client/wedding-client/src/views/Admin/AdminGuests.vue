@@ -20,7 +20,7 @@
       @closed="closeGuestModal"
     />
     <NewFamilyModal
-      :guests="guests"
+      :guests="guestsWithoutFamilies.filter(g => !g.isChild)"
       :visible="isNewFamilyModalVisible"
       @closed="isNewFamilyModalVisible = false"
     />
