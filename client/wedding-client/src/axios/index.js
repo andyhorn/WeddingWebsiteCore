@@ -18,7 +18,7 @@ const setToken = function (token) {
     http.defaults.headers["Authorization"] = `Bearer ${token}`;
 }
 
-const stripToken = function () {
+const removeToken = function () {
     if (http.defaults.headers && http.defaults.headers.Authorization)
         http.defaults.headers.Authorization = undefined;
 }
@@ -26,5 +26,5 @@ const stripToken = function () {
 export {
     http,
     setToken,
-    stripToken
+    removeToken
 };

@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import { ACTIONS } from "@/store";
+
 export default {
   name: "App",
   data() {
@@ -54,15 +56,20 @@ export default {
   },
   methods: {
     logout() {
-      this.$store.dispatch("logout");
+      this.$store.dispatch(ACTIONS.AUTHENTICATION_ACTIONS.LOGOUT);
+    },
+    checkForToken() {
+      this.$store.dispatch(ACTIONS.AUTHENTICATION_ACTIONS.CHECK_TOKEN);
     }
   },
   computed: {
     isLoggedIn() {
-      return this.$store.state.isLoggedIn;
+      return this.$store.getters.isLoggedIn;
     }
   },
   mounted() {
+    this.checkForToken();
+
     const header = this.$refs.header;
     const app = this.$refs.app;
 

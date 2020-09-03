@@ -19,6 +19,13 @@
         required
       />
     </b-form-group>
+    <b-form-group
+      id="remember-me-checkbox-group"
+      label="Remember me?"
+      label-for="remember-me-checkbox"
+    >
+      <b-form-checkbox id="remember-me-checkbox" v-model="rememberMe" />
+    </b-form-group>
     <b-button type="submit" variant="success" class="mx-1">Login</b-button>
     <b-button type="reset" variant="warning" class="mx-1">Clear</b-button>
   </b-form>
@@ -30,14 +37,16 @@ export default {
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
+      rememberMe: false
     };
   },
   methods: {
     onSubmit() {
       const formData = {
         email: this.email,
-        password: this.password
+        password: this.password,
+        rememberMe: this.rememberMe
       };
 
       this.$emit("login", formData);

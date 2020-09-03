@@ -38,6 +38,41 @@ namespace WeddingWebsiteCore.Controllers
             return Ok(response);
         }
 
+        [HttpPost(RouteContracts.Refresh)]
+        public async Task<IActionResult> RefreshToken([FromBody]string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return BadRequest(ErrorMessageContracts.MissingToken);
+            }
+
+            token = token.Split(" ").Last();
+
+            var isValid = _authenticationService.AuthenticateToken(token);
+            if (isValid)
+            {
+                try
+                {
+                    var user = await FindUserFromTokenAsync(token);
+
+                    if (user == null)
+                    {
+                        return BadRequest(ErrorMessageContracts.InvalidToken);
+                    }
+
+                    var newToken = _authenticationService.MakeToken(user);
+
+                    return Ok(new AuthenticationSuccessResponse(user, newToken));
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message);
+                }
+            }
+
+            return BadRequest(ErrorMessageContracts.InvalidToken);
+        }
+
         [HttpGet(RouteContracts.GetSelf)]
         public async Task<IActionResult> GetUserFromToken([FromHeader(Name = "Authorization")]string token)
         {
@@ -54,26 +89,20 @@ namespace WeddingWebsiteCore.Controllers
                 return BadRequest(ErrorMessageContracts.InvalidToken);
             }
 
-            var decoded = _authenticationService.DecodeToken(token);
-
-            var userIdClaim = decoded.Claims.FirstOrDefault(claim => claim.Type.Equals(Claims.UserId));
-            var userId = userIdClaim.Value;
-
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                return NotFound();
-            }
-
             try
             {
-                var user = await _context.Users.FindAsync(int.Parse(userId));
-                var response = new UserDataResponse(user);
-                return Ok(response);
+                var user = await FindUserFromTokenAsync(token);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(new UserDataResponse(user));
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return Problem(e.Message);
             }
         }
 
@@ -101,7 +130,7 @@ namespace WeddingWebsiteCore.Controllers
                     // return JWT
                     var token = _authenticationService.MakeToken(user);
 
-                    var response = new LoginSuccessResponse(user, token);
+                    var response = new AuthenticationSuccessResponse(user, token);
 
                     return Ok(response);
                 }
@@ -115,6 +144,22 @@ namespace WeddingWebsiteCore.Controllers
                 Console.WriteLine(e.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private async Task<ApplicationUser> FindUserFromTokenAsync(string token)
+        {
+            var decodedToken = _authenticationService.DecodeToken(token);
+
+            var userIdClaim = decodedToken.Claims.FirstOrDefault(claim => claim.Type.Equals(Claims.UserId));
+            if (userIdClaim != null)
+            {
+                int.TryParse(userIdClaim.Value, out int userId);
+
+                var user = await _context.Users.FindAsync(userId);
+                return user;
+            }
+
+            return null;
         }
 
         private async Task<ApplicationUser> FindUserByEmailAsync(string email)
