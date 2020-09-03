@@ -50,7 +50,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.name.includes("Admin") && !store.state.isLoggedIn) {
+  if (to.name.includes("Admin") && !store.getters.isLoggedIn) {
     return next({ name: "Home" });
   }
 
