@@ -98,11 +98,13 @@ const mutations = {
         state.families = data;
     },
     [FAMILY_MUTATIONS.RESET_FAMILIES](state) {
-        state = defaultState;
+        state.families = defaultState;
     },
     [FAMILY_MUTATIONS.REMOVE_FAMILY](state, familyId) {
         const index = state.families.findIndex(f => f.familyId == familyId);
-        state.families.splice(index, 1);
+        if (index != -1) {
+            state.families.splice(index, 1);
+        }
     },
     [FAMILY_MUTATIONS.ADD_FAMILY](state, data) {
         const index = state.families.findIndex(f => f.familyId == data.familyId);
