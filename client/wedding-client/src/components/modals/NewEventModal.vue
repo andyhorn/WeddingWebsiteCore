@@ -1,48 +1,54 @@
 <template>
-  <b-modal :visible="visible" @hide="onClose" title="New Event">
-    <b-container>
-      <b-row>
-        <b-col>
-          <b-form-group
-            label="Event Title"
-            :state="eventNameState"
-            invalid-feedback="Name is required."
-          >
-            <b-form-input v-model="event.name" :state="eventNameState" />
-          </b-form-group>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
-          <b-form-group label="Event Description">
-            <b-form-textarea v-model="event.description" />
-          </b-form-group>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
-          <b-form-group
-            label="Event start time"
-            :state="eventStartTimeState"
-            :invalid-feedback="eventStartTimeFeedback"
-          >
-            <DateTimePicker v-model="event.startTime" />
-          </b-form-group>
-        </b-col>
-        <b-col>
-          <b-form-group
-            label="Event end time"
-            :state="eventEndTimeState"
-            :invalid-feedback="eventEndTimeFeedback"
-          >
-            <DateTimePicker v-model="event.endTime" />
-          </b-form-group>
-        </b-col>
-      </b-row>
-    </b-container>
-    <div slot="modal-footer">
-      <b-button square size="sm" variant="success" @click="onSave">Save</b-button>
-    </div>
+  <b-modal :visible="visible" @hide="onClose" hide-footer title="New Event">
+    <b-form @submit.prevent="onSubmit">
+      <b-container>
+        <b-row>
+          <b-col>
+            <b-form-group
+              label="Event Title"
+              :state="eventNameState"
+              invalid-feedback="Name is required."
+            >
+              <b-form-input v-model="event.name" :state="eventNameState" />
+            </b-form-group>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col>
+            <b-form-group label="Event Description">
+              <b-form-textarea v-model="event.description" />
+            </b-form-group>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col>
+            <b-form-group
+              label="Event start time"
+              :state="eventStartTimeState"
+              :invalid-feedback="eventStartTimeFeedback"
+            >
+              <b-datepicker v-model="event.startTime.date" :min="eventStartDateMin" required />
+              <b-timepicker v-model="event.startTime.time" required />
+            </b-form-group>
+          </b-col>
+          <b-col>
+            <b-form-group
+              label="Event end time"
+              :state="eventEndTimeState"
+              :invalid-feedback="eventEndTimeFeedback"
+            >
+              <b-datepicker v-model="event.endTime.date" :min="eventEndDateMin" required />
+              <b-timepicker v-model="event.endTime.time" required />
+            </b-form-group>
+          </b-col>
+        </b-row>
+      </b-container>
+      <div class="footer px-3 space-buttons">
+        <b-button square size="sm" variant="success" type="submit">Save</b-button>
+        <b-button square size="sm" variant="warning" type="reset">Clear</b-button>
+        <b-button square size="sm" variant="danger" @click="onClose">Cancel</b-button>
+      </div>
+    </b-form>
   </b-modal>
 </template>
 
@@ -68,8 +74,8 @@ export default {
             eventNameState: null,
             eventStartTimeState: null,
             eventEndTimeState: null,
-            eventEndDateMin: null,
-            eventStartTimeMinDate: new Date()
+            eventStartDateMin: new Date(),
+            eventEndDateMin: new Date()
         }
     },
     computed: {
@@ -110,3 +116,16 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.space-buttons > button {
+  margin-left: 3px;
+  margin-right: 3px;
+}
+.space-buttons > button:first-child {
+  margin-left: 0;
+}
+.space-buttons > button:last-child {
+  margin-right: 0;
+}
+</style>
