@@ -51,16 +51,23 @@ namespace WeddingWebsiteCore.Controllers
             var isValid = _authenticationService.AuthenticateToken(token);
             if (isValid)
             {
-                var user = await FindUserFromTokenAsync(token);
-
-                if (user == null)
+                try
                 {
-                    return BadRequest(ErrorMessageContracts.InvalidToken);
+                    var user = await FindUserFromTokenAsync(token);
+
+                    if (user == null)
+                    {
+                        return BadRequest(ErrorMessageContracts.InvalidToken);
+                    }
+
+                    var newToken = _authenticationService.MakeToken(user);
+
+                    return Ok(new AuthenticationSuccessResponse(user, newToken));
                 }
-
-                var newToken = _authenticationService.MakeToken(user);
-
-                return Ok(new AuthenticationSuccessResponse(user, newToken));
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message);
+                }
             }
 
             return BadRequest(ErrorMessageContracts.InvalidToken);
@@ -82,14 +89,21 @@ namespace WeddingWebsiteCore.Controllers
                 return BadRequest(ErrorMessageContracts.InvalidToken);
             }
 
-            var user = await FindUserFromTokenAsync(token);
-
-            if (user == null)
+            try
             {
-                return NotFound();
-            }
+                var user = await FindUserFromTokenAsync(token);
 
-            return Ok(new UserDataResponse(user));
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(new UserDataResponse(user));
+            }
+            catch (Exception e)
+            {
+                return Problem(e.Message);
+            }
         }
 
         [HttpPost(RouteContracts.Login)]
@@ -139,7 +153,7 @@ namespace WeddingWebsiteCore.Controllers
             var userIdClaim = decodedToken.Claims.FirstOrDefault(claim => claim.Type.Equals(Claims.UserId));
             if (userIdClaim != null)
             {
-                var userId = userIdClaim.Value;
+                int.TryParse(userIdClaim.Value, out int userId);
 
                 var user = await _context.Users.FindAsync(userId);
                 return user;

@@ -74,7 +74,7 @@ const actions = {
             resolve();
         });
     },
-    [AUTHENTICATION_ACTIONS.REFRESH]: async ({ commit }) => (token) => {
+    [AUTHENTICATION_ACTIONS.REFRESH]: async ({ commit }, token) => {
         return new Promise(async (resolve) => {
             commit(AUTHENTICATION_MUTATIONS.REFRESH);
 
@@ -108,7 +108,7 @@ const actions = {
             if (token) {
                 // a token was found, dispatch the refresh action
                 commit(AUTHENTICATION_MUTATIONS.TOKEN_FOUND);
-                const success = await dispatch(AUTHENTICATION_ACTIONS.REFRESH)(token);
+                const success = await dispatch(AUTHENTICATION_ACTIONS.REFRESH, token);
 
                 if (success) {
                     // the refresh was a success, refresh the token in the cache
