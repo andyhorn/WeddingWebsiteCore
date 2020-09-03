@@ -6,6 +6,7 @@
 
 <script>
 import LoginForm from "@/components/Login/LoginForm";
+import { ACTIONS } from "@/store";
 
 export default {
   name: "Login",
@@ -14,7 +15,7 @@ export default {
   },
   methods: {
     async onLogin(formData) {
-      const authenticated = await this.$store.dispatch("login", formData);
+      const authenticated = await this.$store.dispatch(ACTIONS.AUTHENTICATION_ACTIONS.LOGIN, formData);
 
       if (authenticated) {
         this.$router.push({ name: "Home" });

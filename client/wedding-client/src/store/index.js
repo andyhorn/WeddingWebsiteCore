@@ -12,7 +12,8 @@ Vue.use(Vuex);
 export const TOKEN_IDENTIFIER = "x-kaw-auth-token-x";
 export const ACTIONS = {
   FAMILY_ACTIONS: families.FAMILY_ACTIONS,
-  GUEST_ACTIONS: guests.GUEST_ACTIONS
+  GUEST_ACTIONS: guests.GUEST_ACTIONS,
+  AUTHENTICATION_ACTIONS: authentication.AUTHENTICATION_ACTIONS
 }
 
 const defaultState = {
