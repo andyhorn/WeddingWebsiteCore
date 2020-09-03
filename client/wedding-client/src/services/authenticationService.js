@@ -1,4 +1,4 @@
-import { http } from "@/axios";
+import { http, setToken as st, removeToken as rt } from "@/axios";
 
 const endpoint = "users";
 
@@ -7,10 +7,10 @@ const authenticate = async (email, password) => {
         return null;
     }
 
-    const data = Object.assign({}, email, password);
+    const data = Object.assign({}, { email, password });
 
     try {
-        const response = await http.post(endpoint + "/login", data);
+        const response = await http.post(endpoint + "/login", JSON.stringify(data));
         if (response.data) {
             return response.data;
         }
@@ -30,11 +30,11 @@ const refresh = async (token) => {
 }
 
 const setToken = (token) => {
-    http.setToken(token);
+    st(token);
 }
 
 const removeToken = () => {
-    http.removeToken();
+    rt();
 }
 
 export default {

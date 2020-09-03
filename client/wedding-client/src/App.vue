@@ -64,7 +64,7 @@ export default {
   },
   computed: {
     isLoggedIn() {
-      return this.$store.state.isLoggedIn;
+      return this.$store.getters.isLoggedIn;
     }
   },
   mounted() {

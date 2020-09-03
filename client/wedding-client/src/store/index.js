@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { http, setToken, stripToken } from "@/axios";
-import Toast from "@/services/toast.js";
 import authentication from "@/store/modules/authentication.store.js";
 import guests from "@/store/modules/guests.store.js";
 import families from "@/store/modules/families.store.js";

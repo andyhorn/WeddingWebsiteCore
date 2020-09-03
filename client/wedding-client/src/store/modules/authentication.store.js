@@ -9,6 +9,7 @@ const AUTHENTICATION_MUTATIONS = {
     AUTHENTICATION_FAILURE: "AUTHENTICATION_FAILURE",
     CHECKING_TOKEN: "CHECKING_TOKEN",
     TOKEN_FOUND: "TOKEN_FOUND",
+    TOKEN_NOT_FOUND: "TOKEN_NOT_FOUND",
     REFRESH: "REFRESH",
     SET_USER_DATA: "SET_USER_DATA",
     SET_TOKEN: "SET_TOKEN",
@@ -41,7 +42,7 @@ const getters = {
 }
 
 const actions = {
-    [AUTHENTICATION_ACTIONS.LOGIN]: async ({ commit }) => (email, password, rememberMe = false) => {
+    [AUTHENTICATION_ACTIONS.LOGIN]: async ({ commit }, { email, password, rememberMe = false }) => {
         return new Promise(async (resolve) => {
             commit(AUTHENTICATION_MUTATIONS.AUTHENTICATION_ATTEMPT);
 
@@ -106,6 +107,7 @@ const actions = {
 
             if (token) {
                 // a token was found, dispatch the refresh action
+                commit(AUTHENTICATION_MUTATIONS.TOKEN_FOUND);
                 const success = await dispatch(AUTHENTICATION_ACTIONS.REFRESH)(token);
 
                 if (success) {
@@ -117,6 +119,8 @@ const actions = {
                     commit(AUTHENTICATION_MUTATIONS.LOGOUT);
                     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
                 }
+            } else {
+                commit(AUTHENTICATION_MUTATIONS.TOKEN_NOT_FOUND);
             }
 
             resolve();
@@ -138,7 +142,8 @@ const mutations = {
         state.authenticationStatus = "Checking for cached token";
     },
     [AUTHENTICATION_MUTATIONS.LOGOUT]: (state) => {
-        state = Object.assign({}, initialState());
+        const init = initialState();
+        Object.keys(init).forEach(key => state[key] = init[key]);
         state.authenticationStatus = "Logged out";
     },
     [AUTHENTICATION_MUTATIONS.REFRESH]: (state) => {
@@ -146,6 +151,7 @@ const mutations = {
     },
     [AUTHENTICATION_MUTATIONS.SET_TOKEN]: (state, token) => {
         state.token = token;
+        authenticationService.setToken(token);
         state.authenticationStatus = "Token set";
     },
     [AUTHENTICATION_MUTATIONS.SET_USER_DATA]: (state, userData) => {
@@ -157,6 +163,9 @@ const mutations = {
     },
     [AUTHENTICATION_MUTATIONS.TOKEN_FOUND]: (state) => {
         state.authenticationStatus = "Cached token found";
+    },
+    [AUTHENTICATION_MUTATIONS.TOKEN_NOT_FOUND]: (state) => {
+        state.authenticationStatus = "Cached token not found";
     }
 }
 
