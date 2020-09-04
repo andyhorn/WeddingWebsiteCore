@@ -12,8 +12,7 @@ namespace WeddingWebsiteCore.Models
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
-        [ForeignKey(nameof(AddressId))]
         public Address Address { get; set; }
-        public int AddressId { get; set; }
+        public int? AddressId { get; set; }
     }
 }

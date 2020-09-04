@@ -9,7 +9,7 @@
               :state="eventNameState"
               invalid-feedback="Name is required."
             >
-              <b-form-input v-model="event.name" :state="eventNameState" />
+              <b-form-input v-model="event.name" required :state="eventNameState" />
             </b-form-group>
           </b-col>
         </b-row>
@@ -28,7 +28,7 @@
               :invalid-feedback="eventStartTimeFeedback"
             >
               <b-datepicker v-model="event.startTime.date" :min="eventStartDateMin" required />
-              <b-timepicker v-model="event.startTime.time" required />
+              <b-timepicker v-model="event.startTime.time" required class="mt-1" />
             </b-form-group>
           </b-col>
           <b-col>
@@ -38,7 +38,7 @@
               :invalid-feedback="eventEndTimeFeedback"
             >
               <b-datepicker v-model="event.endTime.date" :min="eventEndDateMin" required />
-              <b-timepicker v-model="event.endTime.time" required />
+              <b-timepicker v-model="event.endTime.time" required class="mt-1" />
             </b-form-group>
           </b-col>
         </b-row>
@@ -54,6 +54,7 @@
 
 <script>
 import DateTimePicker from "@/components/DateTimePicker.vue";
+import { ACTIONS } from "@/store";
 
 export default {
     name: "NewEventModal",
@@ -94,12 +95,71 @@ export default {
         onClose() {
           this.close();
         },
-        onSave() {
-          console.log(this.event.startTime);
-          console.log(this.event.endTime);
+        async onSubmit() {
+          if (this.verifyForm()) {
+            const startTime = this.makeDateTime(this.event.startTime);
+            const endTime = this.makeDateTime(this.event.endTime);
+
+            const eventData = {
+              name: this.event.name,
+              description: this.event.description,
+              startTime: startTime,
+              endTime: endTime
+            };
+
+            const id = await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.CREATE, eventData);
+            if (id) {
+              this.close();
+            } else {
+              this.$bvToast.toast({
+                message: "Unable to save event",
+                variant: "danger"
+              });
+            }
+          }
+        },
+        makeDateTime(datetime) {
+          const { date, time } = datetime;
+          const dateObject = new Date(date + " " + time);
+          return dateObject;
         },
         verifyForm() {
+          this.resetStates();
 
+          if (this.event.name == null) {
+            this.eventNameState = false;
+          }
+
+          if (this.event.startTime.date == null) {
+            this.eventStartTimeState = false;
+            this.eventStartTimeFeedback = "Start date is required";
+            return false;
+          }
+
+          if (this.event.startTime.time == null) {
+            this.eventStartTimeState = false;
+            this.eventStartTimeFeedback = "Start time is required";
+            return false;
+          }
+
+          if (this.event.endTime.date == null) {
+            this.eventEndTimeState = false;
+            this.eventEndTimeFeedback = "End date is required";
+            return false;
+          }
+
+          if (this.event.endTime.time == null) {
+            this.eventEndTimeState = false;
+            this.eventEndTimeFeedback = "End time is required";
+            return false;
+          }
+
+          return true;
+        },
+        resetStates() {
+          this.eventNameState = null;
+          this.eventStartTimeState = null;
+          this.eventEndTimeState = null;
         },
         close() {
             this.event.name = "";
