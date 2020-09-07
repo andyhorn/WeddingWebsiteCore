@@ -92,6 +92,22 @@ export default {
         }
       },
     },
+    minuteMin: {
+      immediate: true,
+      handler: function () {
+        if (this.minuteMin != null && this.minute < this.minuteMin) {
+          this.minute = this.minuteMin;
+        }
+      },
+    },
+    secondMin: {
+      immediate: true,
+      handler: function () {
+        if (this.secondMin != null && this.second < this.secondMin) {
+          this.second = this.secondMin;
+        }
+      },
+    },
     hourIndex() {
       this.emitValue();
     },
@@ -133,17 +149,21 @@ export default {
     },
     minuteMin() {
       if (this.min == null) {
-        return "0";
+        return 0;
       }
 
-      return 0;
+      const minuteMin = parseInt(this.min.split(":")[1]);
+
+      return minuteMin;
     },
     secondMin() {
       if (this.min == null) {
-        return "0";
+        return 0;
       }
 
-      return 0;
+      const secondMin = parseInt(this.min.split(":")[2]);
+
+      return secondMin;
     },
   },
   methods: {
@@ -157,10 +177,11 @@ export default {
       return val.toString();
     },
     emitValue() {
-      console.log("emitting");
-      const value = this.makeTimeString();
-      console.log(value);
-      this.$nextTick(() => this.$emit("input", value));
+      const vm = this;
+      this.$nextTick(() => {
+        const value = vm.makeTimeString();
+        vm.$emit("input", value);
+      });
     },
     makeTimeString() {
       let hourValue = this.hours[this.hourIndex];
