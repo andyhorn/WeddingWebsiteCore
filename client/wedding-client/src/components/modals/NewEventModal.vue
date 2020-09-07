@@ -1,5 +1,5 @@
 <template>
-  <b-modal :visible="visible" @hide="onClose" hide-footer title="New Event">
+  <b-modal size="lg" :visible="visible" @hide="onClose" hide-footer title="New Event">
     <b-form @submit.prevent="onSubmit">
       <b-container>
         <b-row>
@@ -21,25 +21,47 @@
           </b-col>
         </b-row>
         <b-row>
+          <b-col cols="12">
+            <h2>Event start time</h2>
+          </b-col>
+          <b-col>
+            <b-form-group
+              label="Event start date"
+              :state="eventStartTimeState"
+              :invalid-feedback="eventStartTimeFeedback"
+            >
+              <div class="d-flex justify-content-center align-items-center">
+                <b-calendar
+                  hide-header
+                  v-model="event.startTime.date"
+                  :min="eventStartDateMin"
+                  required
+                />
+              </div>
+            </b-form-group>
+          </b-col>
           <b-col>
             <b-form-group
               label="Event start time"
               :state="eventStartTimeState"
               :invalid-feedback="eventStartTimeFeedback"
             >
-              <b-datepicker v-model="event.startTime.date" :min="eventStartDateMin" required />
-              <b-timepicker v-model="event.startTime.time" required class="mt-1" />
+              <div class="d-flex justify-content-center align-items-center">
+                <b-time hide-header v-model="event.startTime.time" required class="mt-1" />
+              </div>
             </b-form-group>
           </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols="12">
+            <h2>Event end time</h2>
+          </b-col>
           <b-col>
-            <b-form-group
-              label="Event end time"
-              :state="eventEndTimeState"
-              :invalid-feedback="eventEndTimeFeedback"
-            >
-              <b-datepicker v-model="event.endTime.date" :min="eventEndDateMin" required />
-              <b-timepicker v-model="event.endTime.time" required class="mt-1" />
-            </b-form-group>
+            <DateTimePicker
+              v-model="event.endTime"
+              :dateMin="eventEndDateMin"
+              :timeMin="eventEndTimeMin"
+            />
           </b-col>
         </b-row>
       </b-container>
@@ -53,7 +75,8 @@
 </template>
 
 <script>
-import DateTimePicker from "@/components/DateTimePicker.vue";
+import TimePicker from "@/components/TimePicker";
+import DateTimePicker from "@/components/DateTimePicker";
 import { ACTIONS } from "@/store";
 
 import * as DateTime from "@/helpers/dateTime";
@@ -62,6 +85,7 @@ export default {
   name: "NewEventModal",
   props: ["visible"],
   components: {
+    TimePicker,
     DateTimePicker,
   },
   data() {
@@ -70,7 +94,10 @@ export default {
         name: "",
         description: "",
         startTime: {},
-        endTime: {},
+        endTime: {
+          date: null,
+          time: null,
+        },
       },
       eventStartTimeFeedback: "",
       eventEndTimeFeedback: "",
@@ -78,12 +105,25 @@ export default {
       eventStartTimeState: null,
       eventEndTimeState: null,
       eventStartDateMin: new Date(),
-      eventEndDateMin: new Date(),
+      eventEndDateMin: new Date().toDateString(),
       eventStartTimeMin: "00:00:00",
-      eventEndTimeMin: null,
+      // eventEndTimeMin: null,
     };
   },
-  computed: {},
+  computed: {
+    eventEndTimeMin() {
+      if (
+        this.event.startTime.date != null &&
+        this.event.startTime.time != null &&
+        this.event.endTime.date != null &&
+        this.event.endTime.date == this.event.startTime.date
+      ) {
+        return this.event.startTime.time;
+      }
+
+      return null;
+    },
+  },
   watch: {
     "event.name": function () {
       if (!!this.event.name && !!this.event.name.trim()) {
@@ -100,30 +140,12 @@ export default {
           this.event.startTime.time == null
         ) {
           this.eventEndTimeMin = null;
-          this.eventEndDateMin = new Date();
+          this.eventEndDateMin = new Date().toDateString();
           return;
         }
 
         if (this.event.startTime.date != null) {
           this.eventEndDateMin = this.event.startTime.date;
-        }
-
-        if (this.event.startTime.time != null) {
-          this.eventEndTimeMin = this.event.startTime.time;
-        }
-      },
-    },
-    "event.endTime": {
-      deep: true,
-      handler: function () {
-        if (this.event.endTime.time != null && this.eventEndTimeMin != null) {
-          if (
-            DateTime.compareTimes(this.event.endTime.time, this.eventEndTimeMin)
-          ) {
-            this.event.endTime.time = this.eventEndTimeMin;
-            this.eventEndTimeFeedback =
-              "End of event cannot occur before beginning.";
-          }
         }
       },
     },

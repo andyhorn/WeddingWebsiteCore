@@ -1,113 +1,84 @@
 <template>
-  <div class="container">
-    <b-row class="mb-1">
-      <b-col cols="4" class="mx-0 p-1">
-        <b-datepicker
-          v-if="showDate"
-          @input="onDateInput"
-          :value="value.date"
-          button-only
-          :min="minDate"
-          :max="maxDate"
-        />
-      </b-col>
-      <b-col class="d-flex justify-content-center align-items-center">{{ date }}</b-col>
-    </b-row>
-    <b-row class="mt-1">
-      <b-col cols="4" class="mx-0 p-1">
-        <b-timepicker v-if="showTime" @input="onTimeInput" :value="value.time" button-only hour12 />
-      </b-col>
-      <b-col class="d-flex justify-content-center align-items-center">{{ time }}</b-col>
-    </b-row>
+  <div class="container d-flex flex-column align-items-center">
+    <b-calendar v-model="date" hide-header :min="dateMin" />
+    <TimePicker v-model="time" :min="timeMin" class="mt-3" />
   </div>
 </template>
 
 <script>
+import TimePicker from "./TimePicker";
+
 export default {
-    name: "DateTimePicker",
-    props: {
-        variant: {
-            type: String,
-            default: "primary"
-        },
-        value: {
-            type: Object,
-            required: true
-        },
-        minTime: {
-            type: [String]
-        },
-        maxTime: {
-            type: [String]
-        },
-        minDate: {
-            type: [String, Date]
-        },
-        maxDate: {
-            type: [String, Date]
-        }
+  name: "DateTimePicker",
+  components: {
+    TimePicker,
+  },
+  props: {
+    value: {
+      type: Object,
+      required: true,
     },
-    data() {
-        return {
-            showDate: true,
-            showTime: false,
-            title: "None Selected",
-            date: null,
-            time: null
-        }
+    dateMin: {
+      type: String,
+      required: false,
+      default: "",
     },
-    computed: {
-        buttonType() {
-            return `outline-${this.variant}`;
-        }
+    timeMin: {
+      type: String,
+      required: false,
+      default: "",
     },
-    methods: {
-        onDateInput(val) {
-            this.date = val;
-            this.showTime = true;
-        },
-        onTimeInput(val) {
-            if (this.verifyMinTime(val) && this.verifyMaxTime(val)) {
-                this.time = val;
-                this.emit();
-            }
-        },
-        verifyMinTime(val) {
-            if (this.minTime == null) return true;
-
-            const minHour = this.minTime.split(":")[0];
-            const minMinute = this.minTime.split(":")[1];
-
-            const hour = val.split(":")[0];
-            const minute = val.split(":")[1];
-
-            if (hour > minHour) return true;
-            if (minute >= minMinute) return true;
-
-            return false;
-        },
-        verifyMaxTime(val) {
-            if (this.maxTime == null) return true;
-
-            const maxHour = this.maxTime.split(":")[0];
-            const maxMinute = this.maxTime.split(":")[1];
-
-            const hour = val.split(":")[0];
-            const minute = val.split(":")[1];
-
-            if (hour < maxHour) return true;
-            if (minute <= maxMinute) return true;
-
-            return false;
-        },
-        emit() {
-            const data = {
-                date: this.date,
-                time: this.time
-            };
-
-            this.$emit("input", data);
+  },
+  data() {
+    return {
+      date: null,
+      time: null,
+    };
+  },
+  watch: {
+    dateMin: {
+      handler: function () {
+        if (this.date != null && new Date(this.dateMin) > new Date(this.date)) {
+          this.date = this.dateMin;
         }
-    }
-}
+      },
+    },
+    date: {
+      deep: true,
+      handler: function () {
+        this.emit();
+      },
+    },
+    time: {
+      deep: true,
+      handler: function () {
+        this.emit();
+      },
+    },
+    value: {
+      deep: true,
+      immediate: true,
+      handler: function (newVal) {
+        console.log(newVal);
+        if (newVal.date != null && newVal.date != this.date) {
+          this.date = newVal.date;
+        }
+        if (newVal.time != null && newVal.time != this.time) {
+          this.time = newVal.time;
+        }
+      },
+    },
+  },
+  methods: {
+    emit() {
+      const data = {
+        date: this.date,
+        time: this.time,
+      };
+
+      console.log(data);
+      this.$emit("input", data);
+    },
+  },
+};
 </script>
