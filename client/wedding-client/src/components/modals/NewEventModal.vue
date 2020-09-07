@@ -56,125 +56,187 @@
 import DateTimePicker from "@/components/DateTimePicker.vue";
 import { ACTIONS } from "@/store";
 
+import * as DateTime from "@/helpers/dateTime";
+
 export default {
-    name: "NewEventModal",
-    props: ["visible"],
-    components: {
-      DateTimePicker
+  name: "NewEventModal",
+  props: ["visible"],
+  components: {
+    DateTimePicker,
+  },
+  data() {
+    return {
+      event: {
+        name: "",
+        description: "",
+        startTime: {},
+        endTime: {},
+      },
+      eventStartTimeFeedback: "",
+      eventEndTimeFeedback: "",
+      eventNameState: null,
+      eventStartTimeState: null,
+      eventEndTimeState: null,
+      eventStartDateMin: new Date(),
+      eventEndDateMin: new Date(),
+      eventStartTimeMin: "00:00:00",
+      eventEndTimeMin: null,
+    };
+  },
+  computed: {},
+  watch: {
+    "event.name": function () {
+      if (!!this.event.name && !!this.event.name.trim()) {
+        this.eventNameState = true;
+      } else {
+        this.eventNameState = false;
+      }
     },
-    data() {
-        return {
-            event: {
-                name: "",
-                description: "",
-                startTime: {},
-                endTime: {}
-            },
-            eventStartTimeFeedback: "",
-            eventEndTimeFeedback: "",
-            eventNameState: null,
-            eventStartTimeState: null,
-            eventEndTimeState: null,
-            eventStartDateMin: new Date(),
-            eventEndDateMin: new Date()
+    "event.startTime": {
+      deep: true,
+      handler: function () {
+        if (
+          this.event.startTime.date == null &&
+          this.event.startTime.time == null
+        ) {
+          this.eventEndTimeMin = null;
+          this.eventEndDateMin = new Date();
+          return;
         }
-    },
-    computed: {
-        
-    },
-    watch: {
-        "event.name": function() {
-            if (!!this.event.name && !!this.event.name.trim()) {
-                this.eventNameState = true;
-            } else {
-                this.eventNameState = false;
-            }
+
+        if (this.event.startTime.date != null) {
+          this.eventEndDateMin = this.event.startTime.date;
         }
+
+        if (this.event.startTime.time != null) {
+          this.eventEndTimeMin = this.event.startTime.time;
+        }
+      },
     },
-    methods: {
-        onClose() {
+    "event.endTime": {
+      deep: true,
+      handler: function () {
+        if (this.event.endTime.time != null && this.eventEndTimeMin != null) {
+          if (
+            DateTime.compareTimes(this.event.endTime.time, this.eventEndTimeMin)
+          ) {
+            this.event.endTime.time = this.eventEndTimeMin;
+            this.eventEndTimeFeedback =
+              "End of event cannot occur before beginning.";
+          }
+        }
+      },
+    },
+  },
+  methods: {
+    getTimeFromString(timeString) {
+      const date = new Date(0, 0, 0, 0, 0, 0, 0);
+      const s = timeString.split(":");
+
+      if (s.length > 0) {
+        date.setHours(s[0]);
+      }
+
+      if (s.length > 1) {
+        date.setMinutes(s[1]);
+      }
+
+      if (s.length > 2) {
+        date.setSeconds(s[2]);
+      }
+
+      if (s.length > 3) {
+        date.setMilliseconds(s[3]);
+      }
+
+      return date;
+    },
+    onClose() {
+      this.close();
+    },
+    async onSubmit() {
+      if (this.verifyForm()) {
+        const startTime = this.makeDateTime(this.event.startTime);
+        const endTime = this.makeDateTime(this.event.endTime);
+
+        const eventData = {
+          name: this.event.name,
+          description: this.event.description,
+          startTime: startTime,
+          endTime: endTime,
+        };
+
+        const id = await this.$store.dispatch(
+          ACTIONS.EVENT_ACTIONS.CREATE,
+          eventData
+        );
+        if (id) {
           this.close();
-        },
-        async onSubmit() {
-          if (this.verifyForm()) {
-            const startTime = this.makeDateTime(this.event.startTime);
-            const endTime = this.makeDateTime(this.event.endTime);
-
-            const eventData = {
-              name: this.event.name,
-              description: this.event.description,
-              startTime: startTime,
-              endTime: endTime
-            };
-
-            const id = await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.CREATE, eventData);
-            if (id) {
-              this.close();
-            } else {
-              this.$bvToast.toast({
-                message: "Unable to save event",
-                variant: "danger"
-              });
-            }
-          }
-        },
-        makeDateTime(datetime) {
-          const { date, time } = datetime;
-          const dateObject = new Date(date + " " + time);
-          return dateObject;
-        },
-        verifyForm() {
-          this.resetStates();
-
-          if (this.event.name == null) {
-            this.eventNameState = false;
-          }
-
-          if (this.event.startTime.date == null) {
-            this.eventStartTimeState = false;
-            this.eventStartTimeFeedback = "Start date is required";
-            return false;
-          }
-
-          if (this.event.startTime.time == null) {
-            this.eventStartTimeState = false;
-            this.eventStartTimeFeedback = "Start time is required";
-            return false;
-          }
-
-          if (this.event.endTime.date == null) {
-            this.eventEndTimeState = false;
-            this.eventEndTimeFeedback = "End date is required";
-            return false;
-          }
-
-          if (this.event.endTime.time == null) {
-            this.eventEndTimeState = false;
-            this.eventEndTimeFeedback = "End time is required";
-            return false;
-          }
-
-          return true;
-        },
-        resetStates() {
-          this.eventNameState = null;
-          this.eventStartTimeState = null;
-          this.eventEndTimeState = null;
-        },
-        close() {
-            this.event.name = "";
-            this.event.description = "";
-            this.event.startTime = {};
-            this.event.endTime = {};
-            this.eventStartTimeFeedback = "";
-            this.eventEndTimeFeedback = "";
-            this.eventNameState = null;
-            this.eventStartTimeState = null;
-            this.eventEndTimeState = null;
-            this.$emit("close");
+        } else {
+          this.$bvToast.toast({
+            message: "Unable to save event",
+            variant: "danger",
+          });
         }
-    }
-}
+      }
+    },
+    makeDateTime(datetime) {
+      const { date, time } = datetime;
+      const dateObject = new Date(date + " " + time);
+      return dateObject;
+    },
+    verifyForm() {
+      this.resetStates();
+
+      if (this.event.name == null) {
+        this.eventNameState = false;
+      }
+
+      if (this.event.startTime.date == null) {
+        this.eventStartTimeState = false;
+        this.eventStartTimeFeedback = "Start date is required";
+        return false;
+      }
+
+      if (this.event.startTime.time == null) {
+        this.eventStartTimeState = false;
+        this.eventStartTimeFeedback = "Start time is required";
+        return false;
+      }
+
+      if (this.event.endTime.date == null) {
+        this.eventEndTimeState = false;
+        this.eventEndTimeFeedback = "End date is required";
+        return false;
+      }
+
+      if (this.event.endTime.time == null) {
+        this.eventEndTimeState = false;
+        this.eventEndTimeFeedback = "End time is required";
+        return false;
+      }
+
+      return true;
+    },
+    resetStates() {
+      this.eventNameState = null;
+      this.eventStartTimeState = null;
+      this.eventEndTimeState = null;
+    },
+    close() {
+      this.event.name = "";
+      this.event.description = "";
+      this.event.startTime = {};
+      this.event.endTime = {};
+      this.eventStartTimeFeedback = "";
+      this.eventEndTimeFeedback = "";
+      this.eventNameState = null;
+      this.eventStartTimeState = null;
+      this.eventEndTimeState = null;
+      this.$emit("close");
+    },
+  },
+};
 </script>
 
 <style scoped>
