@@ -6,6 +6,7 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USERNAME: postgres
+      POSTGRES_DB: weddingDb
     ports:
       - "5432:5432"
     volumes:

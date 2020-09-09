@@ -5,5 +5,6 @@
         public const string TOKEN_KEY = nameof(TOKEN_KEY);
         public const string DEFAULT_EMAIL = nameof(DEFAULT_EMAIL);
         public const string DEFAULT_PASSWORD = nameof(DEFAULT_PASSWORD);
+        public const string POSTGRES_CONNECTION_STRING = "PostgreSQL";
     }
 }
