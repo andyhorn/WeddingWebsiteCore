@@ -79,9 +79,11 @@ export default {
       this.hours.push(i.toString());
     }
     for (let i = 0; i < 60; i++) {
-      this.minutes.push(i.toString());
-      this.seconds.push(i.toString());
+      const value = ("00" + i.toString()).slice(-2);
+      this.minutes.push(value);
+      this.seconds.push(value);
     }
+    console.log(this.minutes);
   },
   watch: {
     hourMin: {
@@ -124,7 +126,7 @@ export default {
   computed: {
     hourMin() {
       // restrict the hour values by index
-      if (this.min == null) {
+      if (!this.min) {
         return 0;
       }
 
@@ -148,7 +150,7 @@ export default {
       }
     },
     minuteMin() {
-      if (this.min == null) {
+      if (!this.min || !this.min.includes(":")) {
         return 0;
       }
 
@@ -157,7 +159,7 @@ export default {
       return minuteMin;
     },
     secondMin() {
-      if (this.min == null) {
+      if (!this.min || !this.min.includes(":")) {
         return 0;
       }
 

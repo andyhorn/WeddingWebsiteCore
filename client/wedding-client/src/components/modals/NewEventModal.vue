@@ -20,20 +20,26 @@
         </b-row>
         <b-row class="pb-5 pt-2">
           <b-col>
-            <b-form-group :state="eventStartTimeState" :invalid-feedback="eventStartTimeFeedback">
-              <h2>Start time</h2>
-              <DateTimePicker v-model="event.startTime" :dateMin="eventStartDateMin" />
-            </b-form-group>
+            <h2>
+              Start time
+              <span v-if="eventStartTimeState">
+                <b-icon icon="check" variant="success" />
+              </span>
+            </h2>
+            <DateTimePicker v-model="event.startTime" :dateMin="eventStartDateMin" />
           </b-col>
           <b-col>
-            <b-form-group :state="eventEndTimeState" :invalid-feedback="eventEndTimeFeedback">
-              <h2>End time</h2>
-              <DateTimePicker
-                v-model="event.endTime"
-                :timeMin="eventEndTimeMin"
-                :dateMin="eventEndDateMin"
-              />
-            </b-form-group>
+            <h2>
+              End time
+              <span v-if="eventEndTimeState">
+                <b-icon icon="check" variant="success" />
+              </span>
+            </h2>
+            <DateTimePicker
+              v-model="event.endTime"
+              :timeMin="eventEndTimeMin"
+              :dateMin="eventEndDateMin"
+            />
           </b-col>
         </b-row>
       </b-container>
@@ -132,23 +138,32 @@ export default {
         this.eventNameState = false;
       }
     },
-    // "event.startTime": {
-    //   deep: true,
-    //   handler: function () {
-    //     if (
-    //       this.event.startTime.date == null &&
-    //       this.event.startTime.time == null
-    //     ) {
-    //       this.eventEndTimeMin = null;
-    //       this.eventEndDateMin = new Date().toDateString();
-    //       return;
-    //     }
-
-    //     if (this.event.startTime.date != null) {
-    //       this.eventEndDateMin = this.event.startTime.date;
-    //     }
-    //   },
-    // },
+    "event.startTime": {
+      deep: true,
+      handler: function () {
+        if (
+          this.event.startTime.date != null &&
+          this.event.startTime.time != null
+        ) {
+          this.eventStartTimeState = true;
+        } else {
+          this.eventStartTimeState = null;
+        }
+      },
+    },
+    "event.endTime": {
+      deep: true,
+      handler: function () {
+        if (
+          this.event.endTime.date != null &&
+          this.event.endTime.time != null
+        ) {
+          this.eventEndTimeState = true;
+        } else {
+          this.eventStartTimeState = null;
+        }
+      },
+    },
   },
   methods: {
     getTimeFromString(timeString) {
