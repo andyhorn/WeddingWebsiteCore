@@ -82,7 +82,7 @@ export default {
         time: this.time,
       };
 
-      console.log(data);
+      // console.log(data);
       this.$emit("input", data);
     },
   },

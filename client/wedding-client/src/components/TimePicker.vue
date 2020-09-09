@@ -8,9 +8,23 @@
       v-model="hourIndex"
     />
     <span class="colon">:</span>
-    <b-form-spinbutton vertical :min="minuteMin" max="59" step="step" v-model="minute" />
+    <b-form-spinbutton
+      vertical
+      :min="minuteMin"
+      max="59"
+      step="step"
+      :formatter-fn="formatter"
+      v-model="minute"
+    />
     <span v-if="showSeconds" class="colon">:</span>
-    <b-form-spinbutton vertical :min="secondMin" max="59" v-if="showSeconds" v-model="second" />
+    <b-form-spinbutton
+      vertical
+      :min="secondMin"
+      max="59"
+      v-if="showSeconds"
+      :formatter-fn="formatter"
+      v-model="second"
+    />
     <b-form-spinbutton
       :disabled="isAmPmSelectorDisabled"
       class="ml-3"
@@ -65,9 +79,9 @@ export default {
       this.hours.push(i.toString());
     }
     for (let i = 0; i < 60; i++) {
-      const value = ("00" + i.toString()).slice(-2);
-      this.minutes.push(value);
-      this.seconds.push(value);
+      // const value = String("00" + i.toString()).slice(-2);
+      this.minutes.push(i);
+      this.seconds.push(i);
     }
   },
   watch: {
