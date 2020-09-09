@@ -1,6 +1,6 @@
 <template>
   <div class="container d-flex flex-column align-items-center">
-    <b-calendar v-model="date" hide-header :min="new Date(dateMin)" />
+    <b-calendar v-model="date" hide-header :min="dateMin" />
     <TimePicker v-model="time" :min="timeMin" class="mt-3" />
   </div>
 </template>
@@ -19,7 +19,7 @@ export default {
       required: true,
     },
     dateMin: {
-      type: String,
+      type: String | null,
       required: false,
       default: "",
     },
@@ -37,10 +37,19 @@ export default {
   },
   watch: {
     dateMin: {
+      deep: true,
       handler: function () {
-        if (this.date != null && this.dateMin > new Date(this.date)) {
-          this.date = this.dateMin.toDateString();
+        console.log("date min received: ");
+        console.log(this.dateMin);
+        console.log(new Date(this.dateMin));
+        console.log(this.date);
+        if (
+          this.date == null ||
+          (this.date != null && this.dateMin > new Date(this.date))
+        ) {
+          this.date = this.dateMin;
         }
+        console.log(this.date);
       },
     },
     date: {

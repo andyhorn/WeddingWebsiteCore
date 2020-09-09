@@ -43,7 +43,7 @@ namespace WeddingWebsiteCore.Controllers
         }
 
         [HttpPost(RouteContracts.PostItem)]
-        public async Task<IActionResult> PostNewGuest([FromBody]Guest guest)
+        public async Task<IActionResult> PostNewGuest([FromBody] Guest guest)
         {
             if (!ModelState.IsValid)
             {
@@ -72,7 +72,7 @@ namespace WeddingWebsiteCore.Controllers
         }
 
         [HttpPut(RouteContracts.PutItem)]
-        public async Task<IActionResult> UpdateGuest(int id, [FromBody]Guest guest)
+        public async Task<IActionResult> UpdateGuest(int id, [FromBody] Guest guest)
         {
             if (!ModelState.IsValid)
             {
@@ -143,7 +143,7 @@ namespace WeddingWebsiteCore.Controllers
                 _context.Entry(guest).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }

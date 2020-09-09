@@ -85,8 +85,7 @@ export default {
       eventNameState: null,
       eventStartTimeState: null,
       eventEndTimeState: null,
-      eventStartDateMin: new Date().toDateString(),
-      // eventEndDateMin: new Date().toDateString(),
+      eventStartDateMin: new Date(),
     };
   },
   computed: {
@@ -104,10 +103,12 @@ export default {
     },
     eventEndDateMin() {
       if (this.event.startTime.date != null) {
+        console.log("setting start date min to ");
+        console.log(this.event.startTime.date);
         return this.event.startTime.date;
       }
 
-      return new Date().toDateString();
+      return new Date();
     },
     isSaveButtonDisabled() {
       if (
