@@ -94,12 +94,15 @@ export default {
         this.event.startTime.date != null &&
         this.event.startTime.time != null &&
         this.event.endTime.date != null &&
-        this.event.endTime.date == this.event.startTime.date
+        DateTime.compareDates(
+          this.event.endTime.date,
+          this.event.startTime.date
+        ) == 0
       ) {
         return this.event.startTime.time;
       }
 
-      return null;
+      return "";
     },
     eventEndDateMin() {
       if (this.event.startTime.date != null) {
