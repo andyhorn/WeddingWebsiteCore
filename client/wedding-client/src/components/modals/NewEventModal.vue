@@ -4,69 +4,47 @@
       <b-container>
         <b-row>
           <b-col>
-            <b-form-group
-              label="Event Title"
-              :state="eventNameState"
-              invalid-feedback="Name is required."
-            >
+            <b-form-group :state="eventNameState" invalid-feedback="Name is required.">
+              <h3>Title</h3>
               <b-form-input v-model="event.name" required :state="eventNameState" />
             </b-form-group>
           </b-col>
         </b-row>
         <b-row>
           <b-col>
-            <b-form-group label="Event Description">
+            <b-form-group>
+              <h3>Description</h3>
               <b-form-textarea v-model="event.description" />
             </b-form-group>
           </b-col>
         </b-row>
-        <b-row>
-          <b-col cols="12">
-            <h2>Event start time</h2>
-          </b-col>
+        <b-row class="pb-5 pt-2">
           <b-col>
-            <b-form-group
-              label="Event start date"
-              :state="eventStartTimeState"
-              :invalid-feedback="eventStartTimeFeedback"
-            >
-              <div class="d-flex justify-content-center align-items-center">
-                <b-calendar
-                  hide-header
-                  v-model="event.startTime.date"
-                  :min="eventStartDateMin"
-                  required
-                />
-              </div>
+            <b-form-group :state="eventStartTimeState" :invalid-feedback="eventStartTimeFeedback">
+              <h2>Start time</h2>
+              <DateTimePicker v-model="event.startTime" :dateMin="eventStartDateMin" />
             </b-form-group>
           </b-col>
           <b-col>
-            <b-form-group
-              label="Event start time"
-              :state="eventStartTimeState"
-              :invalid-feedback="eventStartTimeFeedback"
-            >
-              <div class="d-flex justify-content-center align-items-center">
-                <b-time hide-header v-model="event.startTime.time" required class="mt-1" />
-              </div>
+            <b-form-group :state="eventEndTimeState" :invalid-feedback="eventEndTimeFeedback">
+              <h2>End time</h2>
+              <DateTimePicker
+                v-model="event.endTime"
+                :timeMin="eventEndTimeMin"
+                :dateMin="eventEndDateMin"
+              />
             </b-form-group>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols="12">
-            <h2>Event end time</h2>
-          </b-col>
-          <b-col>
-            <DateTimePicker
-              v-model="event.endTime"
-              :dateMin="eventEndDateMin"
-              :timeMin="eventEndTimeMin"
-            />
           </b-col>
         </b-row>
       </b-container>
       <div class="footer px-3 space-buttons">
-        <b-button square size="sm" variant="success" type="submit">Save</b-button>
+        <b-button
+          square
+          size="sm"
+          variant="success"
+          type="submit"
+          :disabled="isSaveButtonDisabled"
+        >Save</b-button>
         <b-button square size="sm" variant="warning" type="reset">Clear</b-button>
         <b-button square size="sm" variant="danger" @click="onClose">Cancel</b-button>
       </div>
@@ -93,7 +71,10 @@ export default {
       event: {
         name: "",
         description: "",
-        startTime: {},
+        startTime: {
+          date: null,
+          time: null,
+        },
         endTime: {
           date: null,
           time: null,
@@ -104,10 +85,8 @@ export default {
       eventNameState: null,
       eventStartTimeState: null,
       eventEndTimeState: null,
-      eventStartDateMin: new Date(),
-      eventEndDateMin: new Date().toDateString(),
-      eventStartTimeMin: "00:00:00",
-      // eventEndTimeMin: null,
+      eventStartDateMin: new Date().toDateString(),
+      // eventEndDateMin: new Date().toDateString(),
     };
   },
   computed: {
@@ -123,6 +102,25 @@ export default {
 
       return null;
     },
+    eventEndDateMin() {
+      if (this.event.startTime.date != null) {
+        return this.event.startTime.date;
+      }
+
+      return new Date().toDateString();
+    },
+    isSaveButtonDisabled() {
+      if (
+        this.event.name != null &&
+        this.event.startTime.date != null &&
+        this.event.startTime.time != null &&
+        this.event.endTime.date != null &&
+        this.event.endTime.time != null
+      )
+        return false;
+
+      return true;
+    },
   },
   watch: {
     "event.name": function () {
@@ -132,23 +130,23 @@ export default {
         this.eventNameState = false;
       }
     },
-    "event.startTime": {
-      deep: true,
-      handler: function () {
-        if (
-          this.event.startTime.date == null &&
-          this.event.startTime.time == null
-        ) {
-          this.eventEndTimeMin = null;
-          this.eventEndDateMin = new Date().toDateString();
-          return;
-        }
+    // "event.startTime": {
+    //   deep: true,
+    //   handler: function () {
+    //     if (
+    //       this.event.startTime.date == null &&
+    //       this.event.startTime.time == null
+    //     ) {
+    //       this.eventEndTimeMin = null;
+    //       this.eventEndDateMin = new Date().toDateString();
+    //       return;
+    //     }
 
-        if (this.event.startTime.date != null) {
-          this.eventEndDateMin = this.event.startTime.date;
-        }
-      },
-    },
+    //     if (this.event.startTime.date != null) {
+    //       this.eventEndDateMin = this.event.startTime.date;
+    //     }
+    //   },
+    // },
   },
   methods: {
     getTimeFromString(timeString) {
