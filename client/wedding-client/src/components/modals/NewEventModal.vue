@@ -25,7 +25,11 @@
               <span v-if="eventStartTimeState">
                 <b-icon icon="check" variant="success" />
               </span>
+              <span v-else-if="eventStartTimeState === false">
+                <b-icon icon="x" variant="danger" />
+              </span>
             </h2>
+            <p v-if="eventStartTimeState === false" class="text-danger">{{ eventStartTimeFeedback }}</p>
             <DateTimePicker v-model="event.startTime" :dateMin="eventStartDateMin" />
           </b-col>
           <b-col>
@@ -34,7 +38,11 @@
               <span v-if="eventEndTimeState">
                 <b-icon icon="check" variant="success" />
               </span>
+              <span v-else-if="eventEndTimeState === false">
+                <b-icon icon="x" variant="danger" />
+              </span>
             </h2>
+            <p v-if="eventEndTimeState === false" class="text-danger">{{ eventEndTimeFeedback }}</p>
             <DateTimePicker
               v-model="event.endTime"
               :timeMin="eventEndTimeMin"

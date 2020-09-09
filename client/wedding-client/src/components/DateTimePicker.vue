@@ -66,7 +66,6 @@ export default {
       deep: true,
       immediate: true,
       handler: function (newVal) {
-        console.log(newVal);
         if (newVal.date != null && newVal.date != this.date) {
           this.date = newVal.date;
         }
