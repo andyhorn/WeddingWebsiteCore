@@ -5,21 +5,36 @@
     <b-button squared size="sm" variant="success" @click="isNewEventModalVisible = true">
       <b-icon-plus class="mr-2" />New Event
     </b-button>
+    <div v-for="event in events" :key="event.id">{{ event }}</div>
   </b-container>
 </template>
 
 <script>
 import NewEventModal from "@/components/modals/NewEventModal.vue";
+import { ACTIONS } from "@/store";
 
 export default {
-    name: "AdminEvents",
-    components: {
-        NewEventModal
+  name: "AdminEvents",
+  components: {
+    NewEventModal,
+  },
+  data() {
+    return {
+      isNewEventModalVisible: false,
+    };
+  },
+  computed: {
+    events() {
+      return this.$store.getters.events;
     },
-    data() {
-        return {
-            isNewEventModalVisible: false
-        }
-    }
-}
+  },
+  mounted() {
+    this.fetch();
+  },
+  methods: {
+    async fetch() {
+      await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.FETCH_ALL);
+    },
+  },
+};
 </script>
