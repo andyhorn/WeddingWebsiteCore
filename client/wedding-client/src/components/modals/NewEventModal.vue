@@ -103,8 +103,6 @@ export default {
     },
     eventEndDateMin() {
       if (this.event.startTime.date != null) {
-        console.log("setting start date min to ");
-        console.log(this.event.startTime.date);
         return this.event.startTime.date;
       }
 

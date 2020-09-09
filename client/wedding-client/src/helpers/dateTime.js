@@ -9,9 +9,6 @@ export const compareTimes = function (timeOne, timeTwo) {
 }
 
 export const compareDates = function (dateOne, dateTwo) {
-    console.log("comparing dates:")
-    console.log(dateOne)
-    console.log(dateTwo)
     if (!(dateOne instanceof Date)) {
         dateOne = new Date(dateOne);
     }
@@ -34,9 +31,6 @@ export const compareDates = function (dateOne, dateTwo) {
 
     const ticksOne = strictDateOne.getTime();
     const ticksTwo = strictDateTwo.getTime();
-
-    console.log("ticks one: " + ticksOne)
-    console.log("ticks two: " + ticksTwo)
 
     return ticksOne > ticksTwo
         ? 1

@@ -40,17 +40,14 @@ export default {
     dateMin: {
       deep: true,
       handler: function () {
-        console.log("date min received: ");
-        console.log(this.dateMin);
-        console.log(new Date(this.dateMin));
-        console.log(this.date);
-        if (
-          this.date == null ||
-          (this.date != null && DateTime.compareDates(this.date, this.dateMin))
-        ) {
-          this.date = this.dateMin;
+        if (this.date != null) {
+          const currentDateIsLessThanMinimumDate =
+            DateTime.compareDates(this.date, this.dateMin) == -1;
+
+          if (currentDateIsLessThanMinimumDate) {
+            this.date = this.dateMin;
+          }
         }
-        console.log(this.date);
       },
     },
     date: {
