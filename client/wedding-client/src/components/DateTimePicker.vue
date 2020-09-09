@@ -7,6 +7,7 @@
 
 <script>
 import TimePicker from "./TimePicker";
+import * as DateTime from "@/helpers/dateTime";
 
 export default {
   name: "DateTimePicker",
@@ -45,7 +46,7 @@ export default {
         console.log(this.date);
         if (
           this.date == null ||
-          (this.date != null && this.dateMin > new Date(this.date))
+          (this.date != null && DateTime.compareDates(this.date, this.dateMin))
         ) {
           this.date = this.dateMin;
         }

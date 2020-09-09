@@ -8,6 +8,43 @@ export const compareTimes = function (timeOne, timeTwo) {
             ? -1 : 0;
 }
 
+export const compareDates = function (dateOne, dateTwo) {
+    console.log("comparing dates:")
+    console.log(dateOne)
+    console.log(dateTwo)
+    if (!(dateOne instanceof Date)) {
+        dateOne = new Date(dateOne);
+    }
+
+    if (!(dateTwo instanceof Date)) {
+        dateTwo = new Date(dateTwo);
+    }
+
+    const zeroTime = function (date) {
+        const alteredDate = new Date(date);
+        alteredDate.setHours(0);
+        alteredDate.setMinutes(0);
+        alteredDate.setSeconds(0);
+        alteredDate.setMilliseconds(0);
+        return alteredDate;
+    }
+
+    const strictDateOne = zeroTime(dateOne);
+    const strictDateTwo = zeroTime(dateTwo);
+
+    const ticksOne = strictDateOne.getTime();
+    const ticksTwo = strictDateTwo.getTime();
+
+    console.log("ticks one: " + ticksOne)
+    console.log("ticks two: " + ticksTwo)
+
+    return ticksOne > ticksTwo
+        ? 1
+        : ticksOne < ticksTwo
+            ? -1
+            : 0;
+}
+
 const getTicksFromTimeString = (timeString) => {
     let ticks = 0;
     const getTicksFromHours = getTickMultiplier(1000 * 60 * 60);
