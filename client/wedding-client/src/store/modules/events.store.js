@@ -27,7 +27,7 @@ const state = initialState();
 
 const getters = {
     events: state => state.events,
-    event: state => eventId => state.events.find(e => e.eventId == eventId),
+    findEvent: state => eventId => state.events.find(e => e.eventId == eventId),
 }
 
 const actions = {

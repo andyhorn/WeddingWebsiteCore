@@ -49,6 +49,7 @@ export default {
         "address",
         "options",
       ],
+      isTableBusy: false,
     };
   },
   computed: {
@@ -61,12 +62,27 @@ export default {
   },
   methods: {
     async fetch() {
+      this.isTableBusy = true;
       await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.FETCH_ALL);
+      this.isTableBusy = false;
     },
     onEditEvent(eventId) {
-      this.$router.push({ name: "AdminEventDetails", params: { id: eventId } });
+      this.$router.push({
+        name: "Admin-Event-Details",
+        params: { id: eventId },
+      });
     },
-    onDeleteEvent(eventId) {},
+    async onDeleteEvent(eventId) {
+      const deleteEvent = confirm(
+        "Are you sure you want to delete this event?"
+      );
+
+      if (deleteEvent) {
+        this.isTableBusy = true;
+        await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.DELETE, eventId);
+        this.isTableBusy = false;
+      }
+    },
     parseDate(dateString) {
       const utcDate = DateTime.parseDateString(dateString);
       const localDateString = utcDate.toLocaleString();
