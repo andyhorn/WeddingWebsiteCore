@@ -1,4 +1,6 @@
 import eventService from "@/services/eventService";
+import * as DateTime from "@/helpers/dateTime";
+import { deepCopy } from "@/helpers/utils";
 
 const EVENT_MUTATIONS = {
     SET_EVENTS: "SET_EVENTS",
@@ -91,7 +93,12 @@ const actions = {
 
 const mutations = {
     [EVENT_MUTATIONS.SET_EVENTS](state, events) {
-        state.events = events;
+        const modifiedEvents = events.map(event => {
+            const localEvent = getEventWithLocalTimes(event);
+            return localEvent;
+        });
+
+        state.events = modifiedEvents;
     },
 
     [EVENT_MUTATIONS.RESET_EVENTS](state) {
@@ -106,13 +113,31 @@ const mutations = {
     },
 
     [EVENT_MUTATIONS.ADD_EVENT](state, event) {
+        const localEvent = getEventWithLocalTimes(event);
+
         const index = state.events.findIndex(e => e.eventId == event.eventId);
         if (index == -1) {
-            state.events.push(event);
+            state.events.push(localEvent);
         } else {
-            state.events.splice(index, 1, event);
+            state.events.splice(index, 1, localEvent);
         }
     }
+}
+
+// Assumes incoming event uses a UTC time string; will convert both the
+// Start and End time string to local time
+const getEventWithLocalTimes = (event) => {
+    const utcStartTime = deepCopy(event.startTime);
+    const utcEndTime = deepCopy(event.endTime);
+
+    const localStartTime = DateTime.utcDateStringToLocalDateString(utcStartTime);
+    const localEndTime = DateTime.utcDateStringToLocalDateString(utcEndTime);
+
+    let localEvent = deepCopy(event);
+    localEvent.startTime = localStartTime;
+    localEvent.endTime = localEndTime;
+
+    return localEvent;
 }
 
 export default {

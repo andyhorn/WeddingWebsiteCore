@@ -90,6 +90,34 @@ export const makeDateTime = function (dateTimeObj) {
     return dateObj;
 }
 
+export const getTimeFromDate = function (dateObj) {
+    const time = dateObj.toLocaleTimeString();
+    return time;
+}
+
+export const utcDateStringToLocalDateString = function (utcDateString) {
+    if (!utcDateString) {
+        return "";
+    }
+
+    const dateObj = parseDateString(utcDateString);
+
+    const year = dateObj.getFullYear();
+    const month = addZeroPrefix(dateObj.getMonth());
+    const day = addZeroPrefix(dateObj.getDate());
+
+    const hours = addZeroPrefix(dateObj.getHours());
+    const minutes = addZeroPrefix(dateObj.getMinutes());
+    const seconds = addZeroPrefix(dateObj.getSeconds());
+
+    const dateString = `${year}-${month}-${day}`;
+    const timeString = `${hours}:${minutes}:${seconds}`;
+
+    const localDateString = `${dateString}T${timeString}`;
+
+    return localDateString;
+}
+
 const getTicksFromTimeString = (timeString) => {
     let ticks = 0;
     const getTicksFromHours = getTickMultiplier(1000 * 60 * 60);
@@ -122,4 +150,8 @@ const getTicksFromTimeString = (timeString) => {
 
 const getTickMultiplier = (multiplier) => (val) => {
     return multiplier * parseInt(val);
+}
+
+const addZeroPrefix = (value) => {
+    return ("00" + String(value)).slice(-2);
 }

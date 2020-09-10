@@ -53,14 +53,12 @@ export default {
     date: {
       deep: true,
       handler: function () {
-        console.log("date changed");
         this.emit();
       },
     },
     time: {
       deep: true,
       handler: function () {
-        console.log("time changed");
         this.emit();
       },
     },
@@ -68,8 +66,6 @@ export default {
       deep: true,
       immediate: true,
       handler: function (newVal) {
-        console.log("new value: ");
-        console.log(newVal);
         if (newVal.date != null && newVal.date != this.date) {
           this.date = newVal.date;
         }
@@ -79,8 +75,6 @@ export default {
           }
           this.time = newVal.time;
         }
-        console.log(this.date);
-        console.log(this.time);
       },
     },
   },

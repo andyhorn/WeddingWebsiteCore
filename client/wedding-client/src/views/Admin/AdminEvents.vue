@@ -103,7 +103,7 @@ export default {
       }
     },
     parseDate(dateString) {
-      const utcDate = DateTime.parseDateString(dateString);
+      const utcDate = new Date(dateString);
       const localDateString = utcDate.toLocaleString();
       return localDateString;
     },
