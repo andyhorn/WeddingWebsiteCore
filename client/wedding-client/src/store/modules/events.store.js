@@ -114,9 +114,6 @@ const mutations = {
     },
 
     [EVENT_MUTATIONS.ADD_EVENT](state, event) {
-        console.log('adding event:')
-        console.log(event)
-        // const localEvent = getEventWithLocalTimes(event);
         const localEvent = deepCopy(event);
 
         const index = state.events.findIndex(e => e.eventId == event.eventId);
@@ -126,22 +123,6 @@ const mutations = {
             state.events.splice(index, 1, localEvent);
         }
     }
-}
-
-// Assumes incoming event uses a UTC time string; will convert both the
-// Start and End time string to local time
-const getEventWithLocalTimes = (event) => {
-    const utcStartTime = deepCopy(event.startTime);
-    const utcEndTime = deepCopy(event.endTime);
-
-    const localStartTime = DateTime.utcDateStringToLocalDateString(utcStartTime);
-    const localEndTime = DateTime.utcDateStringToLocalDateString(utcEndTime);
-
-    let localEvent = deepCopy(event);
-    localEvent.startTime = localStartTime;
-    localEvent.endTime = localEndTime;
-
-    return localEvent;
 }
 
 export default {
