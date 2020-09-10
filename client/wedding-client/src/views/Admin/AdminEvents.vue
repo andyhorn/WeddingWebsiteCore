@@ -2,11 +2,16 @@
   <b-container class="pt-5">
     <NewEventModal :visible="isNewEventModalVisible" @close="isNewEventModalVisible = false" />
     <h1 class="text-center">Events</h1>
-    <b-button squared size="sm" variant="success" @click="isNewEventModalVisible = true">
-      <b-icon-plus class="mr-2" />New Event
-    </b-button>
+    <div class="d-flex justify-content-between align-items-center">
+      <b-button squared size="sm" variant="success" @click="isNewEventModalVisible = true">
+        <b-icon-plus class="mr-2" />New Event
+      </b-button>
+      <b-button squared size="sm" variant="primary" @click="onRefreshTable">
+        <b-icon-arrow-clockwise class="mr-2" />Refresh
+      </b-button>
+    </div>
     <b-container class="mt-5">
-      <b-table :fields="fields" :items="events">
+      <b-table :fields="fields" :items="events" show-empty>
         <template v-slot:cell(startTime)="data">{{ parseDate(data.item.startTime) }}</template>
         <template v-slot:cell(endTime)="data">{{ parseDate(data.item.endTime) }}</template>
         <template v-slot:cell(options)="data">
@@ -22,6 +27,9 @@
             class="ml-1"
             @click="onDeleteEvent(data.item.eventId)"
           >Delete</b-button>
+        </template>
+        <template v-slot:empty>
+          <p class="text-center mt-3 text-dark">No events found</p>
         </template>
       </b-table>
     </b-container>
@@ -65,6 +73,9 @@ export default {
       this.isTableBusy = true;
       await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.FETCH_ALL);
       this.isTableBusy = false;
+    },
+    async onRefreshTable() {
+      this.fetch();
     },
     onEditEvent(eventId) {
       this.$router.push({
