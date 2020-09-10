@@ -39,6 +39,24 @@ export const compareDates = function (dateOne, dateTwo) {
             : 0;
 }
 
+export const parseDateString = function (dateString) {
+    const dateSection = dateString.split("T")[0];
+    const timeSection = dateString.split("T")[1];
+
+    const year = dateSection.split("-")[0];
+    const month = dateSection.split("-")[1];
+    const day = dateSection.split("-")[2];
+
+    const hour = timeSection.split(":")[0];
+    const minute = timeSection.split(":")[1];
+    const second = timeSection.split(":")[2];
+
+    const ticks = Date.UTC(year, month, day, hour, minute, second, 0);
+    const date = new Date(ticks);
+    console.log(date);
+    return date;
+}
+
 const getTicksFromTimeString = (timeString) => {
     let ticks = 0;
     const getTicksFromHours = getTickMultiplier(1000 * 60 * 60);
