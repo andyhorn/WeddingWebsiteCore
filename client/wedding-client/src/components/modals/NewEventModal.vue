@@ -168,7 +168,7 @@ export default {
         ) {
           this.eventEndTimeState = true;
         } else {
-          this.eventStartTimeState = null;
+          this.eventEndTimeState = null;
         }
       },
     },
