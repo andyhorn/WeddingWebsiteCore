@@ -53,7 +53,7 @@ export const parseDateString = function (dateString) {
 
     const ticks = Date.UTC(year, month, day, hour, minute, second, 0);
     const date = new Date(ticks);
-    console.log(date);
+
     return date;
 }
 
