@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    {{ event }}
+  <div class="container pt-5">
+    <h1>Event details</h1>
     <b-form @submit.prevent="onSaveEvent" v-if="!!event">
       <b-row>
         <b-col>
@@ -24,8 +24,13 @@
       </b-row>
       <b-row class="py-3 mb-5">
         <b-col>
-          <h2>Address</h2>
+          <h2>Location</h2>
           <p>addresses here...</p>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <b-button squared variant="success" type="submit">Save</b-button>
         </b-col>
       </b-row>
     </b-form>
@@ -35,6 +40,8 @@
 <script>
 import DateTimePicker from "@/components/DateTimePicker";
 import * as DateTime from "@/helpers/dateTime";
+import { deepCopy } from "@/helpers/utils";
+import { ACTIONS } from "@/store";
 
 export default {
   name: "AdminEventDetails",
@@ -77,9 +84,19 @@ export default {
   },
   mounted() {
     const id = this.$route.params.id;
-    const event = this.$store.getters.findEvent(id);
-
-    this.event = event;
+    this.fetch(id);
+  },
+  methods: {
+    fetch(id) {
+      const event = this.$store.getters.findEvent(id);
+      this.event = event;
+    },
+    async onSaveEvent() {
+      const saveData = deepCopy(this.event);
+      const id = this.event.eventId;
+      await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.UPDATE, saveData);
+      this.fetch(id);
+    },
   },
 };
 </script>

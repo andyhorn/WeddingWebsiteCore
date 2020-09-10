@@ -41,7 +41,7 @@ namespace WeddingWebsiteCore.Controllers
         }
 
         [HttpPost(RouteContracts.PostItem)]
-        public async Task<IActionResult> PostNewEvent([FromBody]Event @event)
+        public async Task<IActionResult> PostNewEvent([FromBody] Event @event)
         {
             if (!ModelState.IsValid)
             {
@@ -69,7 +69,7 @@ namespace WeddingWebsiteCore.Controllers
         }
 
         [HttpPut(RouteContracts.PutItem)]
-        public async Task<IActionResult> UpdateEvent(int id, [FromBody]Event @event)
+        public async Task<IActionResult> UpdateEvent(int id, [FromBody] Event @event)
         {
             if (!ModelState.IsValid)
             {
@@ -89,7 +89,13 @@ namespace WeddingWebsiteCore.Controllers
 
             try
             {
-                _context.Entry(@event).State = EntityState.Modified;
+                existing.AddressId = @event.AddressId;
+                existing.Description = @event.Description;
+                existing.EndTime = @event.EndTime;
+                existing.Name = @event.Name;
+                existing.StartTime = @event.StartTime;
+
+                _context.Entry(existing).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)

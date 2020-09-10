@@ -94,7 +94,8 @@ const actions = {
 const mutations = {
     [EVENT_MUTATIONS.SET_EVENTS](state, events) {
         const modifiedEvents = events.map(event => {
-            const localEvent = getEventWithLocalTimes(event);
+            // const localEvent = getEventWithLocalTimes(event);
+            const localEvent = deepCopy(event)
             return localEvent;
         });
 
@@ -113,7 +114,10 @@ const mutations = {
     },
 
     [EVENT_MUTATIONS.ADD_EVENT](state, event) {
-        const localEvent = getEventWithLocalTimes(event);
+        console.log('adding event:')
+        console.log(event)
+        // const localEvent = getEventWithLocalTimes(event);
+        const localEvent = deepCopy(event);
 
         const index = state.events.findIndex(e => e.eventId == event.eventId);
         if (index == -1) {
