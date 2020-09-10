@@ -57,7 +57,7 @@ export const parseDateString = function (dateString) {
     return date;
 }
 
-export const getTimeFromString = function (timeString) {
+export const parseTimeString = function (timeString) {
     const date = new Date(0, 0, 0, 0, 0, 0, 0);
 
     const timeSections = timeString.split(":");
@@ -76,6 +76,18 @@ export const getTimeFromString = function (timeString) {
     }
 
     return date;
+}
+
+export const makeDateTime = function (dateTimeObj) {
+    const { date, time } = dateTimeObj;
+
+    const dateTicks = Date.parse(date);
+    const timeTicks = getTicksFromTimeString(time);
+
+    const totalTicks = dateTicks + timeTicks;
+    const dateObj = new Date(totalTicks);
+
+    return dateObj;
 }
 
 const getTicksFromTimeString = (timeString) => {

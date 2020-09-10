@@ -175,7 +175,7 @@ export default {
   },
   methods: {
     getTimeFromString(timeString) {
-      return DateTime.getTimeFromString(timeString);
+      return DateTime.parseTimeString(timeString);
     },
     onClose() {
       this.close();
@@ -207,9 +207,7 @@ export default {
       }
     },
     makeDateTime(datetime) {
-      const { date, time } = datetime;
-      const dateObject = new Date(date + " " + time);
-      return dateObject;
+      return DateTime.makeDateTime(datetime);
     },
     verifyForm() {
       this.resetStates();
