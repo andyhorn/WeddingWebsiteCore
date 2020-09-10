@@ -33,7 +33,7 @@ export default {
   data() {
     return {
       date: null,
-      time: null,
+      time: "00:00:00",
     };
   },
   watch: {
@@ -53,12 +53,14 @@ export default {
     date: {
       deep: true,
       handler: function () {
+        console.log("date changed");
         this.emit();
       },
     },
     time: {
       deep: true,
       handler: function () {
+        console.log("time changed");
         this.emit();
       },
     },
@@ -66,12 +68,19 @@ export default {
       deep: true,
       immediate: true,
       handler: function (newVal) {
+        console.log("new value: ");
+        console.log(newVal);
         if (newVal.date != null && newVal.date != this.date) {
           this.date = newVal.date;
         }
         if (newVal.time != null && newVal.time != this.time) {
+          if (newVal.time > 12) {
+            this.time = newVal.time % 12;
+          }
           this.time = newVal.time;
         }
+        console.log(this.date);
+        console.log(this.time);
       },
     },
   },

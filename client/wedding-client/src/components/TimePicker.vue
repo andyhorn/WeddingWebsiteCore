@@ -83,6 +83,18 @@ export default {
       this.minutes.push(i);
       this.seconds.push(i);
     }
+
+    if (this.value != null && this.value.includes(":")) {
+      const hour = this.value.split(":")[0];
+
+      if (parseInt(hour) == 12) {
+        this.hourIndex = 0;
+        this.isAm = 1;
+      } else if (parseInt(hour) > 12) {
+        this.hourIndex = parseInt(hour) % 12;
+        this.isAm = 1;
+      }
+    }
   },
   watch: {
     hourMin: {
