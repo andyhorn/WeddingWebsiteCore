@@ -26,6 +26,7 @@
         <b-col>
           <h2>Location</h2>
           <p>addresses here...</p>
+          <NewAddressForm />
         </b-col>
       </b-row>
       <b-row>
@@ -39,6 +40,7 @@
 
 <script>
 import DateTimePicker from "@/components/DateTimePicker";
+import NewAddressForm from "@/components/forms/NewAddressForm";
 import * as DateTime from "@/helpers/dateTime";
 import { deepCopy } from "@/helpers/utils";
 import { ACTIONS } from "@/store";
@@ -47,6 +49,7 @@ export default {
   name: "AdminEventDetails",
   components: {
     DateTimePicker,
+    NewAddressForm,
   },
   data() {
     return {
