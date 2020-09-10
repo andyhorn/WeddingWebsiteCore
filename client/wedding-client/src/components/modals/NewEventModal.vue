@@ -175,26 +175,7 @@ export default {
   },
   methods: {
     getTimeFromString(timeString) {
-      const date = new Date(0, 0, 0, 0, 0, 0, 0);
-      const s = timeString.split(":");
-
-      if (s.length > 0) {
-        date.setHours(s[0]);
-      }
-
-      if (s.length > 1) {
-        date.setMinutes(s[1]);
-      }
-
-      if (s.length > 2) {
-        date.setSeconds(s[2]);
-      }
-
-      if (s.length > 3) {
-        date.setMilliseconds(s[3]);
-      }
-
-      return date;
+      return DateTime.getTimeFromString(timeString);
     },
     onClose() {
       this.close();

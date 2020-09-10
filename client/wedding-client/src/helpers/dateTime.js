@@ -57,6 +57,27 @@ export const parseDateString = function (dateString) {
     return date;
 }
 
+export const getTimeFromString = function (timeString) {
+    const date = new Date(0, 0, 0, 0, 0, 0, 0);
+
+    const timeSections = timeString.split(":");
+
+    if (timeSections.length > 0) {
+        date.setHours(timeSections[0]);
+    }
+    if (timeSections.length > 1) {
+        date.setMinutes(timeSections[1]);
+    }
+    if (timeSections.length > 2) {
+        date.setSeconds(timeSections[2]);
+    }
+    if (timeSections.length > 3) {
+        date.setMilliseconds(timeSections[3]);
+    }
+
+    return date;
+}
+
 const getTicksFromTimeString = (timeString) => {
     let ticks = 0;
     const getTicksFromHours = getTickMultiplier(1000 * 60 * 60);
