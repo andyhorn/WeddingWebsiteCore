@@ -72,7 +72,7 @@
           </b-col>
         </b-row>
         <b-collapse id="newAddressCollapse" class="border rounded p-3 mb-5">
-          <NewAddressForm @saved="id => event.addressId = id" />
+          <NewAddressForm @saved="onAddressSave" />
         </b-collapse>
       </b-container>
       <div class="footer px-3 space-buttons">
@@ -203,6 +203,11 @@ export default {
     },
   },
   methods: {
+    onAddressSave(id) {
+      // id => event.addressId = id
+      this.event.addressId = id;
+      this.$root.$emit("bv::collapse::toggle", "newAddressCollapse");
+    },
     getTimeFromString(timeString) {
       return DateTime.parseTimeString(timeString);
     },

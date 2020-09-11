@@ -35,7 +35,7 @@
         </b-input-group>
       </b-form-group>
       <b-collapse id="newAddressCollapse" class="border rounded p-3 mb-5">
-        <NewAddressForm @saved="id => event.addressId = id" />
+        <NewAddressForm @saved="onAddressSaved" />
       </b-collapse>
       <b-row>
         <b-col>
@@ -111,6 +111,10 @@ export default {
       const id = this.event.eventId;
       await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.UPDATE, saveData);
       this.fetch(id);
+    },
+    onAddressSaved(id) {
+      this.event.addressId = id;
+      this.$root.$emit("bv::collapse::toggle", "newAddressCollapse");
     },
   },
 };

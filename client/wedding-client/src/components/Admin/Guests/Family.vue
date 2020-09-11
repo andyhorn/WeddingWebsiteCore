@@ -163,6 +163,7 @@ export default {
 
       if (updated) {
         this.showAddressSavedToast();
+        this.$root.$emit("bv::collapse::toggle", this.addressCollapseId);
       } else {
         this.showAddressNotSavedToast();
       }
