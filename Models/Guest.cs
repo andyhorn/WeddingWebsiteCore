@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WeddingWebsiteCore.Models
@@ -14,26 +15,21 @@ namespace WeddingWebsiteCore.Models
 
         [Required]
         public string LastName { get; set; }
-        
+
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
         [DataType(DataType.PhoneNumber)]
         public string Phone { get; set; }
-
         public bool IsWeddingMember { get; set; } = false;
         public bool IsChild { get; set; } = false;
+        public int? ParentId { get; set; }
 
-        [ForeignKey(nameof(RsvpId))]
-        [Newtonsoft.Json.JsonIgnore]
-        [System.Text.Json.Serialization.JsonIgnore]
-        public Rsvp Rsvp { get; set; }
-        public int? RsvpId { get; set; }
-
+        // Family
         [ForeignKey(nameof(FamilyId))]
-        [Newtonsoft.Json.JsonIgnore]
-        [System.Text.Json.Serialization.JsonIgnore]
         public Family Family { get; set; }
         public int? FamilyId { get; set; }
+
+        public ICollection<Rsvp> RSVPs { get; set; }
     }
 }

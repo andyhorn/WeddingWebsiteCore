@@ -47,7 +47,7 @@ namespace WeddingWebsiteCore.DataAccess
                 .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Guest>()
-                .HasOne(guest => guest.Rsvp)
+                .HasMany(guest => guest.RSVPs)
                 .WithOne(rsvp => rsvp.Guest)
                 .OnDelete(DeleteBehavior.Cascade);
 
