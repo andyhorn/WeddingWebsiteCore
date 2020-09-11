@@ -11,8 +11,6 @@ namespace WeddingWebsiteCore.Models
         public string Description { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-
-        public Address Address { get; set; }
         public int? AddressId { get; set; }
     }
 }
