@@ -46,6 +46,29 @@
             <Guest :guest="member" />
           </div>
         </Box>
+        <Box class="mt-3">
+          <b-form-group label="Address">
+            <b-input-group>
+              <b-select v-model="family.addressId">
+                <option :value="null">None</option>
+                <option
+                  v-for="address in addresses"
+                  :key="address.addressId"
+                  :value="address.addressId"
+                >
+                  <span v-if="!!address.name">({{ address.name }})</span>
+                  {{ address.fullString }}
+                </option>
+              </b-select>
+              <b-input-group-append>
+                <b-button variant="primary" @click="toggleAddressCollapse">New address</b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </b-form-group>
+          <b-collapse :id="addressCollapseId" class="p-3">
+            <NewAddressForm @saved="id => family.addressId = id" />
+          </b-collapse>
+        </Box>
       </b-collapse>
     </b-container>
   </Box>
@@ -56,38 +79,47 @@ import { v4 as uuidv4 } from "uuid";
 import { ACTIONS } from "@/store";
 import Box from "@/components/Box.vue";
 import Guest from "@/components/Admin/Guests/Guest.vue";
+import NewAddressForm from "@/components/forms/NewAddressForm";
 
 export default {
   name: "Family",
   props: ["family"],
   components: {
     Box,
-    Guest
+    Guest,
+    NewAddressForm,
   },
   data() {
     return {
       collapseOpen: false,
-      collapseId: uuidv4()
+      collapseId: uuidv4(),
+      addressCollapseId: uuidv4(),
     };
   },
   computed: {
+    addresses() {
+      return this.$store.getters.addresses;
+    },
     headMember() {
-      return this.members.find(m => m.guestId == this.family.headMemberId);
+      return this.members.find((m) => m.guestId == this.family.headMemberId);
     },
     members() {
       return this.$store.getters.guestsInFamily(this.family.familyId);
-    }
+    },
   },
   methods: {
     toggleCollapse() {
       this.$root.$emit("bv::toggle::collapse", this.collapseId);
       this.collapseOpen = !this.collapseOpen;
     },
+    toggleAddressCollapse() {
+      this.$root.$emit("bv::toggle::collapse", this.addressCollapseId);
+    },
     openGuestModal() {
       this.$emit("newGuest", this.family.familyId);
     },
     async promoteGuest(guestId) {
-      let family = {... this.family};
+      let family = { ...this.family };
       family.headMemberId = guestId;
       await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.UPDATE, family);
     },
@@ -97,14 +129,14 @@ export default {
       if (confirm("Are you sure you want to delete the " + name + " family?")) {
         const id = this.family.familyId;
         await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.DELETE, id);
-  
+
         const affectedGuests = this.$store.getters.guestsInFamily(id);
         for (let guest of affectedGuests) {
           guest.familyId = null;
           await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, guest);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>

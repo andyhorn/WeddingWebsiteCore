@@ -62,13 +62,13 @@ export default {
     Family,
     Box,
     NewGuestModal,
-    NewFamilyModal
+    NewFamilyModal,
   },
   data() {
     return {
       isNewGuestModalVisible: false,
       isNewFamilyModalVisible: false,
-      selectedFamilyId: null
+      selectedFamilyId: null,
     };
   },
   computed: {
@@ -82,8 +82,10 @@ export default {
       return this.$store.getters.guests;
     },
     guestsWithoutFamilies() {
-      return this.$store.getters.guestsWithoutFamilies.sort((a, b) => a.firstName - b.firstName);
-    }
+      return this.$store.getters.guestsWithoutFamilies.sort(
+        (a, b) => a.firstName - b.firstName
+      );
+    },
   },
   methods: {
     addGuestToFamily(familyId) {
@@ -100,14 +102,18 @@ export default {
     async fetchAllGuests() {
       await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.FETCH_ALL);
     },
+    async fetchAllAddresses() {
+      await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.FETCH_ALL);
+    },
     async fetch() {
       await this.fetchAllFamilies();
       await this.fetchAllGuests();
-    }
+      await this.fetchAllAddresses();
+    },
   },
   mounted() {
     this.fetch();
-  }
+  },
 };
 </script>
 
