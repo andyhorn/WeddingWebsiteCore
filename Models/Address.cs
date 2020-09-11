@@ -78,9 +78,5 @@ namespace WeddingWebsiteCore.Models
                 return builder.ToString();
             }
         }
-
-        public ICollection<Family> Families { get; set; }
-        public ICollection<Vendor> Vendors { get; set; }
-        public ICollection<Event> Events { get; set; }
     }
 }

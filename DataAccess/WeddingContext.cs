@@ -24,16 +24,6 @@ namespace WeddingWebsiteCore.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Address>()
-                .HasMany(address => address.Events)
-                .WithOne(@event => @event.Address);
-            modelBuilder.Entity<Address>()
-                .HasMany(address => address.Families)
-                .WithOne(family => family.Address);
-            modelBuilder.Entity<Address>()
-                .HasMany(address => address.Vendors)
-                .WithOne(vendor => vendor.Address);
-
             modelBuilder.Entity<Family>()
                 .HasMany(family => family.Members)
                 .WithOne(member => member.Family);
