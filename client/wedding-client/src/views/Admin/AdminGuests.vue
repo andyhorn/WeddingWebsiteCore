@@ -124,9 +124,6 @@ export default {
         this.fetchAllEvents(),
         this.fetchAllRsvps(),
       ]);
-      // await this.fetchAllFamilies();
-      // await this.fetchAllGuests();
-      // await this.fetchAllAddresses();
       this.isLoading = false;
     },
   },

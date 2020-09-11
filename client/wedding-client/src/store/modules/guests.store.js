@@ -121,7 +121,7 @@ const mutations = {
         state.guests.splice(index, 1);
     },
     [GUEST_MUTATIONS.RESET_GUESTS](state) {
-        state = initialState();
+        state.guests = [];
     }
 }
 

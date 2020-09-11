@@ -16,7 +16,7 @@
               <b-form-checkbox switch v-model="invites" :value="event.eventId" />
             </td>
             <td class="text-center">
-              <RsvpIndicator :response="rsvps.find(x => x.eventId == event.eventId)" />
+              <RsvpIndicator :rsvp="rsvps.find(x => x.eventId == event.eventId)" />
             </td>
           </tr>
         </tbody>
@@ -84,9 +84,7 @@ export default {
       this.isBusy = false;
     },
     async updateInviteForEvent(eventId, isInvited) {
-      console.log("updating invites for " + eventId + ": " + isInvited);
       const existingInvite = this.rsvps.find((x) => x.eventId == eventId);
-      console.log(existingInvite);
 
       if (!!existingInvite && !isInvited) {
         // UNINVITE

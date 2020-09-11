@@ -122,7 +122,6 @@ export default {
         if (a.firstName == b.firstName) return 0;
         return a.firstName < b.firstName ? -1 : 1;
       });
-      console.log(sorted);
       return sorted;
     },
     members() {
@@ -166,7 +165,6 @@ export default {
       }
     },
     async onAddressChange(addressId) {
-      console.log("address changed; updating family");
       const updated = await this.$store.dispatch(
         ACTIONS.FAMILY_ACTIONS.UPDATE,
         this.family

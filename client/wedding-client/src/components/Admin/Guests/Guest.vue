@@ -12,7 +12,7 @@
             {{ guest.firstName }} {{ guest.lastName }}
           </p>
         </div>
-        <p v-if="guest.isChild" class="m-0 p-0 text-subtitle text-italic">Child</p>
+        <p v-if="guest.isChild" class="m-0 p-0 text-subtitle text-italic">{{ parentName }}</p>
       </b-col>
       <b-col class="d-flex justify-content-end align-items-center">
         <RsvpInviteForm :guestId="guest.guestId" />
@@ -147,6 +147,20 @@ export default {
     },
     possibleParents() {
       return this.$store.getters.nonChildren;
+    },
+    parentName() {
+      if (this.guest.isChild) {
+        let label = "Child";
+        const parent = this.$store.getters.findGuest(this.guest.parentId);
+
+        if (parent) {
+          label += ` of ${parent.firstName} ${parent.lastName}`;
+        }
+
+        return label;
+      }
+
+      return "";
     },
   },
   methods: {
