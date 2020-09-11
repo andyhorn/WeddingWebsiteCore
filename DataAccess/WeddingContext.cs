@@ -18,6 +18,7 @@ namespace WeddingWebsiteCore.DataAccess
         public DbSet<Vendor> Vendors { get; set; }
         public DbSet<WeddingMember> WeddingMembers { get; set; }
         public DbSet<WeddingRole> WeddingRoles { get; set; }
+        public DbSet<Tier> Tiers { get; set; }
 
         public WeddingContext(DbContextOptions options)
             : base(options) { }
