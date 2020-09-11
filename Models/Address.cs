@@ -12,6 +12,7 @@ namespace WeddingWebsiteCore.Models
         public string StreetNumber { get; set; }
         public string StreetName { get; set; }
         public string StreetDetail { get; set; }
+        public string City { get; set; }
 
         [Column("State", TypeName = "char(2)")]
         public string State { get; set; }
