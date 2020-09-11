@@ -30,12 +30,9 @@
           @click="openGuestModal"
         >Add member</b-button>
         <Box class="mb-3">
-          <Guest :guest="members.find(g => g.guestId == family.headMemberId)" />
+          <Guest :guest="headMember" />
         </Box>
-        <Box
-          v-for="member in members.filter(g => g.guestId != family.headMemberId)"
-          :key="member.guestId"
-        >
+        <Box v-for="member in nonHeadMembers" :key="member.guestId">
           <div class="d-flex align-items-center">
             <a
               @click="promoteGuest(member.guestId)"
@@ -43,6 +40,7 @@
             >
               <b-icon-arrow-bar-up />
             </a>
+            <span v-else class="ml-3" />
             <Guest :guest="member" />
           </div>
         </Box>
@@ -115,6 +113,17 @@ export default {
     },
     headMember() {
       return this.members.find((m) => m.guestId == this.family.headMemberId);
+    },
+    nonHeadMembers() {
+      const members = this.members.filter(
+        (x) => x.guestId != this.family.headMemberId
+      );
+      const sorted = members.sort((a, b) => {
+        if (a.firstName == b.firstName) return 0;
+        return a.firstName < b.firstName ? -1 : 1;
+      });
+      console.log(sorted);
+      return sorted;
     },
     members() {
       return this.$store.getters.guestsInFamily(this.family.familyId);
