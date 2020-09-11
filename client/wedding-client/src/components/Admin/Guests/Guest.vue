@@ -57,12 +57,27 @@
             </b-col>
             <b-col>
               <b-form-group label="Family">
-                <b-select v-model="guest.familyId" :disabled="families.length == 0">
+                <b-select v-model="guestFamilyId" :disabled="families.length == 0">
                   <b-select-option
                     v-for="family in families"
                     :key="family.familyId"
                     :value="family.familyId"
                   >{{ family.name }}</b-select-option>
+                </b-select>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-row v-if="guest.isChild">
+            <b-col>
+              <b-form-group label="Parent">
+                <b-select v-model="guest.parentId">
+                  <option
+                    v-for="guest in possibleParents"
+                    :key="guest.guestId"
+                    :value="guest.guestId"
+                  >
+                    <span>{{ guest.firstName }} {{ guest.lastName }}</span>
+                  </option>
                 </b-select>
               </b-form-group>
             </b-col>
@@ -102,7 +117,17 @@ export default {
     return {
       collapseOpen: false,
       collapseId: uuidv4(),
+      guestFamilyId: null,
     };
+  },
+  watch: {
+    "guest.familyId": {
+      deep: true,
+      immediate: true,
+      handler: function () {
+        this.guestFamilyId = this.guest.familyId;
+      },
+    },
   },
   computed: {
     families() {
@@ -120,6 +145,9 @@ export default {
     events() {
       return this.$store.getters.events;
     },
+    possibleParents() {
+      return this.$store.getters.nonChildren;
+    },
   },
   methods: {
     async onDelete() {
@@ -136,10 +164,9 @@ export default {
       }
     },
     async onSave() {
-      const data = { ...this.guest };
-      const familyId = this.familyAssignmentId;
+      const familyId = this.guestFamilyId;
+      const data = Object.assign({}, this.guest, { familyId });
 
-      data.familyId = familyId;
       await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, data);
 
       await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.FETCH, familyId);

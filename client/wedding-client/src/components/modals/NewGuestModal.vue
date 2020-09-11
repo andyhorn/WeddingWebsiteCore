@@ -78,6 +78,17 @@
             </b-form-group>
           </b-col>
         </b-row>
+        <b-row v-if="isChild">
+          <b-col>
+            <b-form-group label="Parent">
+              <b-select v-model="parentId">
+                <option v-for="guest in guests" :key="guest.guestId" :value="guest.guestId">
+                  <span>{{ guest.firstName }} {{ guest.lastName }}</span>
+                </option>
+              </b-select>
+            </b-form-group>
+          </b-col>
+        </b-row>
       </b-container>
       <b-button type="Submit" :disabled="isBusy">
         <b-spinner small v-if="isBusy" />
@@ -91,74 +102,85 @@
 import { ACTIONS } from "@/store";
 
 export default {
-    name: "NewGuestModal",
-    props: ['families', 'selectedFamilyId', 'visible'],
-    data() {
-        return {
-            firstName: "",
-            lastName: "",
-            isChild: false,
-            isWeddingMember: false,
-            familyId: null,
-            firstNameState: null,
-            lastNameState: null,
-            isBusy: false
-        }
+  name: "NewGuestModal",
+  props: ["families", "selectedFamilyId", "visible"],
+  data() {
+    return {
+      firstName: "",
+      lastName: "",
+      isChild: false,
+      parentId: null,
+      isWeddingMember: false,
+      familyId: null,
+      firstNameState: null,
+      lastNameState: null,
+      isBusy: false,
+    };
+  },
+  computed: {
+    guests() {
+      return this.$store.getters.nonChildren;
     },
-    methods: {
-        onOpen() {
-            if (this.selectedFamilyId) {
-                this.familyId = this.selectedFamilyId;
-            }
-        },
-        onCancel() {
-            this.close();
-        },
-        async onSubmit() {
-            this.isBusy = true;
-            const guest = {
-                firstName: this.firstName,
-                lastName: this.lastName,
-                isChild: this.isChild,
-                isWeddingMember: this.isWeddingMember,
-                familyId: this.familyId
-            };
+  },
+  methods: {
+    onOpen() {
+      if (this.selectedFamilyId) {
+        this.familyId = this.selectedFamilyId;
+      }
+    },
+    onCancel() {
+      this.close();
+    },
+    async onSubmit() {
+      this.isBusy = true;
+      const guest = {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        isChild: this.isChild,
+        isWeddingMember: this.isWeddingMember,
+        familyId: this.familyId,
+        parentId: this.isChild ? this.parentId : null,
+      };
 
-            await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.CREATE, guest);
-            
-            if (guest.familyId) {
-                await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.FETCH, guest.familyId);
-            }
+      await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.CREATE, guest);
 
-            this.close();
-        },
-        onFirstNameInput() {
-            if (this.firstName && this.firstName.length) {
-                this.firstNameState = true;
-            } else {
-                this.lastNameState = false;
-            }
-        },
-        onLastNameInput() {
-            if (this.lastName && this.lastName.length) {
-                this.lastNameState = true;
-            } else {
-                this.lastNameState = false;
-            }
-        },
-        close() {
-            this.firstName = "";
-            this.lastName = "";
-            this.isChild = false;
-            this.isWeddingMember = false;
-            this.familyId = null;
-            this.firstNameState = null;
-            this.lastNameState = null;
-            this.isBusy = false;
-            this.$emit("closed");
-        }
-    }
-}
+      if (guest.familyId) {
+        await this.$store.dispatch(
+          ACTIONS.FAMILY_ACTIONS.FETCH,
+          guest.familyId
+        );
+      }
+
+      this.close();
+    },
+    onFirstNameInput() {
+      if (this.firstName && this.firstName.length) {
+        this.firstNameState = true;
+      } else {
+        this.lastNameState = false;
+      }
+    },
+    onLastNameInput() {
+      if (this.lastName && this.lastName.length) {
+        this.lastNameState = true;
+      } else {
+        this.lastNameState = false;
+      }
+    },
+    close() {
+      this.firstName = "";
+      this.lastName = "";
+      this.isChild = false;
+      this.parentId = null;
+      this.isWeddingMember = false;
+      this.familyId = null;
+      this.firstNameState = null;
+      this.lastNameState = null;
+      this.isBusy = false;
+      this.$emit("closed");
+    },
+  },
+};
 </script>
 
 <style scoped>

@@ -50,6 +50,10 @@ namespace WeddingWebsiteCore.DataAccess
                 .HasMany(guest => guest.RSVPs)
                 .WithOne(rsvp => rsvp.Guest)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Guest>()
+                .HasOne(guest => guest.Parent)
+                .WithMany(parent => parent.Children)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<WeddingMemberRole>()
                 .HasOne(weddingMemberRole => weddingMemberRole.WeddingRole)
