@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WeddingWebsiteCore.Contracts;
 using WeddingWebsiteCore.DataAccess;
+using WeddingWebsiteCore.Helpers;
 using WeddingWebsiteCore.Models;
 
 namespace WeddingWebsiteCore.Controllers
@@ -89,7 +90,8 @@ namespace WeddingWebsiteCore.Controllers
 
             try
             {
-                _context.Entry(address).State = EntityState.Modified;
+                AddressHelper.UpdateAddress(existing, address);
+                _context.Entry(existing).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)
