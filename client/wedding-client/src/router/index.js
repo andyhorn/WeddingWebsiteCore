@@ -1,12 +1,13 @@
 import store from "@/store"
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Login from "../views/Login.vue";
-import AdminGuests from "../views/Admin/AdminGuests.vue";
-import AdminRSVP from "../views/Admin/AdminRSVP.vue";
-import AdminEvents from "../views/Admin/AdminEvents.vue";
-import AdminEventDetails from "../views/Admin/AdminEventDetails.vue";
+import Home from '@/views/Home'
+import Login from "@/views/Login";
+import AdminGuests from "@/views/Admin/AdminGuests";
+import AdminRSVP from "@/views/Admin/AdminRSVP";
+import AdminEvents from "@/views/Admin/AdminEvents";
+import AdminEventDetails from "@/views/Admin/AdminEventDetails";
+import AdminAddresses from "@/views/Admin/AdminAddresses";
 
 Vue.use(VueRouter)
 
@@ -40,6 +41,11 @@ const routes = [
     path: "/admin/events/:id",
     name: "Admin-Event-Details",
     component: AdminEventDetails
+  },
+  {
+    path: "/admin/addresses",
+    name: "Admin-Addresses",
+    component: AdminAddresses
   }
   // {
   //   path: '/about',
