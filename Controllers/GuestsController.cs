@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -58,8 +60,12 @@ namespace WeddingWebsiteCore.Controllers
 
             try
             {
+                var uniqueInviteCode = await GetUniqueInviteCode();
+                guest.InviteCode = uniqueInviteCode;
+
                 await _context.AddAsync(guest);
                 await _context.SaveChangesAsync();
+
                 await SetAsHeadMemberIfAvailable(guest);
             }
             catch (Exception e)
@@ -166,6 +172,44 @@ namespace WeddingWebsiteCore.Controllers
             family.HeadMemberId = guest.GuestId;
 
             await _context.SaveChangesAsync();
+        }
+
+        private async Task<string> GetUniqueInviteCode()
+        {
+            string code = string.Empty;
+
+            while (string.IsNullOrWhiteSpace(code))
+            {
+                var newCode = GetInviteCode();
+
+                var inUse = await _context.Guests
+                    .FirstOrDefaultAsync(guest => guest.InviteCode.Equals(newCode));
+
+                if (inUse == null)
+                {
+                    code = newCode;
+                }
+            }
+
+            return code;
+        }
+
+        private string GetInviteCode()
+        {
+            const int length = 6;
+            const int minimum = 65;
+            const int maximum = 90;
+
+            var builder = new StringBuilder();
+            var random = new Random();
+
+            for (var i = 0; i < length; i++)
+            {
+                var val = random.Next(minimum, maximum);
+                builder.Append((char)val);
+            }
+
+            return builder.ToString();
         }
     }
 }

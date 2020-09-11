@@ -42,5 +42,6 @@ namespace WeddingWebsiteCore.Models
         // RSVPs
         [JsonIgnore]
         public ICollection<Rsvp> RSVPs { get; set; }
+        public string InviteCode { get; set; }
     }
 }
