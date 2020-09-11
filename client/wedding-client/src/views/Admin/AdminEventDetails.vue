@@ -34,7 +34,11 @@
           </b-input-group-append>
         </b-input-group>
       </b-form-group>
-      <b-collapse id="newAddressCollapse" class="border rounded p-3 mb-5">
+      <b-collapse
+        id="newAddressCollapse"
+        class="border rounded p-3 mb-5"
+        v-model="showNewAddressForm"
+      >
         <NewAddressForm @saved="onAddressSaved" />
       </b-collapse>
       <b-row>
@@ -62,6 +66,7 @@ export default {
   data() {
     return {
       event: null,
+      showNewAddressForm: false,
     };
   },
   computed: {
@@ -114,7 +119,7 @@ export default {
     },
     onAddressSaved(id) {
       this.event.addressId = id;
-      this.$root.$emit("bv::collapse::toggle", "newAddressCollapse");
+      this.showNewAddressForm = false;
     },
   },
 };

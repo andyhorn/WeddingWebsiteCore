@@ -71,7 +71,11 @@
             </b-input-group>
           </b-col>
         </b-row>
-        <b-collapse id="newAddressCollapse" class="border rounded p-3 mb-5">
+        <b-collapse
+          id="newAddressCollapse"
+          class="border rounded p-3 mb-5"
+          v-model="showNewAddressForm"
+        >
           <NewAddressForm @saved="onAddressSave" />
         </b-collapse>
       </b-container>
@@ -126,6 +130,7 @@ export default {
       eventStartTimeState: null,
       eventEndTimeState: null,
       eventStartDateMin: new Date(),
+      showNewAddressForm: false,
     };
   },
   computed: {
@@ -204,9 +209,8 @@ export default {
   },
   methods: {
     onAddressSave(id) {
-      // id => event.addressId = id
       this.event.addressId = id;
-      this.$root.$emit("bv::collapse::toggle", "newAddressCollapse");
+      this.showNewAddressForm = false;
     },
     getTimeFromString(timeString) {
       return DateTime.parseTimeString(timeString);

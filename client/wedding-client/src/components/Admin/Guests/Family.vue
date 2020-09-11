@@ -49,7 +49,7 @@
         <Box class="mt-3">
           <b-form-group label="Address">
             <b-input-group>
-              <b-select v-model="family.addressId" @change="onAddressChange">
+              <b-select v-model="family.addressId" @input="onAddressChange">
                 <option :value="null">None</option>
                 <option
                   v-for="address in addresses"
@@ -65,7 +65,7 @@
               </b-input-group-append>
             </b-input-group>
           </b-form-group>
-          <b-collapse :id="addressCollapseId" class="p-3">
+          <b-collapse :id="addressCollapseId" class="p-3" v-model="showNewAddressForm">
             <NewAddressForm @saved="id => family.addressId = id" />
           </b-collapse>
         </Box>
@@ -106,6 +106,7 @@ export default {
       addressCollapseId: uuidv4(),
       addressSavedToastId: uuidv4(),
       addressNotSavedToastId: uuidv4(),
+      showNewAddressForm: false,
     };
   },
   computed: {
@@ -125,7 +126,7 @@ export default {
       this.collapseOpen = !this.collapseOpen;
     },
     toggleAddressCollapse() {
-      this.$root.$emit("bv::toggle::collapse", this.addressCollapseId);
+      this.showNewAddressForm = !this.showNewAddressForm;
     },
     openGuestModal() {
       this.$emit("newGuest", this.family.familyId);
@@ -156,6 +157,7 @@ export default {
       }
     },
     async onAddressChange(addressId) {
+      console.log("address changed; updating family");
       const updated = await this.$store.dispatch(
         ACTIONS.FAMILY_ACTIONS.UPDATE,
         this.family
@@ -163,7 +165,7 @@ export default {
 
       if (updated) {
         this.showAddressSavedToast();
-        this.$root.$emit("bv::collapse::toggle", this.addressCollapseId);
+        this.showNewAddressForm = false;
       } else {
         this.showAddressNotSavedToast();
       }
