@@ -12,13 +12,15 @@
             <b-nav-item to>Wedding Party</b-nav-item>
             <b-nav-item to>Gift Registries</b-nav-item>
             <b-nav-item-dropdown v-if="isLoggedIn" id="nav-dropdown-admin" text="Admin" left>
+              <b-dropdown-item :to="{ name: 'Admin-Addresses' }">Addresses</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'Admin-Guests' }">Guests &amp; Families</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'Admin-RSVP' }">RSVPs</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'Admin-Photos' }">Photos</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'Admin-Events' }">Events</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'Admin-Party' }">Wedding Party</b-dropdown-item>
+              <b-dropdown-divider />
+              <b-dropdown-item class="text-default" @click="logout">Logout</b-dropdown-item>
             </b-nav-item-dropdown>
-            <b-nav-item v-if="isLoggedIn" @click="logout">Logout</b-nav-item>
           </b-navbar-nav>
         </b-navbar>
       </div>
@@ -38,21 +40,21 @@ export default {
     return {
       isSticky: false,
       style: {
-        paddingBottom: 0
+        paddingBottom: 0,
       },
       stickyHeight: 0,
-      triggerPosition: 0
+      triggerPosition: 0,
     };
   },
   watch: {
     isLoggedIn: {
       immediate: true,
-      handler: function(isLoggedIn) {
+      handler: function (isLoggedIn) {
         if (!isLoggedIn && this.$route.name.includes("Admin")) {
           this.$router.push({ name: "Home" });
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     logout() {
@@ -60,12 +62,12 @@ export default {
     },
     checkForToken() {
       this.$store.dispatch(ACTIONS.AUTHENTICATION_ACTIONS.CHECK_TOKEN);
-    }
+    },
   },
   computed: {
     isLoggedIn() {
       return this.$store.getters.isLoggedIn;
-    }
+    },
   },
   mounted() {
     this.checkForToken();
@@ -77,7 +79,7 @@ export default {
     this.stickyHeight = header.offsetHeight;
 
     const vm = this;
-    window.onscroll = function() {
+    window.onscroll = function () {
       if (window.pageYOffset > vm.triggerPosition) {
         vm.isSticky = true;
         vm.style.paddingBottom = vm.stickyHeight + "px";
@@ -86,7 +88,7 @@ export default {
         vm.style.paddingBottom = 0;
       }
     };
-  }
+  },
 };
 </script>
 
