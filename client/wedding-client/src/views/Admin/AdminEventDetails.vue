@@ -1,34 +1,42 @@
 <template>
-  <div class="container pt-5">
+  <div class="container py-5">
     <h1>Event details</h1>
     <b-form @submit.prevent="onSaveEvent" v-if="!!event">
-      <b-row>
-        <b-col>
-          <h2>Title</h2>
-          <b-input v-model="event.name" />
-        </b-col>
-        <b-col>
-          <h2>Description</h2>
-          <b-textarea v-model="event.description" />
-        </b-col>
-      </b-row>
-      <b-row class="py-3">
-        <b-col>
-          <h2>Start time</h2>
+      <b-form-group label="Title">
+        <b-input v-model="event.name" />
+      </b-form-group>
+      <b-form-group label="Description">
+        <b-textarea v-model="event.description" />
+      </b-form-group>
+      <b-form-row>
+        <b-form-group class="col" label="Start time">
           <DateTimePicker v-model="startTime" />
-        </b-col>
-        <b-col>
-          <h2>End time</h2>
+        </b-form-group>
+        <b-form-group class="col" label="End time">
           <DateTimePicker v-model="endTime" />
-        </b-col>
-      </b-row>
-      <b-row class="py-3 mb-5">
-        <b-col>
-          <h2>Location</h2>
-          <p>addresses here...</p>
-          <NewAddressForm />
-        </b-col>
-      </b-row>
+        </b-form-group>
+      </b-form-row>
+      <b-form-group label="Location">
+        <b-input-group>
+          <b-select expanded v-model="event.addressId">
+            <option :value="null">None</option>
+            <option
+              v-for="address in addresses"
+              :key="address.addressId"
+              :value="address.addressId"
+            >
+              <span v-if="!!address.name">({{ address.name }})</span>
+              {{ address.fullString }}
+            </option>
+          </b-select>
+          <b-input-group-append>
+            <b-button v-b-toggle.newAddressCollapse variant="primary">New address</b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </b-form-group>
+      <b-collapse id="newAddressCollapse" class="border rounded p-3 mb-5">
+        <NewAddressForm @saved="id => event.addressId = id" />
+      </b-collapse>
       <b-row>
         <b-col>
           <b-button squared variant="success" type="submit">Save</b-button>
@@ -57,6 +65,9 @@ export default {
     };
   },
   computed: {
+    addresses() {
+      return this.$store.getters.addresses;
+    },
     startTime: {
       get() {
         const obj = {
@@ -88,6 +99,7 @@ export default {
   mounted() {
     const id = this.$route.params.id;
     this.fetch(id);
+    this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.FETCH_ALL);
   },
   methods: {
     fetch(id) {

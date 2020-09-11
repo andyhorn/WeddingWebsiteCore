@@ -2,7 +2,7 @@
   <b-modal size="lg" :visible="visible" @hide="onClose" hide-footer title="New Event">
     <b-form @submit.prevent="onSubmit">
       <b-container>
-        <b-row>
+        <b-row class="py-2">
           <b-col>
             <b-form-group :state="eventNameState" invalid-feedback="Name is required.">
               <h3>Title</h3>
@@ -10,7 +10,7 @@
             </b-form-group>
           </b-col>
         </b-row>
-        <b-row>
+        <b-row class="py-2">
           <b-col>
             <b-form-group>
               <h3>Description</h3>
@@ -18,7 +18,7 @@
             </b-form-group>
           </b-col>
         </b-row>
-        <b-row class="pb-5 pt-2">
+        <b-row class="py-2">
           <b-col>
             <h2>
               Start time
@@ -50,6 +50,30 @@
             />
           </b-col>
         </b-row>
+        <b-row class="py-2 mb-3">
+          <b-col>
+            <h2>Location</h2>
+            <b-input-group>
+              <b-select expanded v-model="event.addressId">
+                <option :value="null">None</option>
+                <option
+                  v-for="address in addresses"
+                  :key="address.addressId"
+                  :value="address.addressId"
+                >
+                  <span v-if="!!address.name">({{ address.name }})</span>
+                  {{ address.fullString }}
+                </option>
+              </b-select>
+              <b-input-group-append>
+                <b-button variant="primary" v-b-toggle.newAddressCollapse>New Address</b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </b-col>
+        </b-row>
+        <b-collapse id="newAddressCollapse" class="border rounded p-3 mb-5">
+          <NewAddressForm @saved="id => event.addressId = id" />
+        </b-collapse>
       </b-container>
       <div class="footer px-3 space-buttons">
         <b-button
@@ -69,6 +93,7 @@
 <script>
 import TimePicker from "@/components/TimePicker";
 import DateTimePicker from "@/components/DateTimePicker";
+import NewAddressForm from "@/components/forms/NewAddressForm";
 import { ACTIONS } from "@/store";
 
 import * as DateTime from "@/helpers/dateTime";
@@ -79,6 +104,7 @@ export default {
   components: {
     TimePicker,
     DateTimePicker,
+    NewAddressForm,
   },
   data() {
     return {
@@ -103,6 +129,9 @@ export default {
     };
   },
   computed: {
+    addresses() {
+      return this.$store.getters.addresses;
+    },
     eventEndTimeMin() {
       if (
         this.event.startTime.date != null &&
@@ -188,6 +217,7 @@ export default {
         const eventData = {
           name: this.event.name,
           description: this.event.description,
+          addressId: this.event.addressId,
           startTime: startTime,
           endTime: endTime,
         };

@@ -14,27 +14,24 @@
       <b-table :fields="fields" :items="events" show-empty>
         <template v-slot:cell(startTime)="data">{{ parseDate(data.item.startTime) }}</template>
         <template v-slot:cell(endTime)="data">{{ parseDate(data.item.endTime) }}</template>
+        <template v-slot:cell(address)="data">
+          <span>{{ printAddress(data.item.addressId) }}</span>
+        </template>
         <template v-slot:cell(options)="data">
-          <b-container>
-            <b-row>
-              <b-col>
-                <b-button
-                  variant="success"
-                  squared
-                  class="mr-1 text-light"
-                  @click="onEditEvent(data.item.eventId)"
-                >Edit</b-button>
-              </b-col>
-              <b-col>
-                <b-button
-                  variant="danger"
-                  squared
-                  class="ml-1"
-                  @click="onDeleteEvent(data.item.eventId)"
-                >Delete</b-button>
-              </b-col>
-            </b-row>
-          </b-container>
+          <div class="d-flex">
+            <b-button
+              variant="success"
+              squared
+              class="mr-1 text-light"
+              @click="onEditEvent(data.item.eventId)"
+            >Edit</b-button>
+            <b-button
+              variant="danger"
+              squared
+              class="ml-1"
+              @click="onDeleteEvent(data.item.eventId)"
+            >Delete</b-button>
+          </div>
         </template>
         <template v-slot:empty>
           <p class="text-center mt-3 text-dark">No events found</p>
@@ -106,6 +103,20 @@ export default {
       const utcDate = new Date(dateString);
       const localDateString = utcDate.toLocaleString();
       return localDateString;
+    },
+    printAddress(addressId) {
+      const address = this.$store.getters.findAddress(addressId);
+      if (address) {
+        let addressString = "";
+        if (address.name) {
+          addressString += "(" + address.name + ") ";
+        }
+
+        addressString += address.fullString;
+        return addressString;
+      }
+
+      return "";
     },
   },
 };

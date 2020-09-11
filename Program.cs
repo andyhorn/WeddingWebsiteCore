@@ -19,12 +19,12 @@ namespace WeddingWebsiteCore
     {
         public static async Task Main(string[] args)
         {
-            //CreateHostBuilder(args).Build().Run();
             var host = CreateHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<WeddingContext>();
+
                 await context.Database.MigrateAsync();
             }
 

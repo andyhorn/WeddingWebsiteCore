@@ -24,7 +24,8 @@ const initialState = () => defaultState;
 const state = initialState();
 
 const getters = {
-
+    addresses: state => state.addresses,
+    findAddress: state => id => state.addresses.find(x => x.addressId == id)
 };
 
 const actions = {
