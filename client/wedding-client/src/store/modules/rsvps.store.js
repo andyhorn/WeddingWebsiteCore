@@ -25,7 +25,8 @@ const state = initialState();
 
 const getters = {
     rsvps: state => state.rsvps,
-    findRsvp: state => rsvpId => state.rsvps.find(x => x.rsvpId == rsvpId)
+    findRsvp: state => rsvpId => state.rsvps.find(x => x.rsvpId == rsvpId),
+    findRsvpsForGuest: state => guestId => state.rsvps.filter(x => x.guestId == guestId)
 };
 
 const actions = {
@@ -99,7 +100,7 @@ const mutations = {
 
     [MUTATIONS.ADD_RSVP](state, rsvp) {
         const rsvps = state.rsvps;
-        const index = state.rsvps.findIndex(x => x.rsvpId == rsvpId);
+        const index = state.rsvps.findIndex(x => x.rsvpId == rsvp.rsvpId);
 
         if (index == -1) {
             rsvps.push(rsvp);

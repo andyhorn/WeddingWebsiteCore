@@ -109,11 +109,24 @@ export default {
     async fetchAllAddresses() {
       await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.FETCH_ALL);
     },
+    async fetchAllEvents() {
+      await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.FETCH_ALL);
+    },
+    async fetchAllRsvps() {
+      await this.$store.dispatch(ACTIONS.RSVP_ACTIONS.FETCH_ALL);
+    },
     async fetch() {
       this.isLoading = true;
-      await this.fetchAllFamilies();
-      await this.fetchAllGuests();
-      await this.fetchAllAddresses();
+      await Promise.all([
+        this.fetchAllFamilies(),
+        this.fetchAllGuests(),
+        this.fetchAllAddresses(),
+        this.fetchAllEvents(),
+        this.fetchAllRsvps(),
+      ]);
+      // await this.fetchAllFamilies();
+      // await this.fetchAllGuests();
+      // await this.fetchAllAddresses();
       this.isLoading = false;
     },
   },

@@ -14,7 +14,10 @@
         </div>
         <p v-if="guest.isChild" class="m-0 p-0 text-subtitle text-italic">Child</p>
       </b-col>
-      <b-col class="d-flex align-items-center justify-content-end">
+      <b-col class="d-flex justify-content-end align-items-center">
+        <RsvpInviteForm :guestId="guest.guestId" />
+      </b-col>
+      <b-col class="d-flex align-items-center justify-content-end" cols="1">
         <b-button-close @click="onDelete" />
       </b-col>
     </b-row>
@@ -83,11 +86,17 @@
 
 <script>
 import { v4 as uuidv4 } from "uuid";
+
 import Box from "@/components/Box.vue";
+import RsvpInviteForm from "@/components/Admin/Guests/RsvpInviteForm.vue";
+
 import { ACTIONS } from "@/store";
 
 export default {
   name: "Guest",
+  components: {
+    RsvpInviteForm,
+  },
   props: ["guest"],
   data() {
     return {
@@ -104,6 +113,12 @@ export default {
     },
     lastNameState() {
       return !!this.guest.lastName && !!this.guest.lastName.trim();
+    },
+    rsvps() {
+      return this.$store.getters.findRsvpsForGuest(this.guest.guestId);
+    },
+    events() {
+      return this.$store.getters.events;
     },
   },
   methods: {
