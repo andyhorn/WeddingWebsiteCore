@@ -67,7 +67,7 @@ const actions = {
         return new Promise(async resolve => {
             const deleted = await addressService.delete(addressId);
             if (deleted) {
-                commit(MUTATIONS.DELETE, addressId);
+                commit(MUTATIONS.REMOVE_ADDRESS, addressId);
             }
 
             resolve(deleted);
