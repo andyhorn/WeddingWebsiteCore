@@ -41,7 +41,7 @@ namespace WeddingWebsiteCore.Controllers
         }
 
         [HttpPost(RouteContracts.PostItem)]
-        public async Task<IActionResult> PostNewAddress([FromBody]Address address)
+        public async Task<IActionResult> PostNewAddress([FromBody] Address address)
         {
             if (!ModelState.IsValid)
             {
@@ -69,7 +69,7 @@ namespace WeddingWebsiteCore.Controllers
         }
 
         [HttpPut(RouteContracts.PutItem)]
-        public async Task<IActionResult> UpdateAddress(int id, [FromBody]Address address)
+        public async Task<IActionResult> UpdateAddress(int id, [FromBody] Address address)
         {
             if (!ModelState.IsValid)
             {
