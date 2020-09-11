@@ -24,7 +24,6 @@ namespace WeddingWebsiteCore
             using (var scope = host.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<WeddingContext>();
-
                 await context.Database.MigrateAsync();
             }
 

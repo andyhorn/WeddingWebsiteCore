@@ -8,20 +8,26 @@ namespace WeddingWebsiteCore.Models
     {
         public int VendorId { get; set; }
 
-        [Required]
+        [Required, Column("name")]
         public string Name { get; set; }
 
+        [Column("description")]
         public string Description { get; set; }
 
-        [DataType(DataType.PhoneNumber)]
+        [DataType(DataType.PhoneNumber), Column("contactPhone")]
         public string ContactPhone { get; set; }
 
-        [DataType(DataType.EmailAddress)]
+        [DataType(DataType.EmailAddress), Column("contactEmail")]
         public string ContactEmail { get; set; }
 
-        [DataType(DataType.Url)]
+        [DataType(DataType.Url), Column("url")]
         public string Url { get; set; }
 
+        // Address
+        [ForeignKey(nameof(AddressId))]
+        public Address Address { get; set; }
+
+        [Column("FK_addressId")]
         public int? AddressId { get; set; }
     }
 }

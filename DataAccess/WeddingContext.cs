@@ -31,6 +31,20 @@ namespace WeddingWebsiteCore.DataAccess
             modelBuilder.Entity<Family>()
                 .HasOne(family => family.Tier)
                 .WithMany(tier => tier.Families);
+            modelBuilder.Entity<Family>()
+                .HasOne(family => family.Address)
+                .WithMany(address => address.Families)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Event>()
+                .HasOne(@event => @event.Address)
+                .WithMany(address => address.Events)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Vendor>()
+                .HasOne(vendor => vendor.Address)
+                .WithMany(address => address.Vendors)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Guest>()
                 .HasOne(guest => guest.Rsvp)

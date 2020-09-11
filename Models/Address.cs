@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
@@ -11,28 +10,31 @@ namespace WeddingWebsiteCore.Models
     {
         public int AddressId { get; set; }
 
+        [Column("name")]
         public string Name { get; set; }
 
-        [Required]
+        [Required, Column("streetNumber")]
         public string StreetNumber { get; set; }
 
-        [Required]
+        [Required, Column("streetName")]
         public string StreetName { get; set; }
 
+        [Column("streetDetail")]
         public string StreetDetail { get; set; }
 
-        [Required]
+        [Required, Column("city")]
         public string City { get; set; }
 
-        [Required]
+        [Required, Column("state")]
         public string State { get; set; }
 
-        [Required]
+        [Required, Column("postalCode")]
         public string PostalCode { get; set; }
 
-        [Required]
+        [Required, Column("country")]
         public string Country { get; set; }
 
+        [NotMapped]
         public string FullString
         {
             get
@@ -78,5 +80,9 @@ namespace WeddingWebsiteCore.Models
                 return builder.ToString();
             }
         }
+
+        public ICollection<Family> Families { get; set; }
+        public ICollection<Event> Events { get; set; }
+        public ICollection<Vendor> Vendors { get; set; }
     }
 }
