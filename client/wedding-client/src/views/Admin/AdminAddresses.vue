@@ -61,7 +61,7 @@ export default {
     },
     onEditAddress(addressId) {
       this.$router.push({
-        name: "Admin-Address-Edit",
+        name: "Admin-Address-Details",
         params: { id: addressId },
       });
     },

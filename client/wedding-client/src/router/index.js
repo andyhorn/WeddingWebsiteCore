@@ -8,6 +8,7 @@ import AdminRSVP from "@/views/Admin/AdminRSVP";
 import AdminEvents from "@/views/Admin/AdminEvents";
 import AdminEventDetails from "@/views/Admin/AdminEventDetails";
 import AdminAddresses from "@/views/Admin/AdminAddresses";
+import AdminAddressDetails from "@/views/Admin/AdminAddressDetails";
 
 Vue.use(VueRouter)
 
@@ -46,6 +47,11 @@ const routes = [
     path: "/admin/addresses",
     name: "Admin-Addresses",
     component: AdminAddresses
+  },
+  {
+    path: "/admin/addresses/:id",
+    name: "Admin-Address-Details",
+    component: AdminAddressDetails
   }
   // {
   //   path: '/about',
