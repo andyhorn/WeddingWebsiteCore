@@ -25,7 +25,6 @@ namespace WeddingWebsiteCore.Controllers
         {
             var families = await _context.Families
                 .Include(family => family.Members)
-                .Include(family => family.Address)
                 .ToListAsync();
 
             return Ok(families);
@@ -36,7 +35,6 @@ namespace WeddingWebsiteCore.Controllers
         {
             var family = await _context.Families
                 .Include(family => family.Members)
-                .Include(family => family.Address)
                 .FirstOrDefaultAsync(family => family.FamilyId.Equals(id));
 
             if (family == null)
@@ -48,7 +46,7 @@ namespace WeddingWebsiteCore.Controllers
         }
 
         [HttpPost(RouteContracts.PostItem)]
-        public async Task<IActionResult> PostNewFamily([FromBody]Family family)
+        public async Task<IActionResult> PostNewFamily([FromBody] Family family)
         {
             if (!ModelState.IsValid)
             {
@@ -83,7 +81,7 @@ namespace WeddingWebsiteCore.Controllers
         }
 
         [HttpPut(RouteContracts.PutItem)]
-        public async Task<IActionResult> UpdateFamily(int id, [FromBody]Family family)
+        public async Task<IActionResult> UpdateFamily(int id, [FromBody] Family family)
         {
             if (!ModelState.IsValid)
             {
