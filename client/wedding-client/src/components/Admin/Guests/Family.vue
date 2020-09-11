@@ -49,7 +49,7 @@
         <Box class="mt-3">
           <b-form-group label="Address">
             <b-input-group>
-              <b-select v-model="family.addressId">
+              <b-select v-model="family.addressId" @change="onAddressChange">
                 <option :value="null">None</option>
                 <option
                   v-for="address in addresses"
@@ -71,6 +71,16 @@
         </Box>
       </b-collapse>
     </b-container>
+    <b-toast
+      :id="addressSavedToastId"
+      variant="success"
+      title="Address saved!"
+    >Successfully updated address for {{ family.name }} family.</b-toast>
+    <b-toast
+      :id="addressNotSavedToastId"
+      variant="danger"
+      title="Error!"
+    >Oops! We weren't able to save the new address for the {{ family.name }} family.</b-toast>
   </Box>
 </template>
 
@@ -94,6 +104,8 @@ export default {
       collapseOpen: false,
       collapseId: uuidv4(),
       addressCollapseId: uuidv4(),
+      addressSavedToastId: uuidv4(),
+      addressNotSavedToastId: uuidv4(),
     };
   },
   computed: {
@@ -118,6 +130,12 @@ export default {
     openGuestModal() {
       this.$emit("newGuest", this.family.familyId);
     },
+    showAddressSavedToast() {
+      this.$bvToast.show(this.addressSavedToastId);
+    },
+    showAddressNotSavedToast() {
+      this.$bvToast.show(this.addressNotSavedToastId);
+    },
     async promoteGuest(guestId) {
       let family = { ...this.family };
       family.headMemberId = guestId;
@@ -135,6 +153,18 @@ export default {
           guest.familyId = null;
           await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, guest);
         }
+      }
+    },
+    async onAddressChange(addressId) {
+      const updated = await this.$store.dispatch(
+        ACTIONS.FAMILY_ACTIONS.UPDATE,
+        this.family
+      );
+
+      if (updated) {
+        this.showAddressSavedToast();
+      } else {
+        this.showAddressNotSavedToast();
       }
     },
   },

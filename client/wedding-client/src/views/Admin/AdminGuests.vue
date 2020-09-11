@@ -24,7 +24,7 @@
       :visible="isNewFamilyModalVisible"
       @closed="isNewFamilyModalVisible = false"
     />
-    <div>
+    <div v-if="!isLoading">
       <p v-if="guests.length == 0" class="text-center">No guests.</p>
       <div v-if="guestsWithoutFamilies.length" class="my-4">
         <h2>Guests (without families)</h2>
@@ -41,6 +41,9 @@
           @newGuest="addGuestToFamily"
         />
       </div>
+    </div>
+    <div v-else class="d-flex justify-content-center align-items-center">
+      <b-spinner variant="primary" style="width: 3rem; height: 3rem;" />
     </div>
   </div>
 </template>
@@ -66,6 +69,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       isNewGuestModalVisible: false,
       isNewFamilyModalVisible: false,
       selectedFamilyId: null,
@@ -106,9 +110,11 @@ export default {
       await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.FETCH_ALL);
     },
     async fetch() {
+      this.isLoading = true;
       await this.fetchAllFamilies();
       await this.fetchAllGuests();
       await this.fetchAllAddresses();
+      this.isLoading = false;
     },
   },
   mounted() {

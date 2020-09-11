@@ -1,5 +1,5 @@
 <template>
-  <b-container>
+  <b-container v-if="!!guest">
     <b-row>
       <b-col>
         <div class="d-flex align-items-center justify-content-start">
@@ -92,8 +92,8 @@ export default {
   data() {
     return {
       collapseOpen: false,
-      collapseId: uuidv4()
-    }
+      collapseId: uuidv4(),
+    };
   },
   computed: {
     families() {
@@ -104,7 +104,7 @@ export default {
     },
     lastNameState() {
       return !!this.guest.lastName && !!this.guest.lastName.trim();
-    }
+    },
   },
   methods: {
     async onDelete() {
@@ -121,7 +121,7 @@ export default {
       }
     },
     async onSave() {
-      const data = {... this.guest};
+      const data = { ...this.guest };
       const familyId = this.familyAssignmentId;
 
       data.familyId = familyId;
@@ -134,8 +134,8 @@ export default {
     toggleCollapse() {
       this.$root.$emit("bv::toggle::collapse", this.collapseId);
       this.collapseOpen = !this.collapseOpen;
-    }
-  }
+    },
+  },
 };
 </script>
 
