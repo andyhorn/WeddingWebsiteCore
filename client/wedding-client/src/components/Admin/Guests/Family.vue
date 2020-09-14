@@ -15,6 +15,7 @@
           </p>
         </b-col>
         <b-col class="d-flex justify-content-end align-items-center">
+          <FamilyRsvpInviteForm :familyId="family.familyId" class="mr-3" />
           <a href @click.prevent="onDeleteFamily">
             <b-icon-x-circle />
           </a>
@@ -88,6 +89,7 @@ import { ACTIONS } from "@/store";
 import Box from "@/components/Box.vue";
 import Guest from "@/components/Admin/Guests/Guest.vue";
 import NewAddressForm from "@/components/forms/NewAddressForm";
+import FamilyRsvpInviteForm from "@/components/Admin/Guests/FamilyRsvpInviteForm";
 
 export default {
   name: "Family",
@@ -96,6 +98,7 @@ export default {
     Box,
     Guest,
     NewAddressForm,
+    FamilyRsvpInviteForm,
   },
   data() {
     return {

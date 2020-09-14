@@ -12,7 +12,6 @@
             {{ guest.firstName }} {{ guest.lastName }}
           </p>
         </div>
-        <p class="m-0 p-0 text-subtitle text-italic">{{ guest.inviteCode }}</p>
         <p v-if="guest.isChild" class="m-0 p-0 text-subtitle text-italic">{{ parentName }}</p>
       </b-col>
       <b-col class="d-flex justify-content-end align-items-center">
