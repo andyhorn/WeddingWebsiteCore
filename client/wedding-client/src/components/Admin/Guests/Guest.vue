@@ -198,7 +198,10 @@ export default {
     },
     async onSave() {
       const familyId = this.guestFamilyId;
-      const data = Object.assign({}, this.guest, { familyId });
+      const data = Object.assign({}, this.guest, {
+        familyId,
+        isUnderTen: this.guest.isChild ? this.guest.isUnderTen : false,
+      });
 
       await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, data);
 

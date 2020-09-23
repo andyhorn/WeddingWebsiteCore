@@ -159,7 +159,7 @@ export default {
         firstName: this.firstName,
         lastName: this.lastName,
         isChild: this.isChild,
-        isUnderTen: this.isUnderTen,
+        isUnderTen: this.isChild ? this.isUnderTen : false,
         isWeddingMember: this.isWeddingMember,
         familyId: this.familyId,
         parentId: this.isChild ? this.parentId : null,
