@@ -26,6 +26,7 @@ namespace WeddingWebsiteCore.Models
 
         // Child-Parent Relationships
         public bool IsChild { get; set; } = false;
+        public bool IsUnderTen { get; set; }
 
         [ForeignKey(nameof(ParentId)), NotMapped, JsonIgnore]
         public Guest Parent { get; set; }
