@@ -4,9 +4,9 @@
       <table class="table">
         <thead>
           <tr>
-            <th>Event</th>
-            <th>Status</th>
-            <th>Options</th>
+            <th class="text-center">Event</th>
+            <th class="text-center">Status</th>
+            <th class="text-center">Options</th>
           </tr>
         </thead>
         <tbody>
@@ -17,19 +17,25 @@
               >{{ event.name }}</router-link>
             </td>
             <td class="text-center">{{ getEventStatus(event.eventId) }}</td>
-            <td>
-              <b-button-group size="sm">
-                <b-button
-                  variant="danger"
-                  @click="onUninviteAll(event.eventId)"
-                  :disabled="getEventStatus(event.eventId) == 'None'"
-                >Uninvite All</b-button>
-                <b-button
-                  variant="success"
-                  @click="onInviteAll(event.eventId)"
-                  :disabled="getEventStatus(event.eventId) == 'All'"
-                >Invite All</b-button>
-              </b-button-group>
+            <td class="d-flex justify-content-around align-items-center">
+              <b-button
+                class="m-1"
+                size="sm"
+                expanded
+                squared
+                variant="danger"
+                @click="onUninviteAll(event.eventId)"
+                :disabled="getEventStatus(event.eventId) == 'None'"
+              >Uninvite</b-button>
+              <b-button
+                class="m-1"
+                size="sm"
+                squared
+                expanded
+                variant="success"
+                @click="onInviteAll(event.eventId)"
+                :disabled="getEventStatus(event.eventId) == 'All'"
+              >Invite</b-button>
             </td>
           </tr>
         </tbody>
