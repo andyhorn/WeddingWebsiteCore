@@ -45,15 +45,30 @@
             </b-col>
           </b-row>
           <b-row>
-            <b-col cols="2" class="d-flex justify-content-center">
-              <b-form-group label="Is a Child">
-                <b-form-checkbox switch v-model="guest.isChild" />
-              </b-form-group>
-            </b-col>
-            <b-col cols="4" class="d-flex justify-content-center">
-              <b-form-group label="Is a Wedding Party member">
-                <b-form-checkbox switch v-model="guest.isWeddingMember" />
-              </b-form-group>
+            <b-col>
+              <b-row>
+                <b-col>
+                  <b-row>
+                    <b-col class="d-flex align-items-center">
+                      <b-form-group label="Is a Child">
+                        <b-form-checkbox switch v-model="guest.isChild" />
+                      </b-form-group>
+                    </b-col>
+                    <transition name="fade-in">
+                      <b-col v-if="guest.isChild" class="d-flex align-items-center">
+                        <b-form-group label="Under Ten" v-show="guest.isChild">
+                          <b-form-checkbox switch v-model="guest.isUnderTen" />
+                        </b-form-group>
+                      </b-col>
+                    </transition>
+                  </b-row>
+                </b-col>
+                <b-col class="d-flex align-items-center">
+                  <b-form-group label="Is a Wedding Party Member">
+                    <b-form-checkbox switch v-model="guest.isWeddingMember" />
+                  </b-form-group>
+                </b-col>
+              </b-row>
             </b-col>
             <b-col>
               <b-form-group label="Family">
@@ -67,21 +82,23 @@
               </b-form-group>
             </b-col>
           </b-row>
-          <b-row v-if="guest.isChild">
-            <b-col>
-              <b-form-group label="Parent">
-                <b-select v-model="guest.parentId">
-                  <option
-                    v-for="guest in possibleParents"
-                    :key="guest.guestId"
-                    :value="guest.guestId"
-                  >
-                    <span>{{ guest.firstName }} {{ guest.lastName }}</span>
-                  </option>
-                </b-select>
-              </b-form-group>
-            </b-col>
-          </b-row>
+          <transition name="fade-in">
+            <b-row v-if="guest.isChild">
+              <b-col>
+                <b-form-group label="Parent">
+                  <b-select v-model="guest.parentId">
+                    <option
+                      v-for="guest in possibleParents"
+                      :key="guest.guestId"
+                      :value="guest.guestId"
+                    >
+                      <span>{{ guest.firstName }} {{ guest.lastName }}</span>
+                    </option>
+                  </b-select>
+                </b-form-group>
+              </b-col>
+            </b-row>
+          </transition>
           <b-row>
             <b-col>
               <b-button
@@ -203,5 +220,17 @@ p.text-italic {
 }
 p.text-subtitle {
   font-size: 0.7rem;
+}
+.fade-in-enter-active,
+.fade-in-leave-active {
+  transition: opacity 400ms;
+}
+.fade-in-enter,
+.fade-in-leave-to {
+  opacity: 0;
+}
+.animate {
+  flex-grow: 1;
+  transition: all 400ms;
 }
 </style>
