@@ -20,6 +20,34 @@
         </b-row>
         <b-row class="py-2">
           <b-col>
+            <h3>Event Date & Time</h3>
+            <!-- <span v-if="eventStartTimeState">
+              <b-icon icon="check" variant="success" />
+            </span>
+            <span v-else-if="eventStartTimeState === false">
+              <b-icon icon="x" variant="danger" />
+            </span> -->
+            <b-row class="py-2">
+              <b-col>
+                <b-form-group label="Date">
+                  <b-form-datepicker v-model="event.date" :min="eventDateMin" />
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-row class="py-2">
+              <b-col>
+                <b-form-group label="Start time">
+                  <b-form-timepicker v-model="event.time.start" />
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group label="End time">
+                  <b-form-timepicker v-model="event.time.end" />
+                </b-form-group>
+              </b-col>
+            </b-row>
+          </b-col>
+          <!-- <b-col>
             <h2>
               Start time
               <span v-if="eventStartTimeState">
@@ -48,7 +76,7 @@
               :timeMin="eventEndTimeMin"
               :dateMin="eventEndDateMin"
             />
-          </b-col>
+          </b-col> -->
         </b-row>
         <b-row class="py-2 mb-3">
           <b-col>
@@ -115,21 +143,26 @@ export default {
       event: {
         name: "",
         description: "",
-        startTime: {
-          date: null,
-          time: null,
+        date: null,
+        time: {
+          start: null,
+          end: null
         },
-        endTime: {
-          date: null,
-          time: null,
-        },
+        // startTime: {
+        //   date: null,
+        //   time: null,
+        // },
+        // endTime: {
+        //   date: null,
+        //   time: null,
+        // },
       },
       eventStartTimeFeedback: "",
-      eventEndTimeFeedback: "",
+      // eventEndTimeFeedback: "",
       eventNameState: null,
-      eventStartTimeState: null,
-      eventEndTimeState: null,
-      eventStartDateMin: new Date(),
+      // eventStartTimeState: null,
+      // eventEndTimeState: null,
+      eventDateMin: new Date(),
       showNewAddressForm: false,
     };
   },
@@ -138,34 +171,34 @@ export default {
       return this.$store.getters.addresses;
     },
     eventEndTimeMin() {
-      if (
-        this.event.startTime.date != null &&
-        this.event.startTime.time != null &&
-        this.event.endTime.date != null &&
-        DateTime.compareDates(
-          this.event.endTime.date,
-          this.event.startTime.date
-        ) == 0
-      ) {
-        return this.event.startTime.time;
-      }
+      // if (
+      //   this.event.startTime.date != null &&
+      //   this.event.startTime.time != null &&
+      //   this.event.endTime.date != null &&
+      //   DateTime.compareDates(
+      //     this.event.endTime.date,
+      //     this.event.startTime.date
+      //   ) == 0
+      // ) {
+      //   return this.event.startTime.time;
+      // }
 
       return "";
     },
     eventEndDateMin() {
-      if (this.event.startTime.date != null) {
-        return this.event.startTime.date;
-      }
+      // if (this.event.startTime.date != null) {
+      //   return this.event.startTime.date;
+      // }
 
       return new Date();
     },
     isSaveButtonDisabled() {
       if (
-        this.event.name != null &&
-        this.event.startTime.date != null &&
-        this.event.startTime.time != null &&
-        this.event.endTime.date != null &&
-        this.event.endTime.time != null
+        this.event.name != null
+        // this.event.startTime.date != null &&
+        // this.event.startTime.time != null &&
+        // this.event.endTime.date != null &&
+        // this.event.endTime.time != null
       )
         return false;
 
@@ -180,32 +213,32 @@ export default {
         this.eventNameState = false;
       }
     },
-    "event.startTime": {
-      deep: true,
-      handler: function () {
-        if (
-          this.event.startTime.date != null &&
-          this.event.startTime.time != null
-        ) {
-          this.eventStartTimeState = true;
-        } else {
-          this.eventStartTimeState = null;
-        }
-      },
-    },
-    "event.endTime": {
-      deep: true,
-      handler: function () {
-        if (
-          this.event.endTime.date != null &&
-          this.event.endTime.time != null
-        ) {
-          this.eventEndTimeState = true;
-        } else {
-          this.eventEndTimeState = null;
-        }
-      },
-    },
+    // "event.startTime": {
+    //   deep: true,
+    //   handler: function () {
+    //     if (
+    //       this.event.startTime.date != null &&
+    //       this.event.startTime.time != null
+    //     ) {
+    //       this.eventStartTimeState = true;
+    //     } else {
+    //       this.eventStartTimeState = null;
+    //     }
+    //   },
+    // },
+    // "event.endTime": {
+    //   deep: true,
+    //   handler: function () {
+    //     if (
+    //       this.event.endTime.date != null &&
+    //       this.event.endTime.time != null
+    //     ) {
+    //       this.eventEndTimeState = true;
+    //     } else {
+    //       this.eventEndTimeState = null;
+    //     }
+    //   },
+    // },
   },
   methods: {
     onAddressSave(id) {
@@ -220,15 +253,15 @@ export default {
     },
     async onSubmit() {
       if (this.verifyForm()) {
-        const startTime = this.makeDateTime(this.event.startTime);
-        const endTime = this.makeDateTime(this.event.endTime);
+        // const startTime = this.makeDateTime(this.event.startTime);
+        // const endTime = this.makeDateTime(this.event.endTime);
 
         const eventData = {
           name: this.event.name,
           description: this.event.description,
           addressId: this.event.addressId,
-          startTime: startTime,
-          endTime: endTime,
+          // startTime: startTime,
+          // endTime: endTime,
         };
 
         const id = await this.$store.dispatch(
@@ -255,47 +288,52 @@ export default {
         this.eventNameState = false;
       }
 
-      if (this.event.startTime.date == null) {
-        this.eventStartTimeState = false;
-        this.eventStartTimeFeedback = "Start date is required";
-        return false;
-      }
+      // if (this.event.startTime.date == null) {
+      //   this.eventStartTimeState = false;
+      //   this.eventStartTimeFeedback = "Start date is required";
+      //   return false;
+      // }
 
-      if (this.event.startTime.time == null) {
-        this.eventStartTimeState = false;
-        this.eventStartTimeFeedback = "Start time is required";
-        return false;
-      }
+      // if (this.event.startTime.time == null) {
+      //   this.eventStartTimeState = false;
+      //   this.eventStartTimeFeedback = "Start time is required";
+      //   return false;
+      // }
 
-      if (this.event.endTime.date == null) {
-        this.eventEndTimeState = false;
-        this.eventEndTimeFeedback = "End date is required";
-        return false;
-      }
+      // if (this.event.endTime.date == null) {
+      //   this.eventEndTimeState = false;
+      //   this.eventEndTimeFeedback = "End date is required";
+      //   return false;
+      // }
 
-      if (this.event.endTime.time == null) {
-        this.eventEndTimeState = false;
-        this.eventEndTimeFeedback = "End time is required";
-        return false;
-      }
+      // if (this.event.endTime.time == null) {
+      //   this.eventEndTimeState = false;
+      //   this.eventEndTimeFeedback = "End time is required";
+      //   return false;
+      // }
 
       return true;
     },
     resetStates() {
       this.eventNameState = null;
-      this.eventStartTimeState = null;
-      this.eventEndTimeState = null;
+      // this.eventStartTimeState = null;
+      // this.eventEndTimeState = null;
     },
     close() {
       this.event.name = "";
       this.event.description = "";
-      this.event.startTime = {};
-      this.event.endTime = {};
-      this.eventStartTimeFeedback = "";
-      this.eventEndTimeFeedback = "";
+      this.event.date = null;
+      this.event.time = {
+        start: null,
+        end: null
+      };
+      // this.event.startTime = {};
+      // this.event.endTime = {};
+      // this.eventStartTimeFeedback = "";
+      // this.eventEndTimeFeedback = "";
       this.eventNameState = null;
-      this.eventStartTimeState = null;
-      this.eventEndTimeState = null;
+      // this.eventStartTimeState = null;
+      // this.eventEndTimeState = null;
       this.$emit("close");
     },
   },
