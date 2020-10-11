@@ -90,7 +90,6 @@
           variant="success"
           type="submit"
           :disabled="!validateForm"
-          @click="onSubmit"
         >Save</b-button>
         <b-button square size="sm" variant="warning" type="reset">Clear</b-button>
         <b-button square size="sm" variant="danger" @click="onClose">Cancel</b-button>
