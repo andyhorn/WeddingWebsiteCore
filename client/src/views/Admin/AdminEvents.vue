@@ -12,8 +12,8 @@
     </div>
     <b-container class="mt-5">
       <b-table :fields="fields" :items="events" show-empty>
-        <template v-slot:cell(startTime)="data">{{ parseDate(data.item.startTime) }}</template>
-        <template v-slot:cell(endTime)="data">{{ parseDate(data.item.endTime) }}</template>
+        <template v-slot:cell(date)="data">{{ getDate(data.item) }}</template>
+        <template v-slot:cell(time)="data">{{ getTimes(data.item) }}</template>
         <template v-slot:cell(address)="data">
           <span>{{ printAddress(data.item.addressId) }}</span>
         </template>
@@ -57,8 +57,8 @@ export default {
       fields: [
         "name",
         "description",
-        "startTime",
-        "endTime",
+        "date",
+        "time",
         "address",
         "options",
       ],
@@ -103,6 +103,22 @@ export default {
       const utcDate = new Date(dateString);
       const localDateString = utcDate.toLocaleString();
       return localDateString;
+    },
+    getDate(event) {
+      const date = new Date(event.startTime);
+      const dateString = date.toDateString();
+      return dateString;
+    },
+    getTimes(event) {
+      const date = new Date(event.startTime);
+      const startTime = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+      if (event.endTime != null) {
+        const endTime = new Date(event.endTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        return `${startTime} - ${endTime}`;
+      } else {
+        return startTime;
+      }
     },
     printAddress(addressId) {
       const address = this.$store.getters.findAddress(addressId);
