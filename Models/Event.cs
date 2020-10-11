@@ -19,8 +19,8 @@ namespace WeddingWebsiteCore.Models
         [Required, Column("startTime")]
         public DateTime StartTime { get; set; }
 
-        [Required, Column("endTime")]
-        public DateTime EndTime { get; set; }
+        [Column("endTime")]
+        public DateTime? EndTime { get; set; }
 
         // Address
         [ForeignKey(nameof(AddressId))]
