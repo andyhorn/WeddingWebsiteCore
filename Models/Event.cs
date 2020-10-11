@@ -17,10 +17,10 @@ namespace WeddingWebsiteCore.Models
         public string Description { get; set; }
 
         [Required, Column("startTime")]
-        public DateTime StartTime { get; set; }
+        public DateTimeOffset StartTime { get; set; }
 
         [Column("endTime")]
-        public DateTime? EndTime { get; set; }
+        public DateTimeOffset? EndTime { get; set; }
 
         // Address
         [ForeignKey(nameof(AddressId))]
