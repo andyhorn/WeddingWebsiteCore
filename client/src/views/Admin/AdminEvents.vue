@@ -1,6 +1,6 @@
 <template>
   <b-container class="pt-5">
-    <NewEventModal :visible="isNewEventModalVisible" @close="isNewEventModalVisible = false" />
+    <NewEventModal v-if="isNewEventModalVisible" :visible="isNewEventModalVisible" @close="isNewEventModalVisible = false" />
     <h1 class="text-center">Events</h1>
     <div class="d-flex justify-content-between align-items-center">
       <b-button squared size="sm" variant="success" @click="isNewEventModalVisible = true">
