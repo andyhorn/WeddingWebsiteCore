@@ -22,12 +22,14 @@
             <b-button
               variant="success"
               squared
+              size="sm"
               class="mr-1 text-light"
               @click="onEditEvent(data.item.eventId)"
             >Edit</b-button>
             <b-button
               variant="danger"
               squared
+              size="sm"
               class="ml-1"
               @click="onDeleteEvent(data.item.eventId)"
             >Delete</b-button>
