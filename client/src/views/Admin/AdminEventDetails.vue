@@ -9,11 +9,16 @@
         <b-textarea v-model="event.description" />
       </b-form-group>
       <b-form-row>
+        <b-form-group class="col" label="Date">
+          <b-form-datepicker v-model="date" />
+        </b-form-group>
+      </b-form-row>
+      <b-form-row>
         <b-form-group class="col" label="Start time">
-          <DateTimePicker v-model="startTime" />
+          <b-form-timepicker v-model="startTime" />
         </b-form-group>
         <b-form-group class="col" label="End time">
-          <DateTimePicker v-model="endTime" />
+          <b-form-timepicker v-model="endTime" />
         </b-form-group>
       </b-form-row>
       <b-form-group label="Location">
@@ -66,6 +71,9 @@ export default {
   data() {
     return {
       event: null,
+      date: null,
+      startTime: null,
+      endTime: null,
       showNewAddressForm: false,
     };
   },
@@ -73,33 +81,33 @@ export default {
     addresses() {
       return this.$store.getters.addresses;
     },
-    startTime: {
-      get() {
-        const obj = {
-          date: this.event.startTime.split("T")[0],
-          time: this.event.startTime.split("T")[1],
-        };
-        return obj;
-      },
-      set(val) {
-        const str = `${val.date}T${val.time}`;
-        this.event.startTime = str;
-      },
-    },
-    endTime: {
-      get() {
-        const obj = {
-          date: this.event.endTime.split("T")[0],
-          time: this.event.endTime.split("T")[1],
-        };
+    // startTime: {
+    //   get() {
+    //     const obj = {
+    //       date: this.event.startTime.split("T")[0],
+    //       time: this.event.startTime.split("T")[1],
+    //     };
+    //     return obj;
+    //   },
+    //   set(val) {
+    //     const str = `${val.date}T${val.time}`;
+    //     this.event.startTime = str;
+    //   },
+    // },
+    // endTime: {
+    //   get() {
+    //     const obj = {
+    //       date: this.event.endTime.split("T")[0],
+    //       time: this.event.endTime.split("T")[1],
+    //     };
 
-        return obj;
-      },
-      set(val) {
-        const str = `${val.date}T${val.time}`;
-        this.event.endTime = str;
-      },
-    },
+    //     return obj;
+    //   },
+    //   set(val) {
+    //     const str = `${val.date}T${val.time}`;
+    //     this.event.endTime = str;
+    //   },
+    // },
   },
   mounted() {
     const id = this.$route.params.id;
@@ -110,6 +118,22 @@ export default {
     fetch(id) {
       const event = this.$store.getters.findEvent(id);
       this.event = event;
+
+      const startDate = new Date(event.startTime);
+      this.date = startDate;
+
+      const startTime = startDate.toLocaleTimeString([], {
+        hour12: false
+      });
+
+      const endTime = event.endTime == null 
+        ? null
+        : new Date(event.endTime).toLocaleTimeString([], {
+          hour12: false
+        });
+
+      this.startTime = startTime;
+      this.endTime = endTime;
     },
     async onSaveEvent() {
       const saveData = deepCopy(this.event);
