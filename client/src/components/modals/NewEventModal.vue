@@ -202,8 +202,7 @@ export default {
       this.clear();
       this.$emit("close");
     },
-    getTimes()
-    {
+    getTimes() {
       let data = {
         start: null,
         end: null

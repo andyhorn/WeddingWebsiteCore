@@ -2,23 +2,27 @@
   <div class="container py-5">
     <h1>Event details</h1>
     <b-form @submit.prevent="onSaveEvent" v-if="!!event">
-      <b-form-group label="Title">
-        <b-input v-model="event.name" />
+      <b-form-group label="Title" :state="nameState"
+        :invalid-feedback="nameFeedback" 
+        description="Required">
+        <b-input v-model="event.name" :state="nameState" />
       </b-form-group>
       <b-form-group label="Description">
-        <b-textarea v-model="event.description" />
+        <b-textarea v-model="event.description"/>
       </b-form-group>
       <b-form-row>
-        <b-form-group class="col" label="Date">
-          <b-form-datepicker v-model="date" />
+        <b-form-group class="col" label="Date" description="Required">
+          <b-form-datepicker v-model="date" :state="date != null" />
         </b-form-group>
       </b-form-row>
       <b-form-row>
-        <b-form-group class="col" label="Start time">
-          <b-form-timepicker v-model="startTime" />
+        <b-form-group class="col" label="Start time" description="Required">
+          <b-form-timepicker v-model="startTime" :state="startTime != null" />
         </b-form-group>
-        <b-form-group class="col" label="End time">
-          <b-form-timepicker v-model="endTime" />
+        <b-form-group class="col" label="End time" :state="endTimeState"
+          :invalid-feedback="endTimeFeedback" >
+          <b-form-timepicker v-model="endTime" :state="endTimeState" 
+            :disabled="startTime == null" reset-button />
         </b-form-group>
       </b-form-row>
       <b-form-group label="Location">
@@ -48,7 +52,13 @@
       </b-collapse>
       <b-row>
         <b-col>
-          <b-button squared variant="success" type="submit">Save</b-button>
+          <b-button 
+            squared 
+            variant="success" 
+            type="submit" 
+            :disabled="isSaveButtonDisabled">
+            Save
+          </b-button>
         </b-col>
       </b-row>
     </b-form>
@@ -71,9 +81,15 @@ export default {
   data() {
     return {
       event: null,
+      nameState: null,
+      nameFeedback: null,
       date: null,
       startTime: null,
+      startTimeState: null,
+      startTimeFeedback: null,
       endTime: null,
+      endTimeState: null,
+      endTimeFeedback: null,
       showNewAddressForm: false,
     };
   },
@@ -81,6 +97,48 @@ export default {
     addresses() {
       return this.$store.getters.addresses;
     },
+    isSaveButtonDisabled() {
+      return !this.nameState
+        || !this.startTimeState
+        || this.endTimeState === false;
+    }
+  },
+  watch: {
+    "event.name": function () {
+      if (this.event.name && this.event.name.trim()) {
+        this.nameState = true;
+        this.nameFeedback = null;
+      } else {
+        this.nameState = false;
+        this.nameFeedback = "Name is required.";
+      }
+    },
+    "startTime": function () {
+      if (this.startTime && this.startTime.trim()) {
+        this.startTimeState = true;
+        this.startTimeFeedback = null;
+      } else {
+        this.startTimeState = false;
+        this.startTimeFeedback = "Start time is required.";
+      }
+    },
+    "endTime": function () {
+      if (this.endTime == null || this.endTime == "") {
+        this.endTimeState = null;
+        this.endTimeFeedback = null;
+      } else {
+        const startHour = this.startTime.split(":")[0];
+        const endHour = this.endTime.split(":")[0];
+
+        if (endHour < startHour) {
+          this.endTimeState = false;
+          this.endTimeFeedback = "End time cannot be earlier than start time.";
+        } else {
+          this.endTimeState = true;
+          this.endTimeFeedback = null;
+        }
+      }
+    }
   },
   mounted() {
     const id = this.$route.params.id;
