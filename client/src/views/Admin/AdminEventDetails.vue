@@ -81,33 +81,6 @@ export default {
     addresses() {
       return this.$store.getters.addresses;
     },
-    // startTime: {
-    //   get() {
-    //     const obj = {
-    //       date: this.event.startTime.split("T")[0],
-    //       time: this.event.startTime.split("T")[1],
-    //     };
-    //     return obj;
-    //   },
-    //   set(val) {
-    //     const str = `${val.date}T${val.time}`;
-    //     this.event.startTime = str;
-    //   },
-    // },
-    // endTime: {
-    //   get() {
-    //     const obj = {
-    //       date: this.event.endTime.split("T")[0],
-    //       time: this.event.endTime.split("T")[1],
-    //     };
-
-    //     return obj;
-    //   },
-    //   set(val) {
-    //     const str = `${val.date}T${val.time}`;
-    //     this.event.endTime = str;
-    //   },
-    // },
   },
   mounted() {
     const id = this.$route.params.id;
@@ -136,15 +109,64 @@ export default {
       this.endTime = endTime;
     },
     async onSaveEvent() {
-      const saveData = deepCopy(this.event);
+      const times = this.getTimes();
+
+      const saveData = Object.assign({}, deepCopy(this.event), 
+        { startTime: times.start }, 
+        { endTime: times.end });
+
       const id = this.event.eventId;
-      await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.UPDATE, saveData);
-      this.fetch(id);
+      const success = await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.UPDATE, saveData);
+
+      if (success) {
+        this.fetch(id);
+        this.$bvToast.toast("Event updated!", {
+          title: "Success",
+          variant: "success"
+        });
+      }
     },
     onAddressSaved(id) {
       this.event.addressId = id;
       this.showNewAddressForm = false;
     },
+    getTimes() {
+      const getTime = (time) => {
+        return {
+          hour: time.split(":")[0],
+          minute: time.split(":")[1]
+        };
+      };
+
+      let data = {
+        start: null,
+        end: null
+      };
+
+      const start = new Date(this.date);
+      const startTimes = getTime(this.startTime);
+
+      start.setHours(startTimes.hour);
+      start.setMinutes(startTimes.minute);
+      start.setSeconds(0);
+      start.setMilliseconds(0);
+
+      data.start = start;
+
+      if (this.endTime != null) {
+        const endTimes = getTime(this.endTime);
+
+        const end = new Date(this.date);
+        end.setHours(endTimes.hour);
+        end.setMinutes(endTimes.minute);
+        end.setSeconds(0);
+        end.setMilliseconds(0);
+
+        data.end = end;
+      }
+
+      return data;
+    }
   },
 };
 </script>
