@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WeddingWebsiteCore.DataAccess;
@@ -9,9 +10,10 @@ using WeddingWebsiteCore.DataAccess;
 namespace WeddingWebsiteCore.Migrations
 {
     [DbContext(typeof(WeddingContext))]
-    partial class WeddingContextModelSnapshot : ModelSnapshot
+    [Migration("20201011191853_EventEndTimeIsOptional")]
+    partial class EventEndTimeIsOptional
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,18 +115,18 @@ namespace WeddingWebsiteCore.Migrations
                         .HasColumnName("description")
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset?>("EndTime")
+                    b.Property<DateTime?>("EndTime")
                         .HasColumnName("endTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnName("name")
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("StartTime")
+                    b.Property<DateTime>("StartTime")
                         .HasColumnName("startTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("EventId");
 

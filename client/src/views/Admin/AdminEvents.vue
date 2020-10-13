@@ -1,6 +1,6 @@
 <template>
   <b-container class="pt-5">
-    <NewEventModal :visible="isNewEventModalVisible" @close="isNewEventModalVisible = false" />
+    <NewEventModal v-if="isNewEventModalVisible" :visible="isNewEventModalVisible" @close="isNewEventModalVisible = false" />
     <h1 class="text-center">Events</h1>
     <div class="d-flex justify-content-between align-items-center">
       <b-button squared size="sm" variant="success" @click="isNewEventModalVisible = true">
@@ -12,8 +12,8 @@
     </div>
     <b-container class="mt-5">
       <b-table :fields="fields" :items="events" show-empty>
-        <template v-slot:cell(startTime)="data">{{ parseDate(data.item.startTime) }}</template>
-        <template v-slot:cell(endTime)="data">{{ parseDate(data.item.endTime) }}</template>
+        <template v-slot:cell(date)="data">{{ getDate(data.item) }}</template>
+        <template v-slot:cell(time)="data">{{ getTimes(data.item) }}</template>
         <template v-slot:cell(address)="data">
           <span>{{ printAddress(data.item.addressId) }}</span>
         </template>
@@ -22,12 +22,14 @@
             <b-button
               variant="success"
               squared
+              size="sm"
               class="mr-1 text-light"
               @click="onEditEvent(data.item.eventId)"
             >Edit</b-button>
             <b-button
               variant="danger"
               squared
+              size="sm"
               class="ml-1"
               @click="onDeleteEvent(data.item.eventId)"
             >Delete</b-button>
@@ -57,8 +59,8 @@ export default {
       fields: [
         "name",
         "description",
-        "startTime",
-        "endTime",
+        "date",
+        "time",
         "address",
         "options",
       ],
@@ -103,6 +105,22 @@ export default {
       const utcDate = new Date(dateString);
       const localDateString = utcDate.toLocaleString();
       return localDateString;
+    },
+    getDate(event) {
+      const date = new Date(event.startTime);
+      const dateString = date.toDateString();
+      return dateString;
+    },
+    getTimes(event) {
+      const date = new Date(event.startTime);
+      const startTime = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+      if (event.endTime != null) {
+        const endTime = new Date(event.endTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        return `${startTime} - ${endTime}`;
+      } else {
+        return startTime;
+      }
     },
     printAddress(addressId) {
       const address = this.$store.getters.findAddress(addressId);

@@ -20,34 +20,38 @@
         </b-row>
         <b-row class="py-2">
           <b-col>
-            <h2>
-              Start time
-              <span v-if="eventStartTimeState">
-                <b-icon icon="check" variant="success" />
-              </span>
-              <span v-else-if="eventStartTimeState === false">
-                <b-icon icon="x" variant="danger" />
-              </span>
-            </h2>
-            <p v-if="eventStartTimeState === false" class="text-danger">{{ eventStartTimeFeedback }}</p>
-            <DateTimePicker v-model="event.startTime" :dateMin="eventStartDateMin" />
-          </b-col>
-          <b-col>
-            <h2>
-              End time
-              <span v-if="eventEndTimeState">
-                <b-icon icon="check" variant="success" />
-              </span>
-              <span v-else-if="eventEndTimeState === false">
-                <b-icon icon="x" variant="danger" />
-              </span>
-            </h2>
-            <p v-if="eventEndTimeState === false" class="text-danger">{{ eventEndTimeFeedback }}</p>
-            <DateTimePicker
-              v-model="event.endTime"
-              :timeMin="eventEndTimeMin"
-              :dateMin="eventEndDateMin"
-            />
+            <h3>Event Date & Time</h3>
+            <b-row class="py-2">
+              <b-col>
+                <b-form-group label="Date">
+                  <b-form-datepicker 
+                    v-model="event.date" 
+                    :min="eventDateMin" 
+                    :state="eventDateState" />
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-row class="py-2">
+              <b-col>
+                <b-form-group label="Start time">
+                  <b-form-timepicker 
+                    v-model="event.time.start" 
+                    :state="eventStartTimeState" />
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group label="End time"
+                  :invalid-feedback="eventEndTimeFeedback"
+                  :state="eventEndTimeState">
+                  <b-form-timepicker 
+                    reset-button
+                    :reset-value="null"
+                    v-model="event.time.end" 
+                    :disabled="event.time.start == null" 
+                    :state="eventEndTimeState"/>
+                </b-form-group>
+              </b-col>
+            </b-row>
           </b-col>
         </b-row>
         <b-row class="py-2 mb-3">
@@ -85,7 +89,7 @@
           size="sm"
           variant="success"
           type="submit"
-          :disabled="isSaveButtonDisabled"
+          :disabled="!validateForm"
         >Save</b-button>
         <b-button square size="sm" variant="warning" type="reset">Clear</b-button>
         <b-button square size="sm" variant="danger" @click="onClose">Cancel</b-button>
@@ -113,23 +117,21 @@ export default {
   data() {
     return {
       event: {
-        name: "",
-        description: "",
-        startTime: {
-          date: null,
-          time: null,
-        },
-        endTime: {
-          date: null,
-          time: null,
+        addressId: null,
+        name: null,
+        description: null,
+        date: null,
+        time: {
+          start: null,
+          end: null
         },
       },
-      eventStartTimeFeedback: "",
-      eventEndTimeFeedback: "",
-      eventNameState: null,
       eventStartTimeState: null,
+      eventEndTimeFeedback: null,
       eventEndTimeState: null,
-      eventStartDateMin: new Date(),
+      eventNameState: null,
+      eventDateState: null,
+      eventDateMin: new Date(),
       showNewAddressForm: false,
     };
   },
@@ -137,166 +139,155 @@ export default {
     addresses() {
       return this.$store.getters.addresses;
     },
-    eventEndTimeMin() {
-      if (
-        this.event.startTime.date != null &&
-        this.event.startTime.time != null &&
-        this.event.endTime.date != null &&
-        DateTime.compareDates(
-          this.event.endTime.date,
-          this.event.startTime.date
-        ) == 0
-      ) {
-        return this.event.startTime.time;
-      }
-
-      return "";
-    },
-    eventEndDateMin() {
-      if (this.event.startTime.date != null) {
-        return this.event.startTime.date;
-      }
-
-      return new Date();
-    },
     isSaveButtonDisabled() {
-      if (
-        this.event.name != null &&
-        this.event.startTime.date != null &&
-        this.event.startTime.time != null &&
-        this.event.endTime.date != null &&
-        this.event.endTime.time != null
-      )
-        return false;
-
-      return true;
+      return !this.validateForm();
     },
   },
   watch: {
-    "event.name": function () {
-      if (!!this.event.name && !!this.event.name.trim()) {
-        this.eventNameState = true;
-      } else {
-        this.eventNameState = false;
+    "event.name": {
+      handler: function () {
+        if (this.event.name == null) {
+          this.eventNameState = null;
+        } else if (!!this.event.name && !!this.event.name.trim()) {
+          this.eventNameState = true;
+        } else {
+          this.eventNameState = false;
+        }
       }
     },
-    "event.startTime": {
-      deep: true,
+    "event.time.end": {
       handler: function () {
-        if (
-          this.event.startTime.date != null &&
-          this.event.startTime.time != null
-        ) {
-          this.eventStartTimeState = true;
-        } else {
-          this.eventStartTimeState = null;
-        }
-      },
-    },
-    "event.endTime": {
-      deep: true,
-      handler: function () {
-        if (
-          this.event.endTime.date != null &&
-          this.event.endTime.time != null
-        ) {
-          this.eventEndTimeState = true;
-        } else {
+        if (!this.event.time.end) {
           this.eventEndTimeState = null;
+        } else {
+          const endIsLessThan = DateTime.compareTimes(
+            this.event.time.end,
+            this.event.time.start
+          ) == -1;
+
+          if (endIsLessThan) {
+            this.eventEndTimeState = false;
+            this.eventEndTimeFeedback = "End time cannot be earlier than start time.";
+          } else {
+            this.eventEndTimeState = true;
+          }
         }
-      },
+      }
     },
+    "event.date": {
+      handler: function () {
+        if (this.event.date == null) {
+          this.eventDateState = null;
+        } else {
+          this.eventDateState = true;
+        }
+      }
+    },
+    "event.time.start": {
+      handler: function () {
+        if (this.event.time.start == null) {
+          this.eventStartTimeState = null;
+        } else {
+          this.eventStartTimeState = true;
+        }
+      }
+    }
   },
   methods: {
     onAddressSave(id) {
       this.event.addressId = id;
       this.showNewAddressForm = false;
     },
-    getTimeFromString(timeString) {
-      return DateTime.parseTimeString(timeString);
-    },
     onClose() {
-      this.close();
+      this.clear();
+      this.$emit("close");
+    },
+    getTimes() {
+      let data = {
+        start: null,
+        end: null
+      }
+
+      const start = new Date(this.event.date);
+
+      const startHour = this.event.time.start.split(":")[0];
+      const startMinute = this.event.time.start.split(":")[1];
+
+      start.setHours(startHour);
+      start.setMinutes(startMinute);
+      start.setSeconds(0);
+      start.setMilliseconds(0);
+
+      data.start = start;
+
+      if (this.event.time.end != null) {
+        const end = new Date(this.event.date);
+
+        const endHour = this.event.time.end.split(":")[0];
+        const endMinute = this.event.time.end.split(":")[1];
+
+        end.setHours(endHour);
+        end.setMinutes(endMinute);
+        end.setSeconds(0);
+        end.setMilliseconds(0);
+
+        data.end = end;
+      }
+
+      return { start: data.start, end: data.end };
     },
     async onSubmit() {
-      if (this.verifyForm()) {
-        const startTime = this.makeDateTime(this.event.startTime);
-        const endTime = this.makeDateTime(this.event.endTime);
+      if (this.validateForm()) {
+
+        const { start, end } = this.getTimes();
 
         const eventData = {
           name: this.event.name,
           description: this.event.description,
           addressId: this.event.addressId,
-          startTime: startTime,
-          endTime: endTime,
+          startTime: start,
+          endTime: end
         };
+
+        console.log(eventData)
 
         const id = await this.$store.dispatch(
           ACTIONS.EVENT_ACTIONS.CREATE,
           eventData
         );
         if (id) {
-          this.close();
+          this.onClose();
         } else {
-          this.$bvToast.toast({
-            message: "Unable to save event",
+          this.$bvToast.toast("Unable to save event", {
+            title: "Error",
             variant: "danger",
           });
         }
       }
     },
-    makeDateTime(datetime) {
-      return DateTime.makeDateTime(datetime);
-    },
-    verifyForm() {
-      this.resetStates();
-
-      if (this.event.name == null) {
-        this.eventNameState = false;
-      }
-
-      if (this.event.startTime.date == null) {
-        this.eventStartTimeState = false;
-        this.eventStartTimeFeedback = "Start date is required";
-        return false;
-      }
-
-      if (this.event.startTime.time == null) {
-        this.eventStartTimeState = false;
-        this.eventStartTimeFeedback = "Start time is required";
-        return false;
-      }
-
-      if (this.event.endTime.date == null) {
-        this.eventEndTimeState = false;
-        this.eventEndTimeFeedback = "End date is required";
-        return false;
-      }
-
-      if (this.event.endTime.time == null) {
-        this.eventEndTimeState = false;
-        this.eventEndTimeFeedback = "End time is required";
-        return false;
-      }
-
-      return true;
+    validateForm() {
+      return this.eventStartTimeState 
+        && this.eventEndTimeState != false 
+        && this.eventNameState
+        && this.eventDateState;
     },
     resetStates() {
       this.eventNameState = null;
-      this.eventStartTimeState = null;
       this.eventEndTimeState = null;
+      this.eventStartTimeState = null;
+      this.eventDateState = null;
+      this.eventEndTimeFeedback = null;
     },
-    close() {
-      this.event.name = "";
-      this.event.description = "";
-      this.event.startTime = {};
-      this.event.endTime = {};
-      this.eventStartTimeFeedback = "";
-      this.eventEndTimeFeedback = "";
-      this.eventNameState = null;
-      this.eventStartTimeState = null;
-      this.eventEndTimeState = null;
-      this.$emit("close");
+    clear() {
+      this.resetStates();
+      this.event.addressId = null;
+      this.event.name = null;
+      this.event.description = null;
+      this.event.date = null;
+      this.event.time = {
+        start: null,
+        end: null
+      };
     },
   },
 };
