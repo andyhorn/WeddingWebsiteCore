@@ -103,6 +103,7 @@ import TimePicker from "@/components/TimePicker";
 import DateTimePicker from "@/components/DateTimePicker";
 import NewAddressForm from "@/components/forms/NewAddressForm";
 import { ACTIONS } from "@/store";
+import { success, error } from "@/helpers/toast";
 
 import * as DateTime from "@/helpers/dateTime";
 
@@ -249,19 +250,15 @@ export default {
           endTime: end
         };
 
-        console.log(eventData)
-
         const id = await this.$store.dispatch(
           ACTIONS.EVENT_ACTIONS.CREATE,
           eventData
         );
         if (id) {
+          success("Event created!");
           this.onClose();
         } else {
-          this.$bvToast.toast("Unable to save event", {
-            title: "Error",
-            variant: "danger",
-          });
+          error("Unable to create event.");
         }
       }
     },
