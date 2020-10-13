@@ -121,6 +121,7 @@
 
 <script>
 import { ACTIONS } from "@/store";
+import { success, error } from "@/helpers/toast";
 
 export default {
   name: "NewGuestModal",
@@ -165,7 +166,12 @@ export default {
         parentId: this.isChild ? this.parentId : null,
       };
 
-      await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.CREATE, guest);
+      const guestId = await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.CREATE, guest);
+
+      if (!guestId) {
+        error("Unable to save new guest.");
+        return;
+      }
 
       if (guest.familyId) {
         await this.$store.dispatch(
@@ -173,6 +179,8 @@ export default {
           guest.familyId
         );
       }
+
+      success("New guest saved!");
 
       this.close();
     },
