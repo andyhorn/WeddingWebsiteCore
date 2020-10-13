@@ -71,6 +71,7 @@ import NewAddressForm from "@/components/forms/NewAddressForm";
 import * as DateTime from "@/helpers/dateTime";
 import { deepCopy } from "@/helpers/utils";
 import { ACTIONS } from "@/store";
+import { success, error } from "@/helpers/toast";
 
 export default {
   name: "AdminEventDetails",
@@ -178,10 +179,9 @@ export default {
 
       if (success) {
         this.fetch(id);
-        this.$bvToast.toast("Event updated!", {
-          title: "Success",
-          variant: "success"
-        });
+        success("Event saved!");
+      } else {
+        error("Unable to save event.");
       }
     },
     onAddressSaved(id) {
