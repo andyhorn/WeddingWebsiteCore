@@ -25,6 +25,20 @@ namespace WeddingWebsiteCore.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Accomodation>()
+                .HasOne(x => x.Category)
+                .WithMany()
+                .OnDelete(DeleteBehavior.ClientSetNull);
+            modelBuilder.Entity<Accomodation>()
+                .HasOne(x => x.Location)
+                .WithMany()
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<Category>()
+                .HasOne(x => x.Parent)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Cascade);
+                
             modelBuilder.Entity<Family>()
                 .HasMany(family => family.Members)
                 .WithOne(member => member.Family);
