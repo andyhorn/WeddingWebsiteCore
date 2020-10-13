@@ -18,33 +18,42 @@ namespace WeddingWebsiteCore.DataAccess
         public DbSet<Vendor> Vendors { get; set; }
         public DbSet<WeddingMember> WeddingMembers { get; set; }
         public DbSet<WeddingRole> WeddingRoles { get; set; }
+        public DbSet<Tier> Tiers { get; set; }
 
         public WeddingContext(DbContextOptions options)
             : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Address>()
-                .HasMany(address => address.Events)
-                .WithOne(@event => @event.Address);
-            modelBuilder.Entity<Address>()
-                .HasMany(address => address.Families)
-                .WithOne(family => family.Address);
-            modelBuilder.Entity<Address>()
-                .HasMany(address => address.Vendors)
-                .WithOne(vendor => vendor.Address);
-
             modelBuilder.Entity<Family>()
                 .HasMany(family => family.Members)
                 .WithOne(member => member.Family);
             modelBuilder.Entity<Family>()
                 .HasOne(family => family.Tier)
                 .WithMany(tier => tier.Families);
+            modelBuilder.Entity<Family>()
+                .HasOne(family => family.Address)
+                .WithMany(address => address.Families)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Event>()
+                .HasOne(@event => @event.Address)
+                .WithMany(address => address.Events)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Vendor>()
+                .HasOne(vendor => vendor.Address)
+                .WithMany(address => address.Vendors)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Guest>()
-                .HasOne(guest => guest.Rsvp)
+                .HasMany(guest => guest.RSVPs)
                 .WithOne(rsvp => rsvp.Guest)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Guest>()
+                .HasOne(guest => guest.Parent)
+                .WithMany(parent => parent.Children)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<WeddingMemberRole>()
                 .HasOne(weddingMemberRole => weddingMemberRole.WeddingRole)

@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace WeddingWebsiteCore.Models
 {
@@ -14,26 +16,33 @@ namespace WeddingWebsiteCore.Models
 
         [Required]
         public string LastName { get; set; }
-        
+
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
         [DataType(DataType.PhoneNumber)]
         public string Phone { get; set; }
-
         public bool IsWeddingMember { get; set; } = false;
+
+        // Child-Parent Relationships
         public bool IsChild { get; set; } = false;
+        public bool IsUnderTen { get; set; }
 
-        [ForeignKey(nameof(RsvpId))]
-        [Newtonsoft.Json.JsonIgnore]
-        [System.Text.Json.Serialization.JsonIgnore]
-        public Rsvp Rsvp { get; set; }
-        public int? RsvpId { get; set; }
+        [ForeignKey(nameof(ParentId)), NotMapped, JsonIgnore]
+        public Guest Parent { get; set; }
+        public int? ParentId { get; set; }
 
-        [ForeignKey(nameof(FamilyId))]
-        [Newtonsoft.Json.JsonIgnore]
-        [System.Text.Json.Serialization.JsonIgnore]
+        [NotMapped, JsonIgnore]
+        public ICollection<Guest> Children { get; set; }
+
+        // Family
+        [ForeignKey(nameof(FamilyId)), NotMapped, JsonIgnore]
         public Family Family { get; set; }
         public int? FamilyId { get; set; }
+
+        // RSVPs
+        [JsonIgnore]
+        public ICollection<Rsvp> RSVPs { get; set; }
+        public string InviteCode { get; set; }
     }
 }

@@ -14,6 +14,7 @@ namespace WeddingWebsiteCore.Helpers
             original.AdditionalGuests = update.AdditionalGuests;
             original.HeadMemberId = update.HeadMemberId;
             original.Name = update.Name;
+            original.AddressId = update.AddressId;
         }
     }
 }

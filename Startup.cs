@@ -23,7 +23,7 @@ namespace WeddingWebsiteCore
         {
             services.AddControllers();
 
-            var connectionString = Configuration.GetConnectionString("PostgreSQLConnectionString");
+            var connectionString = Configuration.GetConnectionString(Contracts.ApplicationConstants.POSTGRES_CONNECTION_STRING);
 
             services.AddDbContext<WeddingContext>(options =>
                 options.UseNpgsql(connectionString));

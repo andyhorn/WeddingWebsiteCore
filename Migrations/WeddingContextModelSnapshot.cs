@@ -16,7 +16,7 @@ namespace WeddingWebsiteCore.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.1.6")
+                .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("WeddingWebsiteCore.Models.Address", b =>
@@ -26,26 +26,42 @@ namespace WeddingWebsiteCore.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnName("city")
+                        .HasColumnType("text");
+
                     b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnName("country")
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .HasColumnName("name")
                         .HasColumnType("text");
 
                     b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnName("postalCode")
                         .HasColumnType("text");
 
                     b.Property<string>("State")
-                        .HasColumnName("State")
-                        .HasColumnType("char(2)");
+                        .IsRequired()
+                        .HasColumnName("state")
+                        .HasColumnType("text");
 
                     b.Property<string>("StreetDetail")
+                        .HasColumnName("streetDetail")
                         .HasColumnType("text");
 
                     b.Property<string>("StreetName")
+                        .IsRequired()
+                        .HasColumnName("streetName")
                         .HasColumnType("text");
 
                     b.Property<string>("StreetNumber")
+                        .IsRequired()
+                        .HasColumnName("streetNumber")
                         .HasColumnType("text");
 
                     b.HasKey("AddressId");
@@ -85,23 +101,30 @@ namespace WeddingWebsiteCore.Migrations
                 {
                     b.Property<int>("EventId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("eventId")
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("AddressId")
+                    b.Property<int?>("AddressId")
+                        .HasColumnName("FK_addressId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
+                        .HasColumnName("description")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset?>("EndTime")
+                        .HasColumnName("endTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnName("name")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset>("StartTime")
+                        .HasColumnName("startTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("EventId");
 
@@ -118,18 +141,23 @@ namespace WeddingWebsiteCore.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("AdditionalGuests")
+                        .HasColumnName("additionalGuests")
                         .HasColumnType("integer");
 
                     b.Property<int?>("AddressId")
+                        .HasColumnName("FK_addressId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("HeadMemberId")
+                        .HasColumnName("FK_headMemberId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
+                        .HasColumnName("name")
                         .HasColumnType("text");
 
                     b.Property<int?>("TierId")
+                        .HasColumnName("FK_tierId")
                         .HasColumnType("integer");
 
                     b.HasKey("FamilyId");
@@ -162,7 +190,13 @@ namespace WeddingWebsiteCore.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("InviteCode")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsChild")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsUnderTen")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsWeddingMember")
@@ -172,18 +206,17 @@ namespace WeddingWebsiteCore.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Phone")
                         .HasColumnType("text");
-
-                    b.Property<int?>("RsvpId")
-                        .HasColumnType("integer");
 
                     b.HasKey("GuestId");
 
                     b.HasIndex("FamilyId");
 
-                    b.HasIndex("RsvpId")
-                        .IsUnique();
+                    b.HasIndex("ParentId");
 
                     b.ToTable("guests");
 
@@ -249,6 +282,8 @@ namespace WeddingWebsiteCore.Migrations
 
                     b.HasIndex("EventId");
 
+                    b.HasIndex("GuestId");
+
                     b.ToTable("rsvps");
                 });
 
@@ -274,22 +309,29 @@ namespace WeddingWebsiteCore.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("AddressId")
+                    b.Property<int?>("AddressId")
+                        .HasColumnName("FK_addressId")
                         .HasColumnType("integer");
 
                     b.Property<string>("ContactEmail")
+                        .HasColumnName("contactEmail")
                         .HasColumnType("text");
 
                     b.Property<string>("ContactPhone")
+                        .HasColumnName("contactPhone")
                         .HasColumnType("text");
 
                     b.Property<string>("Description")
+                        .HasColumnName("description")
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnName("name")
                         .HasColumnType("text");
 
                     b.Property<string>("Url")
+                        .HasColumnName("url")
                         .HasColumnType("text");
 
                     b.HasKey("VendorId");
@@ -453,15 +495,15 @@ namespace WeddingWebsiteCore.Migrations
                     b.HasOne("WeddingWebsiteCore.Models.Address", "Address")
                         .WithMany("Events")
                         .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("WeddingWebsiteCore.Models.Family", b =>
                 {
                     b.HasOne("WeddingWebsiteCore.Models.Address", "Address")
                         .WithMany("Families")
-                        .HasForeignKey("AddressId");
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("WeddingWebsiteCore.Models.Tier", "Tier")
                         .WithMany("Families")
@@ -472,13 +514,12 @@ namespace WeddingWebsiteCore.Migrations
                 {
                     b.HasOne("WeddingWebsiteCore.Models.Family", "Family")
                         .WithMany("Members")
-                        .HasForeignKey("FamilyId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("FamilyId");
 
-                    b.HasOne("WeddingWebsiteCore.Models.Rsvp", "Rsvp")
-                        .WithOne("Guest")
-                        .HasForeignKey("WeddingWebsiteCore.Models.Guest", "RsvpId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("WeddingWebsiteCore.Models.Guest", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("WeddingWebsiteCore.Models.Rsvp", b =>
@@ -488,6 +529,12 @@ namespace WeddingWebsiteCore.Migrations
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("WeddingWebsiteCore.Models.Guest", "Guest")
+                        .WithMany("RSVPs")
+                        .HasForeignKey("GuestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WeddingWebsiteCore.Models.Vendor", b =>
@@ -495,8 +542,7 @@ namespace WeddingWebsiteCore.Migrations
                     b.HasOne("WeddingWebsiteCore.Models.Address", "Address")
                         .WithMany("Vendors")
                         .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("WeddingWebsiteCore.Models.WeddingMemberRole", b =>

@@ -1,0 +1,56 @@
+@font-face {
+  font-family: "Lora";
+  src: url("fonts/Lora-VariableFont_wght.ttf");
+}
+
+@font-face {
+  font-family: "Dancing Script";
+  src: url("fonts/DancingScript-VariableFont_wght.ttf");
+}
+
+body {
+  color: #201e1f;
+  background-color: #c9cfcf;
+}
+
+body * {
+  font-family: "Lora", serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Dancing Script", cursive;
+}
+
+a {
+  color: #067474 !important;
+  font-family: "Playfair Display";
+  font-style: italic;
+}
+a:hover {
+  color: #ccb7c4 !important;
+}
+
+.accent {
+  background-color: #067474;
+}
+
+.text-accent {
+  color: #067474;
+}
+
+.sticky {
+  position: sticky;
+}
+
+.centered {
+  margin: 0 auto;
+}
+
+.text-italic {
+  font-style: italic !important;
+}
