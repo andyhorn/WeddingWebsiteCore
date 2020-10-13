@@ -56,6 +56,7 @@
 
 <script>
 import { ACTIONS } from "@/store";
+import { success, error } from "@/helpers/toast";
 
 export default {
     name: "NewFamilyModal",
@@ -80,12 +81,18 @@ export default {
             };
 
             const familyId = await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.CREATE, family);
+            if (!familyId) {
+              error("Unable to create new family.");
+              return;
+            }
 
             if (this.headMemberId) {
               const guest = this.$store.getters.findGuest(this.headMemberId);
               guest.familyId = familyId;
               await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, guest);
             }
+
+            success("Family saved!");
 
             this.close();
         },
