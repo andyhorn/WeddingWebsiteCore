@@ -2,9 +2,9 @@ using WeddingWebsiteCore.Models;
 
 namespace WeddingWebsiteCore.Helpers
 {
-    public class AccomodationHelper
+    public class AccommodationHelper
     {
-        public static void UpdateAccomodation(Accomodation existing, Accomodation update)
+        public static void UpdateAccommodation(Accommodation existing, Accommodation update)
         {
             if (existing == null || update == null)
             {

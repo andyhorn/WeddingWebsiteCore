@@ -12,45 +12,45 @@ namespace WeddingWebsiteCore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccomodationsController : ControllerBase
+    public class AccommodationsController : ControllerBase
     {
         private readonly WeddingContext _context;
 
-        public AccomodationsController(WeddingContext context)
+        public AccommodationsController(WeddingContext context)
         {
             _context = context;
         }
 
         [HttpGet(RouteContracts.GetAll)]
-        public async Task<IActionResult> GetAllAccomodations()
+        public async Task<IActionResult> GetAllAccommodations()
         {
-            var accomodations = await _context.Accomodations.ToListAsync();
+            var accommodations = await _context.Accommodations.ToListAsync();
 
-            return Ok(accomodations);
+            return Ok(accommodations);
         }
 
         [HttpGet(RouteContracts.GetItem)]
-        public async Task<IActionResult> GetAccomodation(int id)
+        public async Task<IActionResult> GetAccommodation(int id)
         {
-            var accomodation = await _context.Accomodations.FindAsync(id);
+            var accommodation = await _context.Accommodations.FindAsync(id);
 
-            if (accomodation == null)
+            if (accommodation == null)
             {
                 return NotFound();
             }
 
-            return Ok(accomodation);
+            return Ok(accommodation);
         }
 
         [HttpPost(RouteContracts.PostItem)]
-        public async Task<IActionResult> PostNewAccomodation([FromBody] Accomodation accomodation)
+        public async Task<IActionResult> PostNewAccommodation([FromBody] Accommodation accommodation)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.Values);
             }
 
-            var existing = await _context.Accomodations.FindAsync(accomodation.AccomodationId);
+            var existing = await _context.Accommodations.FindAsync(accommodation.AccommodationId);
             if (existing != null)
             {
                 return BadRequest(ErrorMessageContracts.IdConflict);
@@ -58,7 +58,7 @@ namespace WeddingWebsiteCore.Controllers
 
             try
             {
-                await _context.AddAsync(accomodation);
+                await _context.AddAsync(accommodation);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)
@@ -67,23 +67,23 @@ namespace WeddingWebsiteCore.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return CreatedAtAction(nameof(PostNewAccomodation), accomodation, accomodation.AccomodationId);
+            return CreatedAtAction(nameof(PostNewAccommodation), accommodation, accommodation.AccommodationId);
         }
 
         [HttpPut(RouteContracts.PutItem)]
-        public async Task<IActionResult> UpdateAccomodation(int id, [FromBody] Accomodation accomodation)
+        public async Task<IActionResult> UpdateAccommodation(int id, [FromBody] Accommodation accommodation)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.Values);
             }
 
-            if (id != accomodation.AccomodationId)
+            if (id != accommodation.AccommodationId)
             {
                 return BadRequest(ErrorMessageContracts.MismatchedId);
             }
 
-            var existing = await _context.Accomodations.FindAsync(accomodation.AccomodationId);
+            var existing = await _context.Accommodations.FindAsync(accommodation.AccommodationId);
             if (existing == null)
             {
                 return NotFound();
@@ -91,7 +91,7 @@ namespace WeddingWebsiteCore.Controllers
 
             try
             {
-                AccomodationHelper.UpdateAccomodation(existing, accomodation);
+                AccommodationHelper.UpdateAccommodation(existing, accommodation);
                 _context.Entry(existing).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
@@ -105,18 +105,18 @@ namespace WeddingWebsiteCore.Controllers
         }
 
         [HttpDelete(RouteContracts.DeleteItem)]
-        public async Task<IActionResult> DeleteAccomodation(int id)
+        public async Task<IActionResult> DeleteAccommodation(int id)
         {
-            var accomodation = await _context.Accomodations.FindAsync(id);
+            var accommodation = await _context.Accommodations.FindAsync(id);
 
-            if (accomodation == null)
+            if (accommodation == null)
             {
                 return NotFound();
             }
 
             try
             {
-                _context.Accomodations.Remove(accomodation);
+                _context.Accommodations.Remove(accommodation);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)

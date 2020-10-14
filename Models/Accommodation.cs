@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WeddingWebsiteCore.Models
 {
-    [Table("accomodations")]
-    public class Accomodation
+    [Table("accommodations")]
+    public class Accommodation
     {
         [Key]
-        public int AccomodationId { get; set; }
+        public int AccommodationId { get; set; }
 
         [Required]
         public string Name { get; set; }
