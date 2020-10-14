@@ -19,12 +19,28 @@ namespace WeddingWebsiteCore.DataAccess
         public DbSet<WeddingMember> WeddingMembers { get; set; }
         public DbSet<WeddingRole> WeddingRoles { get; set; }
         public DbSet<Tier> Tiers { get; set; }
+        public DbSet<Accommodation> Accommodations { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public WeddingContext(DbContextOptions options)
             : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Accommodation>()
+                .HasOne(x => x.Category)
+                .WithMany()
+                .OnDelete(DeleteBehavior.ClientSetNull);
+            modelBuilder.Entity<Accommodation>()
+                .HasOne(x => x.Location)
+                .WithMany()
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<Category>()
+                .HasOne(x => x.Parent)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Cascade);
+                
             modelBuilder.Entity<Family>()
                 .HasMany(family => family.Members)
                 .WithOne(member => member.Family);
