@@ -121,7 +121,7 @@
 
 <script>
 import { ACTIONS } from "@/store";
-import { success, error } from "@/helpers/toast";
+const Toast = require("@/helpers/toast");
 
 export default {
   name: "NewGuestModal",
@@ -169,7 +169,7 @@ export default {
       const guestId = await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.CREATE, guest);
 
       if (!guestId) {
-        error("Unable to save new guest.");
+        Toast.error(this, "Unable to save new guest.");
         return;
       }
 
@@ -180,7 +180,7 @@ export default {
         );
       }
 
-      success("New guest saved!");
+      Toast.success(this, "New guest saved!");
 
       this.close();
     },

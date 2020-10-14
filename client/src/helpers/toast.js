@@ -1,21 +1,21 @@
-import Vue from "vue";
-const vm = new Vue({});
+// import Vue from "vue";
+// const vm = new Vue({});
 
-const success = message => {
+const success = (vm, message) => {
     vm.$bvToast.toast(message, {
         title: "Success!",
         variant: "success"
     });
 }
 
-const failure = message => {
+const failure = (vm, message) => {
     vm.$bvToast.toast(message, {
         title: "Oops!",
         variant: "danger"
     });
 }
 
-const error = message => {
+const error = (vm, message) => {
     vm.$bvToast.toast(message, {
         title: "Error!",
         variant: "warning"

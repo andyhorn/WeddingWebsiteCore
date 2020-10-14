@@ -7,7 +7,7 @@
 <script>
 import LoginForm from "@/components/Login/LoginForm";
 import { ACTIONS } from "@/store";
-import { success, failure } from "@/helpers/toast";
+const Toast = require("@/helpers/toast");
 
 export default {
   name: "Login",
@@ -18,10 +18,10 @@ export default {
     async onLogin(formData) {
       const authenticated = await this.$store.dispatch(ACTIONS.AUTHENTICATION_ACTIONS.LOGIN, formData);
       if (authenticated) {
-        success("Authenticated");
+        Toast.success(this, "Authenticated");
         this.$router.push({ name: "Home" });
       } else {
-        failure("Login failed");
+        Toast.failure(this, "Login failed");
       }
     }
   }

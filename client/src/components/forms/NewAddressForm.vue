@@ -64,7 +64,7 @@
 <script>
 import { http } from "@/axios";
 import { ACTIONS } from "@/store";
-import { success, error } from "@/helpers/toast";
+const Toast = require("@/helpers/toast");
 
 const countryApiUri = "https://restcountries.eu/rest/v2/all";
 const defaultCountryCode = "US";
@@ -114,11 +114,11 @@ export default {
       );
 
       if (addressId) {
-        success("Address saved!");
+        Toast.success(this, "Address saved!");
         this.clearForm();
         this.$emit("saved", addressId);
       } else {
-        error("Unable to save address.");
+        Toast.error(this, "Unable to save address.");
       }
     },
     clearForm() {

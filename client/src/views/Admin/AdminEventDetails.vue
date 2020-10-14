@@ -71,7 +71,7 @@ import NewAddressForm from "@/components/forms/NewAddressForm";
 import * as DateTime from "@/helpers/dateTime";
 import { deepCopy } from "@/helpers/utils";
 import { ACTIONS } from "@/store";
-import { success, error } from "@/helpers/toast";
+const Toast = require("@/helpers/toast");
 
 export default {
   name: "AdminEventDetails",
@@ -179,9 +179,9 @@ export default {
 
       if (success) {
         this.fetch(id);
-        success("Event saved!");
+        Toast.success(this, "Event saved!");
       } else {
-        error("Unable to save event.");
+        Toast.error(this, "Unable to save event.");
       }
     },
     onAddressSaved(id) {

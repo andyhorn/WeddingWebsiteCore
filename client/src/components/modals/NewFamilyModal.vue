@@ -56,7 +56,7 @@
 
 <script>
 import { ACTIONS } from "@/store";
-import { success, error } from "@/helpers/toast";
+const Toast = require("@/helpers/toast");
 
 export default {
     name: "NewFamilyModal",
@@ -82,7 +82,7 @@ export default {
 
             const familyId = await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.CREATE, family);
             if (!familyId) {
-              error("Unable to create new family.");
+              Toast.error(this, "Unable to create new family.");
               return;
             }
 
@@ -92,7 +92,7 @@ export default {
               await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, guest);
             }
 
-            success("Family saved!");
+            Toast.success(this, "Family saved!");
 
             this.close();
         },

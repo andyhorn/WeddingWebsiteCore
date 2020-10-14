@@ -103,7 +103,7 @@ import TimePicker from "@/components/TimePicker";
 import DateTimePicker from "@/components/DateTimePicker";
 import NewAddressForm from "@/components/forms/NewAddressForm";
 import { ACTIONS } from "@/store";
-import { success, error } from "@/helpers/toast";
+const Toast = require("@/helpers/toast");
 
 import * as DateTime from "@/helpers/dateTime";
 
@@ -255,10 +255,10 @@ export default {
           eventData
         );
         if (id) {
-          success("Event created!");
+          Toast.success(this, "Event created!");
           this.onClose();
         } else {
-          error("Unable to create event.");
+          Toast.error(this, "Unable to create event.");
         }
       }
     },
