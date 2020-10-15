@@ -12,11 +12,12 @@
             <b-nav-item to>Wedding Party</b-nav-item>
             <b-nav-item to>Gift Registries</b-nav-item>
             <b-nav-item-dropdown v-if="isLoggedIn" id="nav-dropdown-admin" text="Admin" left>
+              <b-dropdown-item :to="{ name: 'Admin-Accommodations' }">Accommodations</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'Admin-Addresses' }">Addresses</b-dropdown-item>
-              <b-dropdown-item :to="{ name: 'Admin-Guests' }">Guests &amp; Families</b-dropdown-item>
-              <b-dropdown-item :to="{ name: 'Admin-RSVP' }">RSVPs</b-dropdown-item>
-              <b-dropdown-item :to="{ name: 'Admin-Photos' }">Photos</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'Admin-Events' }">Events</b-dropdown-item>
+              <b-dropdown-item :to="{ name: 'Admin-Guests' }">Guests &amp; Families</b-dropdown-item>
+              <b-dropdown-item :to="{ name: 'Admin-Photos' }">Photos</b-dropdown-item>
+              <b-dropdown-item :to="{ name: 'Admin-RSVP' }">RSVPs</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'Admin-Party' }">Wedding Party</b-dropdown-item>
               <b-dropdown-divider />
               <b-dropdown-item class="text-default" @click="logout">Logout</b-dropdown-item>
