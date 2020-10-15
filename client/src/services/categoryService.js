@@ -29,7 +29,7 @@ export default {
         return new Promise(resolve => {
             http.post(endpoint, category)
                 .then(res => {
-                    categoryId = res.data;
+                    const categoryId = res.data;
                     resolve(categoryId);
                 })
                 .catch(err => resolve(null));
