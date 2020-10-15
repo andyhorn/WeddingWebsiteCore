@@ -6,6 +6,8 @@ import families from "@/store/modules/families.store.js";
 import events from "@/store/modules/events.store.js";
 import addresses from "@/store/modules/addresses.store.js";
 import rsvps from "@/store/modules/rsvps.store.js";
+import categories from "@/store/modules/categories.store.js";
+import accommodations from "@/store/modules/accommodations.store.js";
 
 Vue.use(Vuex);
 
@@ -16,7 +18,9 @@ export const ACTIONS = {
   EVENT_ACTIONS: events.EVENT_ACTIONS,
   AUTHENTICATION_ACTIONS: authentication.AUTHENTICATION_ACTIONS,
   ADDRESS_ACTIONS: addresses.ACTIONS,
-  RSVP_ACTIONS: rsvps.ACTIONS
+  RSVP_ACTIONS: rsvps.ACTIONS,
+  ACCOMMODATION_ACTIONS: accommodations.ACCOMMODATION_ACTIONS,
+  CATEGORY_ACTIONS: categories.CATEGORY_ACTIONS
 }
 
 const defaultState = {
@@ -43,7 +47,9 @@ export default new Vuex.Store({
     families,
     events,
     addresses,
-    rsvps
+    rsvps,
+    categories,
+    accommodations
   },
   getters: {
 
