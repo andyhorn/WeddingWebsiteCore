@@ -116,3 +116,11 @@ const mutations = {
         state.accommodations = [];
     }
 }
+
+export default {
+    state,
+    getters,
+    actions,
+    mutations,
+    ACCOMMODATION_ACTIONS
+}
