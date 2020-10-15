@@ -14,6 +14,6 @@ namespace WeddingWebsiteCore.Models
 
         [ForeignKey(nameof(ParentId))]
         public Category Parent { get; set; }
-        public int ParentId { get; set; }
+        public int? ParentId { get; set; }
     }
 }

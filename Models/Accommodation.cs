@@ -16,10 +16,10 @@ namespace WeddingWebsiteCore.Models
 
         [ForeignKey(nameof(AddressId))]
         public Address Location { get; set; }
-        public int AddressId { get; set; }
+        public int? AddressId { get; set; }
 
         [ForeignKey(nameof(CategoryId))]
         public Category Category { get; set; }
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
     }
 }
