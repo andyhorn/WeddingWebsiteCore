@@ -2,7 +2,7 @@
     <b-container class="border rounded my-2 py-3">
         <div class="d-flex justify-content-between align-items-center">
             <p class="m-0 p-0">
-                <strong>{{ category.name }}</strong>
+                <strong>{{ category.name }}</strong><br />
                 <span v-if="parent == null"><small> (Top level)</small></span>
             </p>
             <p class="m-0 p-0 pointer" @click="onDelete"><b-icon icon="x" /></p>
@@ -40,7 +40,7 @@ export default {
         }
     },
     methods: {
-        async onDelete() {
+        onDelete() {
             this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.DELETE, this.category.categoryId);
         }
     }
