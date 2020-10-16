@@ -33,7 +33,7 @@ const getters = {
 const actions = {
     [ACCOMMODATION_ACTIONS.FETCH_ALL]({ commit }) {
         return new Promise(async (resolve) => {
-            const accommodations = accommodationService.getAll();
+            const accommodations = await accommodationService.getAll();
             if (accommodations) {
                 commit(ACCOMMODATION_MUTATIONS.SET_ACCOMMODATIONS, accommodations);
                 return resolve(true);

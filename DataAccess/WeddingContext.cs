@@ -30,11 +30,13 @@ namespace WeddingWebsiteCore.DataAccess
             modelBuilder.Entity<Accommodation>()
                 .HasOne(x => x.Category)
                 .WithMany()
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .HasForeignKey(x => x.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Accommodation>()
                 .HasOne(x => x.Location)
                 .WithMany()
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .HasForeignKey(x => x.AddressId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Category>()
                 .HasOne(x => x.Parent)

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WeddingWebsiteCore.DataAccess;
@@ -9,9 +10,10 @@ using WeddingWebsiteCore.DataAccess;
 namespace WeddingWebsiteCore.Migrations
 {
     [DbContext(typeof(WeddingContext))]
-    partial class WeddingContextModelSnapshot : ModelSnapshot
+    [Migration("20201015011439_AccommodationLocationAndCategoryOptional")]
+    partial class AccommodationLocationAndCategoryOptional
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -544,13 +546,11 @@ namespace WeddingWebsiteCore.Migrations
                 {
                     b.HasOne("WeddingWebsiteCore.Models.Address", "Location")
                         .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("AddressId");
 
                     b.HasOne("WeddingWebsiteCore.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CategoryId");
                 });
 
             modelBuilder.Entity("WeddingWebsiteCore.Models.Category", b =>

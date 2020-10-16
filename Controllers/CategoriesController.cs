@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -118,6 +119,17 @@ namespace WeddingWebsiteCore.Controllers
             try
             {
                 _context.Categories.Remove(category);
+
+                var children = await _context.Categories
+                    .Where(x => x.ParentId.Equals(id))
+                    .ToListAsync();
+
+                foreach (var child in children)
+                {
+                    child.ParentId = null;
+                    _context.Entry(child).State = EntityState.Modified;
+                }
+                    
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)

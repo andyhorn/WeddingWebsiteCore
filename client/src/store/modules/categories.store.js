@@ -55,11 +55,12 @@ const actions = {
         });
     },
 
-    [CATEGORY_ACTIONS.DELETE]({ commit }, categoryId) {
+    [CATEGORY_ACTIONS.DELETE]({ commit, dispatch }, categoryId) {
         return new Promise(async (resolve) => {
             const deleted = await categoryService.delete(categoryId);
             if (deleted) {
                 commit(CATEGORY_MUTATIONS.REMOVE_CATEGORY, categoryId);
+                dispatch(CATEGORY_ACTIONS.FETCH_ALL);
             }
 
             resolve(deleted);
