@@ -164,6 +164,9 @@ export default {
             if (rows.length > 0) {
                 this.categoryUnderEdit = rows[0];
                 this.isCategoryEditVisible = true;
+            } else {
+                this.categoryUnderEdit = null;
+                this.isCategoryEditVisible = false;
             }
         },
         onNewAccommodation() {
