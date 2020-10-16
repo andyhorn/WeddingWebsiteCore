@@ -8,8 +8,11 @@
             <b-form @submit.prevent="onSubmit">
                 <b-row>
                     <b-col>
-                        <b-form-group label="Name">
-                            <b-form-input v-model="name" />
+                        <b-form-group label="Name" 
+                            :state="nameState"
+                            description="Required"
+                        >
+                            <b-form-input v-model="name" :state="nameState" />
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -37,8 +40,8 @@
                 </b-row>
                 <b-row>
                     <b-col>
-                        <b-form-group label="Category">
-                            <b-select v-model="categoryId">
+                        <b-form-group label="Category" :state="categoryState" description="Required">
+                            <b-select v-model="categoryId" :state="categoryState">
                                 <option :value="null">None</option>
                                 <option v-for="category in categories"
                                     :key="category.categoryId"
@@ -52,7 +55,7 @@
                 </b-row>
                 <b-row>
                     <b-col class="d-flex justify-content-between">
-                        <b-button squared size="sm" variant="success" type="submit">Save</b-button>
+                        <b-button squared size="sm" variant="success" type="submit" :disabled="isSaveButtonDisabled">Save</b-button>
                         <b-button squared size="sm" variant="danger" @click="onCancel">Cancel</b-button>
                     </b-col>
                 </b-row>
@@ -62,6 +65,8 @@
 </template>
 
 <script>
+import { ACTIONS } from "@/store";
+
 export default {
     name: "NewAccommodationModal",
     props: ["visible"],
@@ -70,7 +75,25 @@ export default {
             name: null,
             description: null,
             addressId: null,
-            categoryId: null
+            categoryId: null,
+            nameState: null,
+            categoryState: null
+        }
+    },
+    watch: {
+        "name": function() {
+            if (!!this.name && !!this.name.trim()) {
+                this.nameState = true;
+            } else {
+                this.nameState = false;
+            }
+        },
+        "categoryId": function() {
+            if (this.categoryId != null) {
+                this.categoryState = true;
+            } else {
+                this.categoryState = false;
+            }
         }
     },
     computed: {
@@ -79,6 +102,10 @@ export default {
         },
         categories() {
             return this.$store.getters.categories;
+        },
+        isSaveButtonDisabled() {
+            return this.nameState !== true
+                || this.categoryState !== true;
         }
     },
     methods: {
@@ -88,12 +115,30 @@ export default {
             this.addressId = null;
             this.categoryId = null;
         },
-        onCancel() {
+        resetStates() {
+            this.nameState = null;
+            this.categoryState = null;
+        },
+        close() {
             this.$emit("closed");
             this.clear();
         },
+        onCancel() {
+            this.close();
+        },
         async onSubmit() {
+            if (this.nameState !== true || this.categoryState !== true) return;
+
+            const accommodation = {
+                name: this.name,
+                description: this.description,
+                addressId: this.addressId,
+                categoryId: this.categoryId
+            };
+
+            await this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.CREATE, accommodation);
             
+            this.close();
         }
     }
 }
