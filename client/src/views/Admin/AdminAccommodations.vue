@@ -7,6 +7,7 @@
             <b-table
                 selectable
                 show-empty
+                caption="Select a category to edit."
                 select-mode="single"
                 :busy="isBusy"
                 :tbody-tr-class="categoryClass"
@@ -20,8 +21,7 @@
                 </template>
 
                 <template v-slot:cell(options)="data">
-                    <b-button class="mx-1" size="sm" squared variant="success" @click="onEditCategory(data.item.categoryI)">Edit</b-button>
-                    <b-button class="mx-1" size="sm" squared variant="outline-danger" @click="onDeleteCategory(data.item.categoryId)">Delete</b-button>
+                    <b-button class="mx-auto" size="sm" squared variant="outline-danger" @click="onDeleteCategory(data.item.categoryId)">Delete</b-button>
                 </template>
             </b-table>
             <b-collapse v-model="isCategoryEditVisible">
@@ -39,6 +39,7 @@
             <b-table
                 selectable
                 show-empty
+                caption="Select an accommodation to edit."
                 select-mode="single"
                 :busy="isBusy"
                 :tbody-tr-class="accommodationClass"
@@ -69,8 +70,7 @@
                 </template>
 
                 <template v-slot:cell(options)="data">
-                    <b-button class="mx-1" size="sm" squared variant="success" @click="onEditAccommodation(data.item.accommodationId)">Edit</b-button>
-                    <b-button class="mx-1" size="sm" squared variant="outline-danger" @click="onDeleteAccommodation(data.item.accommodationId)">Delete</b-button>
+                    <b-button class="mx-auto" size="sm" squared variant="outline-danger" @click="onDeleteAccommodation(data.item.accommodationId)">Delete</b-button>
                 </template>
             </b-table>
 
