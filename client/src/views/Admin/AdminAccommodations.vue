@@ -2,30 +2,34 @@
     <b-container class="my-5">
         <div class="d-flex flex-column align-items-start">
             <h1>Accommodations</h1>
-            <b-button class="my-1" variant="success" squared size="sm">New Accommodation</b-button>
+            <b-button class="my-1" variant="success" squared size="sm" @click="onNewAccommodation">New Accommodation</b-button>
             <b-button class="my-1" variant="success" squared size="sm" @click="onNewCategory">New Category</b-button>
         </div>
         <Category v-for="category in topLevelCategories" :key="category.categoryId"
             :category="category" />
 
-        <NewCategoryModal :visible="newCategoryModalIsVisible" @closed="newCategoryModalIsVisible = false" />
+        <NewCategoryModal :visible="isNewCategoryModalVisible" @closed="isNewCategoryModalVisible = false" />
+        <NewAccommodationModal :visible="isNewAccommodationModalVisible" @closed="isNewAccommodationModalVisible = false" />
     </b-container>
 </template>
 
 <script>
 import Category from "@/components/Admin/Accommodations/Category";
 import NewCategoryModal from "@/components/modals/NewCategoryModal";
+import NewAccommodationModal from "@/components/modals/NewAccommodationModal";
 import { ACTIONS } from "@/store";
 
 export default {
     name: "AdminAccommodations",
     components: {
         Category,
-        NewCategoryModal
+        NewCategoryModal,
+        NewAccommodationModal
     },
     data() {
         return {
-            newCategoryModalIsVisible: false,
+            isNewCategoryModalVisible: false,
+            isNewAccommodationModalVisible: false
         }
     },
     computed: {
@@ -41,7 +45,10 @@ export default {
     },
     methods: {
         onNewCategory() {
-            this.newCategoryModalIsVisible = true;
+            this.isNewCategoryModalVisible = true;
+        },
+        onNewAccommodation() {
+            this.isNewAccommodationModalVisible = true;
         },
         async fetch() {
             await Promise.all([
