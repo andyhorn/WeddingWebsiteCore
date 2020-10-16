@@ -24,7 +24,7 @@
         </b-row>
         <b-row>
             <b-col class="d-flex justify-content-between">
-                <b-button type="submit" squared size="sm" variant="success">Save</b-button>
+                <b-button type="submit" squared size="sm" variant="success" :disabled="isSaveButtonDisabled">Save</b-button>
                 <b-button squared size="sm" variant="danger" @click="onClose">Cancel</b-button>
             </b-col>
         </b-row>
@@ -54,6 +54,9 @@ export default {
                 return categories.filter(x => x.categoryId != this.category.categoryId);
 
             return categories;
+        },
+        isSaveButtonDisabled() {
+            return this.nameState !== true;
         }
     },
     watch: {

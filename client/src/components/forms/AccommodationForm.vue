@@ -46,7 +46,7 @@
         </b-row>
         <b-row>
             <b-col class="d-flex justify-content-between">
-                <b-button squared size="sm" variant="success" type="submit">Save</b-button>
+                <b-button squared size="sm" variant="success" type="submit" :disabled="isSaveButtonDisabled">Save</b-button>
                 <b-button squared size="sm" variant="danger" @click="onCancel">Cancel</b-button>
             </b-col>
         </b-row>
