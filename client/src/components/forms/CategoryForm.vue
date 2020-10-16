@@ -103,7 +103,7 @@ export default {
             if (!this.nameState) return;
 
             const category = {
-                categoryId: this.id,
+                categoryId: this.id || undefined,
                 name: this.name,
                 parentId: this.parentId
             };
