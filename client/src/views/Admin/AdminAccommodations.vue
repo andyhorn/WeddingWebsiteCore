@@ -114,7 +114,10 @@ export default {
                     key: "categoryId",
                     label: "Category"
                 },
-                "options"
+                {
+                    key: "options",
+                    tdClass: "optionsColumn"
+                }
             ]
         }
     },
@@ -214,3 +217,9 @@ export default {
     }
 }
 </script>
+
+<style>
+    .optionsColumn {
+        min-width: 10rem;
+    }
+</style>
