@@ -5,11 +5,14 @@
             <h2>Categories</h2>
             <b-button class="my-1" variant="success" squared size="sm" @click="onNewCategory">New Category</b-button>
             <b-table
+                selectable
                 show-empty
+                select-mode="single"
                 :busy="isBusy"
                 :tbody-tr-class="categoryClass"
                 :items="categories"
                 :fields="categoryFields"
+                @row-selected="onCategorySelected"
             >
                 <template v-slot:cell(parentId)="data">
                     <span v-if="data.item.parentId == null">None</span>
@@ -21,17 +24,27 @@
                     <b-button class="mx-1" size="sm" squared variant="outline-danger" @click="onDeleteCategory(data.item.categoryId)">Delete</b-button>
                 </template>
             </b-table>
+            <b-collapse v-model="isCategoryEditVisible">
+                <CategoryForm 
+                    v-if="isCategoryEditVisible" 
+                    :category="categoryUnderEdit" 
+                    :visible="isCategoryEditVisible"
+                    @close="onCategoryEditClose" />
+            </b-collapse>
         </div>
 
         <div class="border border-secondary rounded p-4 my-2">
             <h2>Accommodations</h2>
             <b-button class="my-1" variant="success" squared size="sm" @click="onNewAccommodation">New Accommodation</b-button>
             <b-table
+                selectable
                 show-empty
+                select-mode="single"
                 :busy="isBusy"
                 :tbody-tr-class="accommodationClass"
                 :items="accommodations"
                 :fields="accommodationFields"
+                @row-selected="onAccommodationSelected"
             >
                 <template v-slot:cell(addressId)="data">
                     <span v-if="data.item.addressId == null">None</span>
@@ -60,6 +73,10 @@
                     <b-button class="mx-1" size="sm" squared variant="outline-danger" @click="onDeleteAccommodation(data.item.accommodationId)">Delete</b-button>
                 </template>
             </b-table>
+
+            <b-collapse v-model="isAccommodationEditVisible">
+                {{ accommodationUnderEdit }}
+            </b-collapse>
         </div>
 
         <NewCategoryModal :visible="isNewCategoryModalVisible" @closed="isNewCategoryModalVisible = false" />
@@ -70,15 +87,18 @@
 <script>
 import Category from "@/components/Admin/Accommodations/Category";
 import NewCategoryModal from "@/components/modals/NewCategoryModal";
+import CategoryForm from "@/components/forms/CategoryForm";
 import NewAccommodationModal from "@/components/modals/NewAccommodationModal";
 import AdminAccommodation from "@/components/Admin/Accommodations/Accommodation";
 import { ACTIONS } from "@/store";
+const Toast = require("@/helpers/toast");
 
 export default {
     name: "AdminAccommodations",
     components: {
         Category,
         NewCategoryModal,
+        CategoryForm,
         NewAccommodationModal,
         AdminAccommodation
     },
@@ -87,6 +107,10 @@ export default {
             isBusy: false,
             isNewCategoryModalVisible: false,
             isNewAccommodationModalVisible: false,
+            isCategoryEditVisible: false,
+            isAccommodationEditVisible: false,
+            accommodationUnderEdit: null,
+            categoryUnderEdit: null,
             categoryFields: [
                 {
                     key: "categoryId",
@@ -136,11 +160,25 @@ export default {
         onNewCategory() {
             this.isNewCategoryModalVisible = true;
         },
+        onCategorySelected(rows) {
+            if (rows.length > 0) {
+                this.categoryUnderEdit = rows[0];
+                this.isCategoryEditVisible = true;
+            }
+        },
         onNewAccommodation() {
             this.isNewAccommodationModalVisible = true;
         },
-        onEditCategory(categoryId) {
+        onAccommodationSelected(accommodation) {
+            console.log(accommodation)
+            this.accommodationUnderEdit = accommodation;
+            this.isAccommodationEditVisible = true;
+        },
+        onCategoryEditClose(success) {
+            if (success) Toast.success(this, "Category saved!");
 
+            this.isCategoryEditVisible = false;
+            this.categoryUnderEdit = null;
         },
         async onDeleteCategory(categoryId) {
             if (confirm("Are you sure you want to delete this category?")) {
