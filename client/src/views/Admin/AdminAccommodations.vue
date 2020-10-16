@@ -124,6 +124,7 @@ export default {
         async onDeleteCategory(categoryId) {
             if (confirm("Are you sure you want to delete this category?")) {
                 await this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.DELETE, categoryId);
+                this.fetch();
             }
         },
         onEditAccommodation(accommodationId) {
@@ -132,6 +133,7 @@ export default {
         async onDeleteAccommodation(accommodationId) {
             if (confirm("Are you sure you want to delete this accommodation?")) {
                 await this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.DELETE, accommodationId);
+                this.fetch();
             }
         },
         async fetch() {
