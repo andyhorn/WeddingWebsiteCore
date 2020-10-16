@@ -5,6 +5,7 @@
             <h2>Categories</h2>
             <b-button class="my-1" variant="success" squared size="sm" @click="onNewCategory">New Category</b-button>
             <b-table
+                show-empty
                 :busy="isBusy"
                 :tbody-tr-class="categoryClass"
                 :items="categories"
@@ -26,6 +27,7 @@
             <h2>Accommodations</h2>
             <b-button class="my-1" variant="success" squared size="sm" @click="onNewAccommodation">New Accommodation</b-button>
             <b-table
+                show-empty
                 :busy="isBusy"
                 :tbody-tr-class="accommodationClass"
                 :items="accommodations"
@@ -44,7 +46,7 @@
                                 :key="category"
                             >
                                 <span v-if="index == 0">{{ category }}</span>
-                                <span v-else :style="{ 'padding-left': `${(index - 1) * 11}px` }">
+                                <span v-else :style="{ 'padding-left': `${(index - 1) * 15}px` }">
                                     <b-icon-arrow-return-right /> {{ category }}
                                 </span>
                                 <br />
@@ -139,6 +141,15 @@ export default {
         },
         async onDeleteCategory(categoryId) {
             if (confirm("Are you sure you want to delete this category?")) {
+                this.isBusy = true;
+                const category = this.categories.find(x => x.categoryId == categoryId);
+                const parentId = category.parentId == null ? null 
+                    : this.categories.find(x => x.categoryId == category.parentId).categoryId;
+
+                for (let accommodation of this.accommodations.filter(x => x.categoryId == categoryId)) {
+                    accommodation.categoryId = parentId;
+                }
+
                 await this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.DELETE, categoryId);
                 this.fetch();
             }
@@ -148,6 +159,7 @@ export default {
         },
         async onDeleteAccommodation(accommodationId) {
             if (confirm("Are you sure you want to delete this accommodation?")) {
+                this.isBusy = true;
                 await this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.DELETE, accommodationId);
                 this.fetch();
             }
