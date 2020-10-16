@@ -1,9 +1,11 @@
 <template>
     <b-container class="my-5">
+        <h1 class="text-center">Accommodation Management</h1>
         <div class="border border-secondary rounded p-4 my-2">
             <h2>Categories</h2>
             <b-button class="my-1" variant="success" squared size="sm" @click="onNewCategory">New Category</b-button>
             <b-table
+                :busy="isBusy"
                 :tbody-tr-class="categoryClass"
                 :items="categories"
                 :fields="categoryFields"
@@ -24,18 +26,31 @@
             <h2>Accommodations</h2>
             <b-button class="my-1" variant="success" squared size="sm" @click="onNewAccommodation">New Accommodation</b-button>
             <b-table
+                :busy="isBusy"
                 :tbody-tr-class="accommodationClass"
                 :items="accommodations"
                 :fields="accommodationFields"
             >
                 <template v-slot:cell(addressId)="data">
                     <span v-if="data.item.addressId == null">None</span>
-                    <span v-else>{{ printAddress(data.item.addressId )}}</span>
+                    <span v-else>{{ printAddress(data.item.addressId) }}</span>
                 </template>
 
                 <template v-slot:cell(categoryId)="data">
                     <span v-if="data.item.categoryId == null">Uncategorized</span>
-                    <span v-else>{{ categories.find(x => x.categoryId == data.item.categoryId).name }}</span>
+                    <span v-else>
+                        <p>
+                            <span v-for="(category, index) in printCategoryTree(data.item.categoryId).split(',')"
+                                :key="category"
+                            >
+                                <span v-if="index == 0">{{ category }}</span>
+                                <span v-else :style="{ 'padding-left': `${(index - 1) * 11}px` }">
+                                    <b-icon-arrow-return-right /> {{ category }}
+                                </span>
+                                <br />
+                            </span>
+                        </p>
+                    </span>
                 </template>
 
                 <template v-slot:cell(options)="data">
@@ -67,6 +82,7 @@ export default {
     },
     data() {
         return {
+            isBusy: false,
             isNewCategoryModalVisible: false,
             isNewAccommodationModalVisible: false,
             categoryFields: [
@@ -137,10 +153,12 @@ export default {
             }
         },
         async fetch() {
+            this.isBusy = true;
             await Promise.all([
                 this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.FETCH_ALL),
                 this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.FETCH_ALL)
             ]);
+            this.isBusy = false;
         },
         printAddress(addressId) {
             if (addressId == null) return "";
@@ -155,6 +173,19 @@ export default {
 
             return str;
         },
+        printCategoryTree(categoryId) {
+            if (categoryId == null) return "";
+
+            const category = this.categories.find(x => x.categoryId == categoryId)
+            if (category == null) return "";
+
+            const name = category.name;
+
+            if (category.parentId != null)
+                return this.printCategoryTree(category.parentId) + "," + name;
+            else 
+                return name;
+        },
         accommodationClass(item, type) {
             if (!item || type != "row") return;
 
@@ -166,8 +197,8 @@ export default {
             if (item.parentId == null) return "table-info";
         }
     },
-    mounted() {
-        this.fetch();
+    async mounted() {
+        await this.fetch();
     }
 }
 </script>
