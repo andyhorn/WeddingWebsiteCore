@@ -75,11 +75,11 @@
             </b-table>
 
             <b-collapse v-model="isAccommodationEditVisible">
-                {{ accommodationUnderEdit }}
+                <AccommodationForm :accommodation="accommodationUnderEdit" @close="onAccommodationEditClose" />
             </b-collapse>
         </div>
 
-        <NewCategoryModal :visible="isNewCategoryModalVisible" @closed="isNewCategoryModalVisible = false" />
+        <NewCategoryModal :visible="isNewCategoryModalVisible" @close="onCategoryModalClose" />
         <NewAccommodationModal :visible="isNewAccommodationModalVisible" @close="onAccommodationModalClose" />
     </b-container>
 </template>
@@ -89,6 +89,7 @@ import Category from "@/components/Admin/Accommodations/Category";
 import NewCategoryModal from "@/components/modals/NewCategoryModal";
 import CategoryForm from "@/components/forms/CategoryForm";
 import NewAccommodationModal from "@/components/modals/NewAccommodationModal";
+import AccommodationForm from "@/components/forms/AccommodationForm";
 import AdminAccommodation from "@/components/Admin/Accommodations/Accommodation";
 import { ACTIONS } from "@/store";
 const Toast = require("@/helpers/toast");
@@ -100,6 +101,7 @@ export default {
         NewCategoryModal,
         CategoryForm,
         NewAccommodationModal,
+        AccommodationForm,
         AdminAccommodation
     },
     data() {
@@ -157,8 +159,42 @@ export default {
         }
     },
     methods: {
+        onNewAccommodation() {
+            this.isNewAccommodationModalVisible = true;
+        },
+        onAccommodationModalClose(success) {
+            if (success) Toast.success(this, "Accommodation saved!");
+
+            this.isNewAccommodationModalVisible = false;
+        },
+        onAccommodationSelected(rows) {
+            if (rows.length > 0) {
+                this.accommodationUnderEdit = rows[0];
+                this.isAccommodationEditVisible = true;
+            } else {
+                this.isAccommodationEditVisible = false;
+                this.accommodationUnderEdit = null;
+            }
+        },
+        onAccommodationEditClose(success) {
+            if (success) Toast.success(this, "Accommodation saved!");
+
+            this.isAccommodationEditVisible = false;
+        },
+        async onDeleteAccommodation(accommodationId) {
+            if (confirm("Are you sure you want to delete this accommodation?")) {
+                this.isBusy = true;
+                await this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.DELETE, accommodationId);
+                this.fetch();
+            }
+        },
         onNewCategory() {
             this.isNewCategoryModalVisible = true;
+        },
+        onCategoryModalClose(success) {
+            if (success) Toast.success(this, "Category saved!");
+
+            this.isNewCategoryModalVisible = false;
         },
         onCategorySelected(rows) {
             if (rows.length > 0) {
@@ -168,23 +204,6 @@ export default {
                 this.categoryUnderEdit = null;
                 this.isCategoryEditVisible = false;
             }
-        },
-        onNewAccommodation() {
-            this.isNewAccommodationModalVisible = true;
-        },
-        onAccommodationSelected(rows) {
-            if (rows.length > 0) {
-                this.accommodationUnderEdit = accommodation;
-                this.isAccommodationEditVisible = true;
-            } else {
-                this.isAccommodationEditVisible = false;
-                this.accommodationUnderEdit = null;
-            }
-        },
-        onAccommodationModalClose(success) {
-            if (success) Toast.success(this, "Accommodation saved!");
-
-            this.isNewAccommodationModalVisible = false;
         },
         onCategoryEditClose(success) {
             if (success) Toast.success(this, "Category saved!");
@@ -204,16 +223,6 @@ export default {
                 }
 
                 await this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.DELETE, categoryId);
-                this.fetch();
-            }
-        },
-        onEditAccommodation(accommodationId) {
-
-        },
-        async onDeleteAccommodation(accommodationId) {
-            if (confirm("Are you sure you want to delete this accommodation?")) {
-                this.isBusy = true;
-                await this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.DELETE, accommodationId);
                 this.fetch();
             }
         },

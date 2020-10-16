@@ -1,5 +1,7 @@
 <template>
-    <b-modal :visible="visible" id="new-category-modal"
+    <b-modal :visible="visible"
+        v-if="visible"
+        id="new-category-modal"
         title="Create a New Category"
         @hide="onClose"
         hide-footer
@@ -21,8 +23,8 @@ export default {
         CategoryForm
     },
     methods: {
-        onClose() {
-            this.$emit("closed");
+        onClose(success) {
+            this.$emit("close", success);
         },
     }
 }
