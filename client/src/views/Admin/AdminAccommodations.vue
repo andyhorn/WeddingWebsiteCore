@@ -80,7 +80,7 @@
         </div>
 
         <NewCategoryModal :visible="isNewCategoryModalVisible" @closed="isNewCategoryModalVisible = false" />
-        <NewAccommodationModal :visible="isNewAccommodationModalVisible" @closed="isNewAccommodationModalVisible = false" />
+        <NewAccommodationModal :visible="isNewAccommodationModalVisible" @close="onAccommodationModalClose" />
     </b-container>
 </template>
 
@@ -172,10 +172,19 @@ export default {
         onNewAccommodation() {
             this.isNewAccommodationModalVisible = true;
         },
-        onAccommodationSelected(accommodation) {
-            console.log(accommodation)
-            this.accommodationUnderEdit = accommodation;
-            this.isAccommodationEditVisible = true;
+        onAccommodationSelected(rows) {
+            if (rows.length > 0) {
+                this.accommodationUnderEdit = accommodation;
+                this.isAccommodationEditVisible = true;
+            } else {
+                this.isAccommodationEditVisible = false;
+                this.accommodationUnderEdit = null;
+            }
+        },
+        onAccommodationModalClose(success) {
+            if (success) Toast.success(this, "Accommodation saved!");
+
+            this.isNewAccommodationModalVisible = false;
         },
         onCategoryEditClose(success) {
             if (success) Toast.success(this, "Category saved!");
