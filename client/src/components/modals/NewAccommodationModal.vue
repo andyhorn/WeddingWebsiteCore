@@ -32,7 +32,7 @@
                                     :key="address.addressId"
                                     :value="address.addressId"
                                 >
-                                    {{ address.Name }}
+                                    {{ address.name }}
                                 </option>
                             </b-select>
                         </b-form-group>
@@ -122,6 +122,7 @@ export default {
         close() {
             this.$emit("closed");
             this.clear();
+            this.resetStates();
         },
         onCancel() {
             this.close();
