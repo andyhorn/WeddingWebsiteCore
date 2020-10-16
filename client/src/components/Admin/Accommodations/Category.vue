@@ -1,9 +1,8 @@
 <template>
     <b-container class="border rounded my-2 py-3">
         <div class="d-flex justify-content-between align-items-center">
-            <p class="m-0 p-0">
-                <strong>{{ category.name }}</strong><br />
-                <span v-if="parent == null"><small> (Top level)</small></span>
+            <p class="m-0 p-0" :class="parent == null ? 'top-level' : 'sub-category'">
+                <strong>{{ category.name }}</strong>
             </p>
             <p class="m-0 p-0 pointer" @click="onDelete"><b-icon icon="x" /></p>
         </div>
@@ -51,5 +50,13 @@ export default {
     .pointer:hover {
         cursor: pointer;
         color: silver;
+    }
+    .top-level {
+        font-size: 1.2rem;
+        text-decoration: underline;
+    }
+    .sub-category {
+        font-size: 0.9rem;
+        font-style: italic;
     }
 </style>

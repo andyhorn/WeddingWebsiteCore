@@ -1,7 +1,7 @@
 <template>
     <b-modal :visible="visible" id="new-accommodation-modal"
         title="Create a New Accommodation"
-        @hide="onClose"
+        @hide="close"
         hide-footer
     >
         <b-container>
@@ -19,7 +19,7 @@
                 <b-row>
                     <b-col>
                         <b-form-group label="Description">
-                            <b-form-textarea v-model="Description" />
+                            <b-form-textarea v-model="description" />
                         </b-form-group>
                     </b-col>
                 </b-row>
