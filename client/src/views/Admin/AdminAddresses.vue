@@ -1,7 +1,8 @@
 <template>
   <b-container class="pt-5">
-    <div class="d-flex justify-content-between align-items-center">
-      <h2 class="mb-3">Addresses ({{ addresses.length }})</h2>
+        <h2 class="mb-3">Addresses ({{ addresses.length }})</h2>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <b-button squared size="sm" variant="success" @click="isNewAddressModalVisible = true">New Address</b-button>
       <b-button squared size="sm" variant="primary" @click="fetch">
         <b-icon-arrow-clockwise />Refresh
       </b-button>
@@ -24,14 +25,20 @@
         </div>
       </template>
     </b-table>
+    <NewAddressModal :visible="isNewAddressModalVisible" @close="onNewAddressModalClose" />
   </b-container>
 </template>
 
 <script>
+import NewAddressModal from "@/components/modals/NewAddressModal";
 import { ACTIONS } from "@/store";
+const Toast = require("@/helpers/toast");
 
 export default {
   name: "AdminAddresses",
+  components: {
+    NewAddressModal
+  },
   data() {
     return {
       fields: [
@@ -45,6 +52,7 @@ export default {
         "country",
         "options",
       ],
+      isNewAddressModalVisible: false
     };
   },
   computed: {
@@ -74,6 +82,11 @@ export default {
         await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.DELETE, addressId);
       }
     },
+    onNewAddressModalClose(success) {
+      if (success) Toast.success(this, "Address saved!");
+
+      this.isNewAddressModalVisible = false;
+    }
   },
 };
 </script>
