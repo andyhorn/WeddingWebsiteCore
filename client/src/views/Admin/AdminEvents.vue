@@ -96,16 +96,15 @@ export default {
       this.fetch();
     },
     onEventSelected(rows) {
-      if (rows.length < 1) return;
-
-      this.eventUnderEdit = rows[0];
-      this.isEventEditVisible = true;
-    },
-    onEventEditClose(success) {
-      if (success) {
-        Toast.success(this, "Event saved!");
+      if (rows.length < 1) {
+        this.isEventEditVisible = false;
+        this.eventUnderEdit = null;
+      } else {
+        this.eventUnderEdit = rows[0];
+        this.isEventEditVisible = true;
       }
-
+    },
+    onEventEditClose() {
       this.isEventEditVisible = false;
       this.eventUnderEdit = null;
     },
