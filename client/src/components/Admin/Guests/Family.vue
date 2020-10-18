@@ -31,19 +31,25 @@
           @click="openGuestModal"
         >Add member</b-button>
         <Box class="mb-3">
-          <Guest :guest="headMember" />
+          <Guest :guest="headMember" :headMemberId="headMember.guestId" />
         </Box>
         <Box v-for="member in nonHeadMembers" :key="member.guestId">
-          <div class="d-flex align-items-center">
-            <a
-              @click="promoteGuest(member.guestId)"
-              v-if="!member.isChild && family.headMemberId != member.guestId"
-            >
-              <b-icon-arrow-bar-up />
-            </a>
-            <span v-else class="ml-3" />
-            <Guest :guest="member" />
-          </div>
+          <b-container>
+            <b-row>
+              <!-- <b-col cols="1" class="d-flex align-items-center">
+                <a
+                  @click="promoteGuest(member.guestId)"
+                  v-if="!member.isChild && family.headMemberId != member.guestId"
+                >
+                  <b-icon-arrow-bar-up />
+                </a>
+                <span v-else class="ml-3" />
+              </b-col> -->
+              <b-col>
+                <Guest :guest="member" :headMemberId="headMember.guestId" />
+              </b-col>
+            </b-row>
+          </b-container>
         </Box>
         <Box class="mt-3">
           <b-form-group label="Address">

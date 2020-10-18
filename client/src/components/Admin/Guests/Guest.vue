@@ -3,9 +3,20 @@
     <b-row>
       <b-col>
         <div class="d-flex align-items-center justify-content-start">
+          <div class="mr-2 px-2">
+            <span @click="$emit('promote', guest.guestId)"
+              v-b-tooltip.hover title="Promote to Head Member"
+              class="link"
+              v-if="!!guest.guestId && !guest.isChild && headMemberId != guest.guestId">
+              <b-icon-arrow-bar-up variant="dark" />
+            </span>
+            <span v-else-if="guest.isChild">
+              <b-icon-arrow-bar-up variant="danger" />
+            </span>
+          </div>
           <b-button squared size="sm" variant="success" class="my-2 mr-2" @click="toggleCollapse">
             <b-icon-pencil class="mr-2" />
-            <b-icon :icon="collapseOpen ? 'chevron-up': 'chevron-down'" />
+            <b-icon :icon="isGuestEditVisible ? 'chevron-up': 'chevron-down'" />
           </b-button>
           <p class="m-0 p-0">
             <b-icon-star-fill variant="warning" v-if="guest.isWeddingMember" />
@@ -23,93 +34,10 @@
     </b-row>
     <b-row>
       <b-col>
-        <b-collapse :id="collapseId" class="mt-3">
-          <b-row>
-            <b-col>
-              <b-form-group
-                label="First name"
-                :state="firstNameState"
-                invalid-feedback="First name is required."
-              >
-                <b-input v-model="guest.firstName" :state="firstNameState" />
-              </b-form-group>
-            </b-col>
-            <b-col>
-              <b-form-group
-                label="Last name"
-                :state="lastNameState"
-                invalid-feedback="Last name is required."
-              >
-                <b-input v-model="guest.lastName" :state="lastNameState" />
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              <b-row>
-                <b-col>
-                  <b-row>
-                    <b-col class="d-flex align-items-center">
-                      <b-form-group label="Is a Child">
-                        <b-form-checkbox switch v-model="guest.isChild" />
-                      </b-form-group>
-                    </b-col>
-                    <transition name="fade-in">
-                      <b-col v-if="guest.isChild" class="d-flex align-items-center">
-                        <b-form-group label="Under Ten" v-show="guest.isChild">
-                          <b-form-checkbox switch v-model="guest.isUnderTen" />
-                        </b-form-group>
-                      </b-col>
-                    </transition>
-                  </b-row>
-                </b-col>
-                <b-col class="d-flex align-items-center">
-                  <b-form-group label="Is a Wedding Party Member">
-                    <b-form-checkbox switch v-model="guest.isWeddingMember" />
-                  </b-form-group>
-                </b-col>
-              </b-row>
-            </b-col>
-            <b-col>
-              <b-form-group label="Family">
-                <b-select v-model="guestFamilyId" :disabled="families.length == 0">
-                  <b-select-option
-                    v-for="family in families"
-                    :key="family.familyId"
-                    :value="family.familyId"
-                  >{{ family.name }}</b-select-option>
-                </b-select>
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <transition name="fade-in">
-            <b-row v-if="guest.isChild">
-              <b-col>
-                <b-form-group label="Parent">
-                  <b-select v-model="guest.parentId">
-                    <option
-                      v-for="guest in possibleParents"
-                      :key="guest.guestId"
-                      :value="guest.guestId"
-                    >
-                      <span>{{ guest.firstName }} {{ guest.lastName }}</span>
-                    </option>
-                  </b-select>
-                </b-form-group>
-              </b-col>
-            </b-row>
-          </transition>
-          <b-row>
-            <b-col>
-              <b-button
-                :disabled="!firstNameState || !lastNameState"
-                size="sm"
-                squared
-                variant="success"
-                @click="onSave"
-              >Save</b-button>
-            </b-col>
-          </b-row>
+        <b-collapse v-model="isGuestEditVisible" class="mt-3">
+          <b-container v-if="isGuestEditVisible">
+            <GuestForm :guest="guest" @close="onGuestEditClose" />
+          </b-container>
         </b-collapse>
       </b-col>
     </b-row>
@@ -118,7 +46,7 @@
 
 <script>
 import { v4 as uuidv4 } from "uuid";
-
+import GuestForm from "@/components/forms/GuestForm";
 import Box from "@/components/Box.vue";
 import RsvpInviteForm from "@/components/Admin/Guests/RsvpInviteForm.vue";
 
@@ -127,46 +55,17 @@ import { ACTIONS } from "@/store";
 export default {
   name: "Guest",
   components: {
+    GuestForm,
     RsvpInviteForm,
   },
-  props: ["guest"],
+  props: ["guest", "headMemberId"],
   data() {
     return {
-      collapseOpen: false,
-      collapseId: uuidv4(),
+      isGuestEditVisible: false,
       guestFamilyId: null,
     };
   },
-  watch: {
-    "guest.familyId": {
-      deep: true,
-      immediate: true,
-      handler: function () {
-        if (!!this.guest) {
-          this.guestFamilyId = this.guest.familyId;
-        }
-      },
-    },
-  },
   computed: {
-    families() {
-      return this.$store.getters.families;
-    },
-    firstNameState() {
-      return !!this.guest.firstName && !!this.guest.firstName.trim();
-    },
-    lastNameState() {
-      return !!this.guest.lastName && !!this.guest.lastName.trim();
-    },
-    rsvps() {
-      return this.$store.getters.findRsvpsForGuest(this.guest.guestId);
-    },
-    events() {
-      return this.$store.getters.events;
-    },
-    possibleParents() {
-      return this.$store.getters.nonChildren;
-    },
     parentName() {
       if (this.guest.isChild) {
         let label = "Child";
@@ -196,22 +95,11 @@ export default {
         }
       }
     },
-    async onSave() {
-      const familyId = this.guestFamilyId;
-      const data = Object.assign({}, this.guest, {
-        familyId,
-        isUnderTen: this.guest.isChild ? this.guest.isUnderTen : false,
-      });
-
-      await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, data);
-
-      await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.FETCH, familyId);
-
-      this.familyAssignmentId = null;
+    onGuestEditClose() {
+      this.toggleCollapse();
     },
     toggleCollapse() {
-      this.$root.$emit("bv::toggle::collapse", this.collapseId);
-      this.collapseOpen = !this.collapseOpen;
+      this.isGuestEditVisible = !this.isGuestEditVisible;
     },
   },
 };
@@ -235,5 +123,8 @@ p.text-subtitle {
 .animate {
   flex-grow: 1;
   transition: all 400ms;
+}
+.link:hover {
+  cursor: pointer;
 }
 </style>
