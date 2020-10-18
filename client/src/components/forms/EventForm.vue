@@ -26,10 +26,10 @@
                             </b-col>
                             <b-col class="d-flex flex-column justify-content-center align-items-around">
                                 <b-form-group label="Start Time" :state="startTimeState" description="Required">
-                                    <b-form-timepicker v-model="startTime" :state="startTimeState" />
+                                    <b-form-timepicker v-model="startTime" :state="startTimeState" minutes-step="15" />
                                 </b-form-group>
                                 <b-form-group label="End Time" :state="endTimeState">
-                                    <b-form-timepicker v-model="endTime" :state="endTimeState" :disabled="startTime == null" />
+                                    <b-form-timepicker v-model="endTime" :state="endTimeState" minutes-step="15" :disabled="startTime == null" />
                                 </b-form-group>
                             </b-col>    
                         </b-row>
@@ -165,30 +165,23 @@ export default {
             this.close(false);
         },
         makeDateTime(date, time) {
-            console.log("Crafting DateTime from values:");
-            console.log("Date:")
-            console.log(date)
-            console.log("Time:")
-            console.log(time)
+            if (date == null || time == null) return;
 
-            const year = date.split("-")[0];
-            console.log("Year: " + year)
-            const month = date.split("-")[1];
-            console.log("Month: " + month)
-            const day = date.split("-")[2];
-            console.log("Day: " + day)
+            const dateSplit = date.split("-");
+            const timeSplit = time.split(":");
 
-            const hour = time.split(":")[0];
-            console.log("Hour: " + hour)
-            const minute = time.split(":")[1];
-            console.log("Minute: " + minute)
+            if (dateSplit.length < 3 || timeSplit.length < 2) return;
+
+            const year = dateSplit[0];
+            const month = dateSplit[1];
+            const day = dateSplit[2];
+
+            const hour = timeSplit[0];
+            const minute = timeSplit[1];
             const second = 0;
             const ms = 0;
 
             const dateTime = new Date(year, month - 1, day, hour, minute, second, ms);
-
-            console.log("Final:")
-            console.log(dateTime)
 
             return dateTime;
         },
