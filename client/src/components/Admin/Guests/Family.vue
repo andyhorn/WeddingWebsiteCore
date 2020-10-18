@@ -65,7 +65,7 @@
             </b-input-group>
           </b-form-group>
           <b-collapse :id="addressCollapseId" class="p-3" v-model="showNewAddressForm">
-            <NewAddressForm @saved="id => family.addressId = id" />
+              <AddressForm @close="onAddressClose" />
           </b-collapse>
         </Box>
       </b-collapse>
@@ -88,7 +88,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ACTIONS } from "@/store";
 import Box from "@/components/Box.vue";
 import Guest from "@/components/Admin/Guests/Guest.vue";
-import NewAddressForm from "@/components/forms/NewAddressForm";
+import AddressForm from "@/components/forms/AddressForm";
 import FamilyRsvpInviteForm from "@/components/Admin/Guests/FamilyRsvpInviteForm";
 
 export default {
@@ -97,7 +97,7 @@ export default {
   components: {
     Box,
     Guest,
-    NewAddressForm,
+    AddressForm,
     FamilyRsvpInviteForm,
   },
   data() {
@@ -147,6 +147,12 @@ export default {
     },
     showAddressNotSavedToast() {
       this.$bvToast.show(this.addressNotSavedToastId);
+    },
+    onAddressClose(id) {
+      if (id) {
+        this.family.addressId = id;
+        this.onAddressChange();
+      }
     },
     async promoteGuest(guestId) {
       let family = { ...this.family };
