@@ -80,7 +80,7 @@
           class="border rounded p-3 mb-5"
           v-model="showNewAddressForm"
         >
-          <NewAddressForm @saved="onAddressSave" />
+          <AddressForm @close="onAddressSave" />
         </b-collapse>
       </b-container>
       <div class="footer px-3 space-buttons">
@@ -101,7 +101,7 @@
 <script>
 import TimePicker from "@/components/TimePicker";
 import DateTimePicker from "@/components/DateTimePicker";
-import NewAddressForm from "@/components/forms/NewAddressForm";
+import AddressForm from "@/components/forms/AddressForm";
 import { ACTIONS } from "@/store";
 const Toast = require("@/helpers/toast");
 
@@ -113,7 +113,7 @@ export default {
   components: {
     TimePicker,
     DateTimePicker,
-    NewAddressForm,
+    AddressForm
   },
   data() {
     return {
@@ -196,6 +196,8 @@ export default {
   },
   methods: {
     onAddressSave(id) {
+      if (!!id) Toast.success(this, "Address saved!");
+
       this.event.addressId = id;
       this.showNewAddressForm = false;
     },
