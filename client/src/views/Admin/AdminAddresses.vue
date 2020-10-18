@@ -7,36 +7,36 @@
         <b-icon-arrow-clockwise />Refresh
       </b-button>
     </div>
-    <b-table :items="addresses" :fields="fields">
+    <b-table :items="addresses" :fields="fields" selectable select-mode="single" @row-selected="onAddressSelected">
       <template v-slot:cell(options)="data">
-        <div class="d-flex align-items-center justify-content-around">
-          <b-button
-            variant="primary"
-            squared
-            size="sm"
-            @click="onEditAddress(data.item.addressId)"
-          >Edit</b-button>
-          <b-button
-            variant="danger"
-            squared
-            size="sm"
-            @click="onDeleteAddress(data.item.addressId)"
-          >Delete</b-button>
-        </div>
+        <b-button
+          variant="danger"
+          squared
+          size="sm"
+          @click="onDeleteAddress(data.item.addressId)"
+        >Delete</b-button>
       </template>
     </b-table>
+    <b-collapse v-model="isAddressEditVisible">
+      <b-container class="border border-secondary rounded my-5 p-3">
+        <h3>Edit Address</h3>
+        <AddressForm :address="addressUnderEdit" @close="onAddressEditClose" v-if="isAddressEditVisible" />
+      </b-container>
+    </b-collapse>
     <NewAddressModal :visible="isNewAddressModalVisible" @close="onNewAddressModalClose" />
   </b-container>
 </template>
 
 <script>
 import NewAddressModal from "@/components/modals/NewAddressModal";
+import AddressForm from "@/components/forms/AddressForm";
 import { ACTIONS } from "@/store";
 const Toast = require("@/helpers/toast");
 
 export default {
   name: "AdminAddresses",
   components: {
+    AddressForm,
     NewAddressModal
   },
   data() {
@@ -52,7 +52,9 @@ export default {
         "country",
         "options",
       ],
-      isNewAddressModalVisible: false
+      addressUnderEdit: null,
+      isNewAddressModalVisible: false,
+      isAddressEditVisible: false
     };
   },
   computed: {
@@ -67,12 +69,6 @@ export default {
     async fetch() {
       await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.FETCH_ALL);
     },
-    onEditAddress(addressId) {
-      this.$router.push({
-        name: "Admin-Address-Details",
-        params: { id: addressId },
-      });
-    },
     async onDeleteAddress(addressId) {
       const deleteAddress = confirm(
         "Are you sure you want to delete this address?"
@@ -86,6 +82,21 @@ export default {
       if (success) Toast.success(this, "Address saved!");
 
       this.isNewAddressModalVisible = false;
+    },
+    onAddressSelected(rows) {
+      if (rows.length > 0) {
+        this.addressUnderEdit = rows[0];
+        this.isAddressEditVisible = true;
+      } else {
+        this.isAddressEditVisible = false;
+        this.addressUnderEdit = null;
+      }
+    },
+    onAddressEditClose(success) {
+      console.log(success)
+      if (success) Toast.success(this, "Address saved!");
+
+      this.isAddressEditVisible = false;
     }
   },
 };
