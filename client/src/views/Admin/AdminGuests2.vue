@@ -149,7 +149,6 @@ export default {
     },
     methods: {
         onGuestSelected(rows) {
-            console.log(rows)
             const openGuests = rows.map(x => x.guestId);
 
             for (let guest of this.guests) {
