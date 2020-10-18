@@ -82,7 +82,7 @@ export default {
 
             const familyId = await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.CREATE, family);
             if (!familyId) {
-              Toast.error(this, "Unable to create new family.");
+              Toast.error("Unable to create new family.");
               return;
             }
 
@@ -92,7 +92,7 @@ export default {
               await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, guest);
             }
 
-            Toast.success(this, "Family saved!");
+            Toast.success("Family saved!");
 
             this.close();
         },

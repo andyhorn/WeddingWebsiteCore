@@ -1,22 +1,24 @@
-// import Vue from "vue";
-// const vm = new Vue({});
+import { BToast } from "bootstrap-vue";
 
-const success = (vm, message) => {
-    vm.$bvToast.toast(message, {
+const success = function (message) {
+    const toaster = new BToast();
+    toaster.$bvToast.toast(message, {
         title: "Success!",
         variant: "success"
     });
 }
 
-const failure = (vm, message) => {
-    vm.$bvToast.toast(message, {
+const failure = message => {
+    const toaster = new BToast();
+    toaster.$bvToast.toast(message, {
         title: "Oops!",
         variant: "danger"
     });
 }
 
-const error = (vm, message) => {
-    vm.$bvToast.toast(message, {
+const error = message => {
+    const toaster = new BToast();
+    toaster.$bvToast.toast(message, {
         title: "Error!",
         variant: "warning"
     });

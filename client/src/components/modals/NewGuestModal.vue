@@ -169,7 +169,7 @@ export default {
       const guestId = await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.CREATE, guest);
 
       if (!guestId) {
-        Toast.error(this, "Unable to save new guest.");
+        Toast.error("Unable to save new guest.");
         return;
       }
 
@@ -180,7 +180,7 @@ export default {
         );
       }
 
-      Toast.success(this, "New guest saved!");
+      Toast.success("New guest saved!");
 
       this.close();
     },

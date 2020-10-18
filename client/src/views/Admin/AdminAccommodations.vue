@@ -176,9 +176,7 @@ export default {
                 this.accommodationUnderEdit = null;
             }
         },
-        onAccommodationEditClose(success) {
-            if (success) Toast.success(this, "Accommodation saved!");
-
+        onAccommodationEditClose() {
             this.isAccommodationEditVisible = false;
         },
         async onDeleteAccommodation(accommodationId) {
@@ -191,9 +189,7 @@ export default {
         onNewCategory() {
             this.isNewCategoryModalVisible = true;
         },
-        onCategoryModalClose(success) {
-            if (success) Toast.success(this, "Category saved!");
-
+        onCategoryModalClose() {
             this.isNewCategoryModalVisible = false;
         },
         onCategorySelected(rows) {
@@ -205,9 +201,7 @@ export default {
                 this.isCategoryEditVisible = false;
             }
         },
-        onCategoryEditClose(success) {
-            if (success) Toast.success(this, "Category saved!");
-
+        onCategoryEditClose() {
             this.isCategoryEditVisible = false;
             this.categoryUnderEdit = null;
         },

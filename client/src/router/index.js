@@ -6,9 +6,7 @@ import Login from "@/views/Login";
 import AdminGuests from "@/views/Admin/AdminGuests";
 import AdminRSVP from "@/views/Admin/AdminRSVP";
 import AdminEvents from "@/views/Admin/AdminEvents";
-import AdminEventDetails from "@/views/Admin/AdminEventDetails";
 import AdminAddresses from "@/views/Admin/AdminAddresses";
-import AdminAddressDetails from "@/views/Admin/AdminAddressDetails";
 import AdminAccommodations from "@/views/Admin/AdminAccommodations";
 
 Vue.use(VueRouter)
@@ -40,19 +38,9 @@ const routes = [
     component: AdminEvents
   },
   {
-    path: "/admin/events/:id",
-    name: "Admin-Event-Details",
-    component: AdminEventDetails
-  },
-  {
     path: "/admin/addresses",
     name: "Admin-Addresses",
     component: AdminAddresses
-  },
-  {
-    path: "/admin/addresses/:id",
-    name: "Admin-Address-Details",
-    component: AdminAddressDetails
   },
   {
     path: "/admin/accommodations",
