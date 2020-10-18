@@ -2,19 +2,19 @@
     <b-form @submit.prevent="onSubmit">
         <b-row>
             <b-col>
-                <b-form-group label="Name" :state="nameState">
+                <b-form-group label="Name/Alias" :state="nameState" description="Required">
                     <b-form-input v-model="name" :state="nameState" />
                 </b-form-group>
             </b-col>
         </b-row>
         <b-row>
             <b-col cols="4">
-                <b-form-group label="Street Number" :state="streetNumberState">
+                <b-form-group label="Street Number" :state="streetNumberState" description="Required">
                     <b-form-input v-model="streetNumber" :state="streetNumberState" />
                 </b-form-group>
             </b-col>
             <b-col cols="8">
-                <b-form-group label="Street Name" :state="streetNameState">
+                <b-form-group label="Street Name" :state="streetNameState" description="Required">
                     <b-form-input v-model="streetName" :state="streetNameState" />
                 </b-form-group>
             </b-col>
@@ -28,24 +28,24 @@
         </b-row>
         <b-row>
             <b-col cols="6">
-                <b-form-group label="City" :state="cityState">
+                <b-form-group label="City" :state="cityState" description="Required">
                     <b-form-input v-model="city" :state="cityState" />
                 </b-form-group>
             </b-col>
             <b-col cols="4">
-                <b-form-group label="State" :state="stateState">
+                <b-form-group label="State" :state="stateState" description="Required">
                     <b-form-input v-model="state" :state="stateState" />
                 </b-form-group>
             </b-col>
             <b-col cols="2">
-                <b-form-group label="Postal Code" :state="postalCodeState">
+                <b-form-group label="Postal Code" :state="postalCodeState" description="Required">
                     <b-form-input v-model="postalCode" :state="postalCodeState" />
                 </b-form-group>
             </b-col>
         </b-row>
         <b-row>
             <b-col>
-                <b-form-group label="Country" :state="countryState">
+                <b-form-group label="Country" :state="countryState" description="Required">
                     <b-select v-model="country" :state="countryState">
                         <option v-for="country in countries"
                             :key="country.code"
@@ -70,7 +70,7 @@
 <script>
 import { ACTIONS } from "@/store";
 import { http } from "@/axios";
-const Toast = require("@/helpers.toast");
+const Toast = require("@/helpers/toast");
 
 const COUNTRY_LIST_API = "https://restcountries.eu/rest/v2/all";
 const DEFAULT_COUNTRY_CODE = "US";
@@ -88,24 +88,22 @@ export default {
             city: null,
             state: null,
             postalCode: null,
-            country: null,
+            country: DEFAULT_COUNTRY_CODE,
             nameState: null,
             streetNumberState: null,
             streetNameState: null,
             cityState: null,
             stateState: null,
             postalCodeState: null,
-            countryState: null
+            countryState: null,
+            countries: []
         }
     },
+    async mounted() {
+        const countries = await this.fetchCountryList();
+        this.countries = countries;
+    },
     computed: {
-        countries() {
-            return new Promise(resolve => {
-                http.get(COUNTRY_LIST_API)
-                    .then(res => resolve(res.data))
-                    .catch(err => resolve(null));
-            });
-        },
         isSaveButtonDisabled() {
             return this.nameState !== true
                 || this.streetNumberState !== true
@@ -150,8 +148,11 @@ export default {
         "postalCode": function () {
             this.postalCodeState = !!this.postalCode && !!this.postalCode.trim();
         },
-        "country": function () {
-            this.countryState = !!this.country && !!this.country.trim();
+        "country": {
+            immediate: true,
+            handler: function () {
+                this.countryState = !!this.country && !!this.country.trim();
+            }
         }
     },
     methods: {
@@ -206,10 +207,32 @@ export default {
 
             const success = await this.$store.dispatch(command, address);
             if (!!success) {
+                await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.FETCH_ALL);
                 this.close(success);
             } else {
                 Toast.error("Unable to save address.");
             }
+        },
+        fetchCountryList() {
+            return new Promise(async (resolve) => {
+                const countries = await fetch(COUNTRY_LIST_API)
+                    .then(res => res.json())
+                    .catch(err => {
+                        console.log(err)
+                        resolve(null);
+                    });
+
+                const options = countries
+                    .sort((a, b) => a.name - b.name)
+                    .map(country => {
+                        return {
+                            name: country.name,
+                            code: country.alpha2Code
+                        };
+                    });
+                
+                return resolve(options);
+            });
         }
     }
 }
