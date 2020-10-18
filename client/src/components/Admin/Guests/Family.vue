@@ -30,7 +30,7 @@
           class="my-2"
           @click="openGuestModal"
         >Add member</b-button>
-        <Box class="mb-3">
+        <Box class="mb-3" v-if="headMember">
           <Guest :guest="headMember" :headMemberId="headMember.guestId" />
         </Box>
         <Box v-for="member in nonHeadMembers" :key="member.guestId">
@@ -45,7 +45,7 @@
                 </a>
                 <span v-else class="ml-3" />
               </b-col> -->
-              <b-col>
+              <b-col v-if="headMember">
                 <Guest :guest="member" :headMemberId="headMember.guestId" />
               </b-col>
             </b-row>
@@ -121,6 +121,8 @@ export default {
       return this.$store.getters.addresses;
     },
     headMember() {
+      if (!this.headMemberId) return null;
+
       return this.members.find((m) => m.guestId == this.family.headMemberId);
     },
     nonHeadMembers() {

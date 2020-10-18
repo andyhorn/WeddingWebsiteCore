@@ -20,9 +20,8 @@
       @close="closeGuestModal"
     />
     <NewFamilyModal
-      :guests="guestsWithoutFamilies.filter(g => !g.isChild)"
       :visible="isNewFamilyModalVisible"
-      @closed="isNewFamilyModalVisible = false"
+      @close="isNewFamilyModalVisible = false"
     />
     <div v-if="!isLoading">
       <p v-if="guests.length == 0" class="text-center">No guests.</p>
