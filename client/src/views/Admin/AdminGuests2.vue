@@ -11,14 +11,15 @@
                 </b-dropdown>
             </b-col>
             <b-col cols="10">
-                <h1 class="text-center">Guests List ({{ guests.length }})</h1>
+                <h1 class="text-center">Guest List ({{ guests.length }})</h1>
             </b-col>
             <b-col cols="1" />
         </b-row>
         <b-row>
             <b-col>
                 <b-table :fields="familyFields" :items="families" selectable
-                    select-mode="single" @row-selected="item => onFamilySelected(item)">
+                    select-mode="single" @row-selected="item => onFamilySelected(item)"
+                    striped>
 
                     <template v-slot:cell(headMemberId)="row">
                         {{ printGuestName(row.item.headMemberId) }}
@@ -37,10 +38,14 @@
                     </template>
 
                     <template v-slot:row-details="parentRow">
-                        <b-container class="border border-secondary rounded p-3">
+                        <b-container class="border border-secondary rounded p-3 bg-white">
                             <h3>The {{ parentRow.item.name }} family</h3>
                             <b-table :fields="guestFields" :items="guests.filter(x => x.familyId == parentRow.item.familyId)"
                                 selectable select-mode="single" @row-selected="onGuestSelected">
+
+                                <template v-slot:cell(name)="row">
+                                    {{ printGuestName(row.item.guestId) }}
+                                </template>
 
                                 <template v-slot:cell(parentId)="row">
                                     {{ printGuestName(row.item.parentId) }}
@@ -51,8 +56,11 @@
                                 </template>
 
                                 <template v-slot:row-details="row">
-                                    <b-container class="border border-secondary rounded p-3">
-                                        <h3>Edit Guest {{ row.item.firstName }}</h3>
+                                    <b-container class="border border-secondary rounded p-3 bg-white">
+                                        <div class="d-flex align-items-baseline mb-3">
+                                            <p class="m-0 p-0"><strong>Edit Guest:</strong></p>
+                                            <h2 class="ml-2">{{ `${row.item.firstName} ${row.item.lastName}` }}</h2>
+                                        </div>
                                         <GuestForm :guest="row.item" @close="onGuestEditClose(row.item.guestId)" />
                                     </b-container>
                                 </template>
@@ -105,8 +113,7 @@ export default {
             ],
             guestFields: [
                 "inviteCode",
-                "firstName",
-                "lastName",
+                "name",
                 {
                     key: "isWeddingMember",
                     label: "Wedding Party Member?",
