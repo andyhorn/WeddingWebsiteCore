@@ -30,23 +30,14 @@
           class="my-2"
           @click="openGuestModal"
         >Add member</b-button>
-        <Box class="mb-3">
+        <Box class="mb-3" v-if="headMember">
           <Guest :guest="headMember" :headMemberId="headMember.guestId" />
         </Box>
         <Box v-for="member in nonHeadMembers" :key="member.guestId">
           <b-container>
             <b-row>
-              <!-- <b-col cols="1" class="d-flex align-items-center">
-                <a
-                  @click="promoteGuest(member.guestId)"
-                  v-if="!member.isChild && family.headMemberId != member.guestId"
-                >
-                  <b-icon-arrow-bar-up />
-                </a>
-                <span v-else class="ml-3" />
-              </b-col> -->
               <b-col>
-                <Guest :guest="member" :headMemberId="headMember.guestId" />
+                <Guest :guest="member" :headMemberId="headMember ? headMember.guestId : null" />
               </b-col>
             </b-row>
           </b-container>
@@ -121,6 +112,8 @@ export default {
       return this.$store.getters.addresses;
     },
     headMember() {
+      if (!this.headMemberId) return null;
+
       return this.members.find((m) => m.guestId == this.family.headMemberId);
     },
     nonHeadMembers() {
