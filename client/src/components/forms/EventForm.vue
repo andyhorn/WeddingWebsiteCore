@@ -108,7 +108,7 @@ export default {
             return this.nameState === true
                 && this.dateState === true
                 && this.startTimeState === true
-                && this.endTimeState === true;
+                && this.endTimeState || this.endTimeState == null;
         }
     },
     watch: {
@@ -131,7 +131,6 @@ export default {
             handler: function () {
                 if (this.event == null) return;
 
-                console.log(this.event)
                 this.id = this.event.eventId;
                 this.name = this.event.name;
                 this.description = this.event.description;
@@ -140,10 +139,6 @@ export default {
                 this.endTime = this.event.endTime == null
                     ? null 
                     : this.getTimeFromString(this.event.endTime);
-
-                console.log(this.date)
-                console.log(this.startTime)
-                console.log(this.endTime)
             }
         }
     },
@@ -172,10 +167,8 @@ export default {
             this.close(false);
         },
         getDateFromString(date) {
-            console.log("Getting date from string: " + date)
             const dateTime = new Date(date);
             const dateString = dateTime.toLocaleDateString();
-            console.log("Date string: " + dateString)
 
             const dateStringSplit = dateString.split("/");
 
@@ -187,7 +180,9 @@ export default {
 
             return `${year}-${month}-${day}`;
         },
-        getTimeFromString(time) {
+        getTimeFromString(t) {
+            const dateTime = new Date(t);
+            const time = dateTime.toLocaleTimeString();
             const timeSplit = time.split(/[: ]/);
 
             if (timeSplit.length < 4) return null;
@@ -237,19 +232,16 @@ export default {
                 addressId: this.addressId
             };
 
-            console.log(event)
-
             const command = this.id == null
                 ? ACTIONS.EVENT_ACTIONS.CREATE
                 : ACTIONS.EVENT_ACTIONS.UPDATE;
 
             const success = await this.$store.dispatch(command, event);
-            if (success) {
-                const fetchAll = ACTIONS.EVENT_ACTIONS.FETCH_ALL;
-                await this.$store.dispatch(fetchAll);
+            if (!!success) {
+                Toast.success("Event saved!");
                 this.close(success);
             } else {
-                Toast.error(this, "Unable to save event.");
+                Toast.error("Unable to save event.");
             }
         },
         onAddressFormClose(id) {
