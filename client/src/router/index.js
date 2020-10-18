@@ -3,7 +3,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/Home'
 import Login from "@/views/Login";
-import AdminGuests from "@/views/Admin/AdminGuests";
+// import AdminGuests from "@/views/Admin/AdminGuests";
+import AdminGuests2 from "@/views/Admin/AdminGuests2";
 import AdminRSVP from "@/views/Admin/AdminRSVP";
 import AdminEvents from "@/views/Admin/AdminEvents";
 import AdminAddresses from "@/views/Admin/AdminAddresses";
@@ -25,7 +26,7 @@ const routes = [
   {
     path: "/admin/guests",
     name: "Admin-Guests",
-    component: AdminGuests
+    component: AdminGuests2
   },
   {
     path: "/admin/rsvp",
