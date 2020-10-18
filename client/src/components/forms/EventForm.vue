@@ -131,12 +131,19 @@ export default {
             handler: function () {
                 if (this.event == null) return;
 
+                console.log(this.event)
                 this.id = this.event.eventId;
                 this.name = this.event.name;
                 this.description = this.event.description;
-                this.date = this.event.startTime;
-                this.startTime = this.event.startTime;
-                this.endTime = this.event.endTime;
+                this.date = this.getDateFromString(this.event.startTime);
+                this.startTime = this.getTimeFromString(this.event.startTime);
+                this.endTime = this.event.endTime == null
+                    ? null 
+                    : this.getTimeFromString(this.event.endTime);
+
+                console.log(this.date)
+                console.log(this.startTime)
+                console.log(this.endTime)
             }
         }
     },
@@ -163,6 +170,39 @@ export default {
         },
         onCancel() {
             this.close(false);
+        },
+        getDateFromString(date) {
+            console.log("Getting date from string: " + date)
+            const dateTime = new Date(date);
+            const dateString = dateTime.toLocaleDateString();
+            console.log("Date string: " + dateString)
+
+            const dateStringSplit = dateString.split("/");
+
+            if (dateStringSplit.length < 3) return null;
+
+            const month = dateStringSplit[0];
+            const day = dateStringSplit[1];
+            const year = dateStringSplit[2];
+
+            return `${year}-${month}-${day}`;
+        },
+        getTimeFromString(time) {
+            const timeSplit = time.split(/[: ]/);
+
+            if (timeSplit.length < 4) return null;
+
+            let hour = Number(timeSplit[0]);
+            const minute = Number(timeSplit[1]);
+            const second = Number(timeSplit[2]);
+
+            const amPm = timeSplit[3];
+
+            if (amPm == "PM") {
+                hour = (hour + 12) % 24;
+            }
+
+            return `${hour}:${minute}:00`;
         },
         makeDateTime(date, time) {
             if (date == null || time == null) return;
@@ -196,6 +236,8 @@ export default {
                 endTime: this.endTime == null ? null : this.makeDateTime(this.date, this.endTime),
                 addressId: this.addressId
             };
+
+            console.log(event)
 
             const command = this.id == null
                 ? ACTIONS.EVENT_ACTIONS.CREATE

@@ -11,7 +11,7 @@
       </b-button>
     </div>
     <b-container class="mt-5">
-      <b-table :fields="fields" :items="events" show-empty>
+      <b-table :fields="fields" :items="events" show-empty selectable select-mode="single" @row-selected="onEventSelected" >
         <template v-slot:cell(date)="data">{{ getDate(data.item) }}</template>
         <template v-slot:cell(time)="data">{{ getTimes(data.item) }}</template>
         <template v-slot:cell(address)="data">
@@ -40,22 +40,33 @@
         </template>
       </b-table>
     </b-container>
+    <b-collapse v-model="isEventEditVisible">
+      <b-container v-if="isEventEditVisible" class="my-2 p-3">
+        <h3>Edit Event</h3>
+        <EventForm :event="eventUnderEdit" @close="onEventEditClose" />
+      </b-container>
+    </b-collapse>
   </b-container>
 </template>
 
 <script>
 import NewEventModal from "@/components/modals/NewEventModal.vue";
+import EventForm from "@/components/forms/EventForm";
 import { ACTIONS } from "@/store";
 import * as DateTime from "@/helpers/dateTime";
+const Toast = require("@/helpers/toast");
 
 export default {
   name: "AdminEvents",
   components: {
     NewEventModal,
+    EventForm
   },
   data() {
     return {
       isNewEventModalVisible: false,
+      isEventEditVisible: false,
+      eventUnderEdit: null,
       fields: [
         "name",
         "description",
@@ -84,11 +95,19 @@ export default {
     async onRefreshTable() {
       this.fetch();
     },
-    onEditEvent(eventId) {
-      this.$router.push({
-        name: "Admin-Event-Details",
-        params: { id: eventId },
-      });
+    onEventSelected(rows) {
+      if (rows.length < 1) return;
+
+      this.eventUnderEdit = rows[0];
+      this.isEventEditVisible = true;
+    },
+    onEventEditClose(success) {
+      if (success) {
+        Toast.success(this, "Event saved!");
+      }
+
+      this.isEventEditVisible = false;
+      this.eventUnderEdit = null;
     },
     async onDeleteEvent(eventId) {
       const deleteEvent = confirm(
