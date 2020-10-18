@@ -18,10 +18,10 @@ export default {
     async onLogin(formData) {
       const authenticated = await this.$store.dispatch(ACTIONS.AUTHENTICATION_ACTIONS.LOGIN, formData);
       if (authenticated) {
-        Toast.success(this, "Authenticated");
+        Toast.success("Logged in!");
         this.$router.push({ name: "Home" });
       } else {
-        Toast.failure(this, "Login failed");
+        Toast.failure("Login failed");
       }
     }
   }

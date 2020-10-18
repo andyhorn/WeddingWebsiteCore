@@ -79,8 +79,6 @@ export default {
       }
     },
     onNewAddressModalClose(success) {
-      if (success) Toast.success(this, "Address saved!");
-
       this.isNewAddressModalVisible = false;
     },
     onAddressSelected(rows) {
@@ -93,8 +91,6 @@ export default {
       }
     },
     onAddressEditClose(success) {
-      if (success) Toast.success(this, "Address saved!");
-
       this.isAddressEditVisible = false;
     }
   },

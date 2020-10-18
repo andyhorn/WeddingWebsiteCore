@@ -140,10 +140,11 @@ export default {
 
             const success = await this.$store.dispatch(command, accommodation);
             if (!!success) {
+                Toast.success("Accommodation saved!");
                 await this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.FETCH_ALL);
                 this.close(true);
             } else {
-                Toast.error(this, "Unable to save accommodation.");
+                Toast.error("Unable to save accommodation.");
             }
         }
     }

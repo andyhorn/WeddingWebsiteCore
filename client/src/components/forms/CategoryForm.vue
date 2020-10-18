@@ -119,9 +119,10 @@ export default {
 
             if (!!success) {
                 await this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.FETCH_ALL);
+                Toast.success("Category saved!");
                 this.close(true);
             } else {
-                Toast.error(this, "Unable to save category.");
+                Toast.error("Unable to save category.");
             }
         }
     }

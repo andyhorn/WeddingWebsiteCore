@@ -36,14 +36,10 @@ export default {
   },
   methods: {
     onAddressSave(id) {
-      if (!!id) Toast.success(this, "Address saved!");
-
       this.event.addressId = id;
       this.showNewAddressForm = false;
     },
     onEventClose(id) {
-      if (!!id) Toast.success(this, "Event saved!");
-
       this.close();
     },
     close() {

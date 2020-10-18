@@ -206,7 +206,6 @@ export default {
                 : ACTIONS.ADDRESS_ACTIONS.UPDATE;
 
             const success = await this.$store.dispatch(command, address);
-            console.log(success)
             if (!!success) {
                 await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.FETCH_ALL);
                 this.close(success);
