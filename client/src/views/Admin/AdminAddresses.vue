@@ -93,7 +93,6 @@ export default {
       }
     },
     onAddressEditClose(success) {
-      console.log(success)
       if (success) Toast.success(this, "Address saved!");
 
       this.isAddressEditVisible = false;
