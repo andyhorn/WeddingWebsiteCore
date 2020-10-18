@@ -181,7 +181,9 @@ export default {
                 isChild: this.isChild,
                 isUnderTen: this.isChild ? this.isUnderTen : false,
                 isWeddingMember: this.isWeddingMember,
-                parentId: this.isChild ? this.parentId : null
+                parentId: this.isChild ? this.parentId : null,
+                inviteCode: this.guest == null
+                    ? null : this.guest.inviteCode
             };
 
             const command = this.id == null
