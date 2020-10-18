@@ -37,16 +37,18 @@
             </b-col>
         </b-row>
         <b-row>
-            <b-col cols="4" class="d-flex flex-column align-items-start justify-content-around">
+            <b-col cols="3" class="d-flex flex-column align-items-start justify-content-around">
                 <b-form-group label="Is a Child?">
                     <b-form-checkbox switch v-model="isChild" />
                 </b-form-group>
-                <b-form-group label="Is Under Ten (10)?" v-if="isChild">
+            </b-col>
+            <b-col cols="3" v-if="isChild">
+                <b-form-group label="Is Under Ten (10)?">
                     <b-form-checkbox switch v-model="isUnderTen" />
                 </b-form-group>
             </b-col>
             <b-col v-if="isChild">
-                <b-form-group label="Parent" :state="parentState">
+                <b-form-group label="Parent" :state="parentState" description="Required">
                     <b-form-select v-model="parentId" :state="parentState">
                         <option :value="null">None</option>
                         <option v-for="parent in parents"
@@ -116,6 +118,17 @@ export default {
             else
                 this.parentState = null;
         },
+        "isChild": function () {
+            if (!this.isChild) {
+                this.parentId = null;
+                this.isUnderTen = false;
+            } else {
+                if (this.guest != null) {
+                    this.parentId = this.guest.parentId;
+                    this.isUnderTen = this.guest.isUnderTen;
+                }
+            }
+        },
         "guest": {
             immediate: true,
             deep: true,
@@ -166,9 +179,9 @@ export default {
                 lastName: this.lastName,
                 familyId: this.familyId,
                 isChild: this.isChild,
-                isUnderTen: this.isUnderTen,
+                isUnderTen: this.isChild ? this.isUnderTen : false,
                 isWeddingMember: this.isWeddingMember,
-                parentId: this.parentId
+                parentId: this.isChild ? this.parentId : null
             };
 
             const command = this.id == null
