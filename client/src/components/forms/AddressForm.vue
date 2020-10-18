@@ -115,21 +115,6 @@ export default {
         }
     },
     watch: {
-        "address": {
-            immediate: true,
-            deep: true,
-            handler: function () {
-                if (this.address == null) return;
-
-                this.id = this.address.addressId;
-                this.name = this.address.name;
-                this.streetNumber = this.address.streetNumber;
-                this.streetDetail = this.address.streetDetail;
-                this.city = this.address.city;
-                this.state = this.address.state;
-                this.country = this.address.country;
-            }
-        },
         "name": function () {
             this.nameState = !!this.name && !!this.name.trim();
         },
@@ -153,7 +138,24 @@ export default {
             handler: function () {
                 this.countryState = !!this.country && !!this.country.trim();
             }
-        }
+        },
+        "address": {
+            immediate: true,
+            deep: true,
+            handler: function () {
+                if (this.address == null) return;
+
+                this.id = this.address.addressId;
+                this.name = this.address.name;
+                this.streetNumber = this.address.streetNumber;
+                this.streetName = this.address.streetName;
+                this.streetDetail = this.address.streetDetail;
+                this.city = this.address.city;
+                this.state = this.address.state;
+                this.postalCode = this.address.postalCode;
+                this.country = this.address.country;
+            }
+        },
     },
     methods: {
         clear() {
@@ -177,8 +179,6 @@ export default {
             this.countryState = null;
         },
         close(success) {
-            if (success) Toast.success(this, "Address saved!");
-
             this.$emit("close", success);
             this.clear();
             this.resetStates();
@@ -206,11 +206,12 @@ export default {
                 : ACTIONS.ADDRESS_ACTIONS.UPDATE;
 
             const success = await this.$store.dispatch(command, address);
+            console.log(success)
             if (!!success) {
                 await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.FETCH_ALL);
                 this.close(success);
             } else {
-                Toast.error("Unable to save address.");
+                Toast.error(this, "Unable to save address.");
             }
         },
         fetchCountryList() {
