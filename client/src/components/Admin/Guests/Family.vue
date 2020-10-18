@@ -36,17 +36,8 @@
         <Box v-for="member in nonHeadMembers" :key="member.guestId">
           <b-container>
             <b-row>
-              <!-- <b-col cols="1" class="d-flex align-items-center">
-                <a
-                  @click="promoteGuest(member.guestId)"
-                  v-if="!member.isChild && family.headMemberId != member.guestId"
-                >
-                  <b-icon-arrow-bar-up />
-                </a>
-                <span v-else class="ml-3" />
-              </b-col> -->
-              <b-col v-if="headMember">
-                <Guest :guest="member" :headMemberId="headMember.guestId" />
+              <b-col>
+                <Guest :guest="member" :headMemberId="headMember ? headMember.guestId : null" />
               </b-col>
             </b-row>
           </b-container>
