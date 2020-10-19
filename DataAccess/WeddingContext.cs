@@ -45,7 +45,8 @@ namespace WeddingWebsiteCore.DataAccess
                 
             modelBuilder.Entity<Family>()
                 .HasMany(family => family.Members)
-                .WithOne(member => member.Family);
+                .WithOne(member => member.Family)
+                .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Family>()
                 .HasOne(family => family.Tier)
                 .WithMany(tier => tier.Families);

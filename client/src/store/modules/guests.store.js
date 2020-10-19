@@ -84,7 +84,7 @@ const actions = {
         return new Promise(async (resolve) => {
             const updated = await guestService.update(guest.guestId, guest);
             if (updated) {
-                guest = await guestService.getOne(guest.guestId);
+                // guest = await guestService.getOne(guest.guestId);
                 commit(GUEST_MUTATIONS.ADD_GUEST, guest);
             }
 

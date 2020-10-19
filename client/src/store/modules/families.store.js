@@ -72,7 +72,6 @@ const actions = {
         return new Promise(async (resolve) => {
             const updated = await familyService.update(family.familyId, family);
             if (updated) {
-                family = await familyService.getOne(family.familyId);
                 commit(FAMILY_MUTATIONS.ADD_FAMILY, family);
             }
 

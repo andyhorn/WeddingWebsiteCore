@@ -6,7 +6,7 @@
     title="Add New Guest"
     hide-footer
   >
-    <GuestForm @close="onGuestFormClose" />
+    <GuestForm @close="onGuestFormClose" :selectedFamily="familyId" />
   </b-modal>
 </template>
 
@@ -17,7 +17,7 @@ const Toast = require("@/helpers/toast");
 
 export default {
   name: "NewGuestModal",
-  props: ["families", "selectedFamilyId", "visible"],
+  props: ["familyId", "visible"],
   components: {
     GuestForm
   },
@@ -34,14 +34,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.fade-in-enter-active,
-.fade-in-leave-active {
-  transition: opacity 400ms;
-}
-.fade-in-enter,
-.fade-in-leave-to {
-  opacity: 0;
-}
-</style>

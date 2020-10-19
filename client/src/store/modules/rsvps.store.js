@@ -66,12 +66,12 @@ const actions = {
         });
     },
 
-    [ACTIONS.UPDATE]({ commit }, payload) {
+    [ACTIONS.UPDATE]({ commit }, rsvp) {
         return new Promise(async resolve => {
-            const updated = await rsvpService.update(payload.rsvpId, payload);
+            const updated = await rsvpService.update(rsvp.rsvpId, rsvp);
 
             if (updated) {
-                const rsvp = await rsvpService.getOne(payload.rsvpId);
+                // const rsvp = await rsvpService.getOne(payload.rsvpId);
                 commit(MUTATIONS.ADD_RSVP, rsvp);
             }
 
