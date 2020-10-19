@@ -71,7 +71,7 @@ const actions = {
         return new Promise(async (resolve) => {
             const updated = categoryService.update(category.categoryId, category);
             if (updated) {
-                category = await categoryService.getOne(category.categoryId);
+                // category = await categoryService.getOne(category.categoryId);
                 commit(CATEGORY_MUTATIONS.ADD_CATEGORY, category);
             }
 

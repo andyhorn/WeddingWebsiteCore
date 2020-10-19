@@ -55,7 +55,7 @@ const actions = {
         return new Promise(async resolve => {
             const updated = await addressService.update(address.addressId, address);
             if (updated) {
-                const refreshedAddress = await addressService.getOne(address.addressId);
+                // const refreshedAddress = await addressService.getOne(address.addressId);
                 commit(MUTATIONS.ADD_ADDRESS, refreshedAddress);
             }
 

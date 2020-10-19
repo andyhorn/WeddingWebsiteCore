@@ -70,7 +70,7 @@ const actions = {
         return new Promise(async resolve => {
             const updated = await eventService.update(event.eventId, event);
             if (updated) {
-                event = await eventService.getOne(event.eventId);
+                // event = await eventService.getOne(event.eventId);
                 commit(EVENT_MUTATIONS.ADD_EVENT, event);
             }
 

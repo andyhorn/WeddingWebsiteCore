@@ -59,7 +59,7 @@ const actions = {
         return new Promise(async (resolve) => {
             const updated = await accommodationService.update(accommodation.accommodationId, accommodation);
             if (updated) {
-                accommodation = await accommodationService.getOne(accommodation.accommodationId);
+                // accommodation = await accommodationService.getOne(accommodation.accommodationId);
                 commit(ACCOMMODATION_MUTATIONS.ADD_ACCOMMODATION, accommodation);
             }
 
