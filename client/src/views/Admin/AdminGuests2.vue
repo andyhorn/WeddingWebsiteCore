@@ -1,25 +1,22 @@
 <template>
-    <b-container>
+    <b-container class="pb-5">
         <b-row class="my-3">
-            <b-col cols="1">
-                <b-dropdown variant="success">
+            <b-col>
+                <h1 class="text-center">Guest List ({{ guests.length }})</h1>
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col>
+                <b-dropdown size="sm" squared variant="success">
                     <template v-slot:button-content>
                         <b-icon-plus /> New
                     </template>
                     <b-dropdown-item @click="onNewFamily">Family</b-dropdown-item>
                     <b-dropdown-item @click="onNewGuest">Guest</b-dropdown-item>
                 </b-dropdown>
-            </b-col>
-            <b-col cols="10">
-                <h1 class="text-center">Guest List ({{ guests.length }})</h1>
-            </b-col>
-            <b-col cols="1" />
-        </b-row>
-        <b-row>
-            <b-col>
                 <b-table :fields="familyFields" :items="families" selectable
                     select-mode="single" @row-selected="item => onFamilySelected(item)"
-                    striped>
+                    striped show-empty>
 
                     <template v-slot:cell(headMemberId)="row">
                         {{ printGuestName(row.item.headMemberId) }}
@@ -40,8 +37,9 @@
                     <template v-slot:row-details="parentRow">
                         <b-container class="border border-secondary rounded p-3 bg-white">
                             <h3>The {{ parentRow.item.name }} family</h3>
+                            <b-button size="sm" variant="link" @click="onNewGuest(parentRow.item.familyId)">New Family Member</b-button>
                             <b-table :fields="guestFields" :items="guests.filter(x => x.familyId == parentRow.item.familyId)"
-                                selectable select-mode="single" @row-selected="onGuestSelected">
+                                selectable select-mode="single" @row-selected="onGuestSelected" show-empty>
 
                                 <template v-slot:cell(name)="row">
                                     {{ printGuestName(row.item.guestId) }}
@@ -51,8 +49,17 @@
                                     {{ printGuestName(row.item.parentId) }}
                                 </template>
 
+                                <template v-slot:cell(rsvps)="row">
+                                    <RsvpInviteForm :guestId="row.item.guestId" />
+                                </template>
+
                                 <template v-slot:cell(options)="row">
-                                    <b-button squared size="sm" variant="outline-danger" @click="onGuestDelete(row.item.guestId)">Delete</b-button>
+                                    <div class="d-flex flex-column align-items-center justify-content-start">
+                                        <b-button squared size="sm" variant="link" class="text-primary p-1"
+                                            @click="onPromoteGuest(row.item.guestId, parentRow.item.familyId)">Promote</b-button>
+                                        <b-button squared size="sm" variant="link" class="text-danger p-1"
+                                            @click="onDeleteGuest(row.item.guestId)">Delete</b-button>
+                                    </div>
                                 </template>
 
                                 <template v-slot:row-details="row">
@@ -72,7 +79,7 @@
             </b-col>
         </b-row>
 
-        <NewGuestModal :visible="isNewGuestModalVisible" @close="onNewGuestModalClose" />
+        <NewGuestModal :visible="isNewGuestModalVisible" @close="onNewGuestModalClose" :familyId="newGuestFamilyId" />
         <NewFamilyModal :visible="isNewFamilyModalVisible" @close="onNewFamilyModalClose" />
     </b-container>
 </template>
@@ -83,6 +90,7 @@ import Guest from "@/components/Admin/Guests/Guest";
 import NewGuestModal from "@/components/modals/NewGuestModal";
 import NewFamilyModal from "@/components/modals/NewFamilyModal";
 import GuestForm from "@/components/forms/GuestForm";
+import RsvpInviteForm from "@/components/Admin/Guests/RsvpInviteForm";
 import FamilyRsvpInviteForm from "@/components/Admin/Guests/FamilyRsvpInviteForm";
 
 export default {
@@ -92,12 +100,14 @@ export default {
         NewGuestModal,
         NewFamilyModal,
         GuestForm,
+        RsvpInviteForm,
         FamilyRsvpInviteForm
     },
     data() {
         return {
             isNewGuestModalVisible: false,
             isNewFamilyModalVisible: false,
+            newGuestFamilyId: null,
             familyFields: [
                 "name",
                 {
@@ -133,7 +143,14 @@ export default {
                     key: "parentId",
                     label: "Parent"
                 },
-                "options"
+                {
+                    key: "rsvps",
+                    label: "RSVPs"
+                },
+                {
+                    key: "options",
+                    thClass: "text-center"
+                }
             ]
         }
     },
@@ -226,7 +243,8 @@ export default {
                 await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.DELETE, id);
             }
         },
-        onNewGuest() {
+        onNewGuest(familyId) {
+            this.newGuestFamilyId = familyId || null;
             this.isNewGuestModalVisible = true;
         },
         onNewFamily() {
@@ -234,6 +252,7 @@ export default {
         },
         onNewGuestModalClose() {
             this.isNewGuestModalVisible = false;
+            this.newGuestFamilyId = null;
         },
         onNewFamilyModalClose() {
             this.isNewFamilyModalVisible = false;
@@ -251,6 +270,20 @@ export default {
 
             const address = this.addresses.find(x => x.addressId == id);
             return address.name;
+        },
+        async onPromoteGuest(guestId, familyId) {
+            const family = this.families.find(x => x.familyId == familyId);
+            if (family == null) return;
+
+            if (confirm("Are you sure you want to make this guest the head of household?")) {
+                family.headMemberId = guestId;
+                await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.UPDATE, family);
+            }
+        },
+        async onDeleteGuest(guestId) {
+            if (confirm("Are you sure you want to delete this guest?")) {
+                await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.DELETE, guestId);
+            }
         }
     }
 }

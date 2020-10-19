@@ -17,7 +17,7 @@
         <b-row>
             <b-col>
                 <b-form-group label="Family">
-                    <b-select v-model="familyId">
+                    <b-select v-model="familyId" :disabled="familySelectDisabled">
                         <option :value="null">None</option>
                         <option v-for="family in families"
                             :key="family.familyId"
@@ -76,7 +76,7 @@ const Toast = require("@/helpers/toast");
 
 export default {
     name: "GuestForm",
-    props: [ "guest" ],
+    props: [ "guest", "selectedFamily" ],
     data() {
         return {
             id: null,
@@ -89,7 +89,19 @@ export default {
             parentId: null,
             firstNameState: null,
             lastNameState: null,
-            parentState: null
+            parentState: null,
+            familySelectDisabled: false
+        }
+    },
+    mounted() {
+        if (this.selectedFamily != null) {
+            this.familyId = this.selectedFamily;
+            this.familySelectDisabled = true;
+            const family = this.families.find(x => x.familyId == this.selectedFamily);
+
+            if (family) {
+                this.lastName = family.name;
+            }
         }
     },
     computed: {
