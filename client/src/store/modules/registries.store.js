@@ -73,13 +73,15 @@ const actions = {
     },
 
     [ACTIONS.CREATE]({ commit }, registryData) {
-        const registryId = await registryService.create(registryData);
-        if (registryId) {
-            const registry = await registryService.getOne(registryId);
-            commit(MUTATIONS.ADD_REGISTRY, registry);
-        }
-
-        resolve(registryId);
+        return new Promise(async resolve => {
+            const registryId = await registryService.create(registryData);
+            if (registryId) {
+                const registry = await registryService.getOne(registryId);
+                commit(MUTATIONS.ADD_REGISTRY, registry);
+            }
+    
+            resolve(registryId);
+        })
     }
 };
 
