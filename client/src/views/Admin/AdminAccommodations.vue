@@ -3,7 +3,10 @@
         <h1 class="text-center">Accommodation Management</h1>
         <div class="border border-secondary rounded p-4 my-2">
             <h2>Categories</h2>
-            <b-button class="my-1" variant="success" squared size="sm" @click="onNewCategory">New Category</b-button>
+            <div class="my-1 d-flex justify-content-between">
+                <b-button variant="success" squared size="sm" @click="onNewCategory"><b-icon-plus /> New Category</b-button>
+                <b-button variant="primary" squared size="sm" @click="fetchCategories"><b-icon-arrow-clockwise /> Refresh</b-button>
+            </div>
             <b-table
                 selectable
                 show-empty
@@ -21,7 +24,7 @@
                 </template>
 
                 <template v-slot:cell(options)="data">
-                    <b-button class="mx-auto" size="sm" squared variant="outline-danger" @click="onDeleteCategory(data.item.categoryId)">Delete</b-button>
+                    <b-button class="mx-auto text-danger" size="sm" squared variant="link" @click="onDeleteCategory(data.item.categoryId)">Delete</b-button>
                 </template>
             </b-table>
             <b-collapse v-model="isCategoryEditVisible">
@@ -35,7 +38,10 @@
 
         <div class="border border-secondary rounded p-4 my-2">
             <h2>Accommodations</h2>
-            <b-button class="my-1" variant="success" squared size="sm" @click="onNewAccommodation">New Accommodation</b-button>
+            <div class="my-1 d-flex justify-content-between">
+                <b-button variant="success" squared size="sm" @click="onNewAccommodation"><b-icon-plus /> New Accommodation</b-button>
+                <b-button variant="primary" squared size="sm" @click="fetchAccommodations"><b-icon-arrow-clockwise /> Refresh</b-button>
+            </div>
             <b-table
                 selectable
                 show-empty
@@ -70,7 +76,8 @@
                 </template>
 
                 <template v-slot:cell(options)="data">
-                    <b-button class="mx-auto" size="sm" squared variant="outline-danger" @click="onDeleteAccommodation(data.item.accommodationId)">Delete</b-button>
+                    <b-button class="mx-auto text-danger" size="sm" squared variant="link" 
+                        @click="onDeleteAccommodation(data.item.accommodationId)">Delete</b-button>
                 </template>
             </b-table>
 
@@ -223,10 +230,16 @@ export default {
         async fetch() {
             this.isBusy = true;
             await Promise.all([
-                this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.FETCH_ALL),
-                this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.FETCH_ALL)
+                this.fetchAccommodations(),
+                this.fetchCategories()
             ]);
             this.isBusy = false;
+        },
+        async fetchAccommodations() {
+            await this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.FETCH_ALL);
+        },
+        async fetchCategories() {
+            await this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.FETCH_ALL);
         },
         printAddress(addressId) {
             if (addressId == null) return "";

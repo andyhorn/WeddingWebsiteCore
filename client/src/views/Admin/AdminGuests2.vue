@@ -31,7 +31,7 @@
                     </template>
 
                     <template v-slot:cell(options)="row">
-                        <b-button squared size="sm" variant="outline-danger" @click="onFamilyDelete(row.item.familyId)">Delete</b-button>
+                        <b-button squared size="sm" variant="link" class="text-danger" @click="onFamilyDelete(row.item.familyId)">Delete</b-button>
                     </template>
 
                     <template v-slot:row-details="parentRow">

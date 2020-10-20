@@ -10,7 +10,7 @@
         <b-icon-arrow-clockwise class="mr-2" />Refresh
       </b-button>
     </div>
-    <b-container class="mt-5">
+    <b-container class="pt-1">
       <b-table :fields="fields" :items="events" show-empty selectable select-mode="single" @row-selected="onEventSelected" >
         <template v-slot:cell(date)="data">{{ getDate(data.item) }}</template>
         <template v-slot:cell(time)="data">{{ getTimes(data.item) }}</template>
@@ -18,21 +18,7 @@
           <span>{{ printAddress(data.item.addressId) }}</span>
         </template>
         <template v-slot:cell(options)="data">
-          <div class="d-flex">
-            <b-button
-              variant="success"
-              squared
-              size="sm"
-              class="mr-1 text-light"
-              @click="onEditEvent(data.item.eventId)"
-            >Edit</b-button>
-            <b-button
-              variant="danger"
-              squared
-              size="sm"
-              class="ml-1"
-              @click="onDeleteEvent(data.item.eventId)"
-            >Delete</b-button>
+          <b-button variant="link" squared size="sm" class="text-danger" @click="onDeleteEvent(data.item.eventId)">Delete</b-button>
           </div>
         </template>
         <template v-slot:empty>

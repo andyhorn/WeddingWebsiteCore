@@ -1,20 +1,15 @@
 <template>
   <b-container class="pt-5">
-        <h2 class="mb-3">Addresses ({{ addresses.length }})</h2>
+        <h2 class="text-center">Addresses</h2>
     <div class="d-flex justify-content-between align-items-center mb-2">
-      <b-button squared size="sm" variant="success" @click="isNewAddressModalVisible = true">New Address</b-button>
+      <b-button squared size="sm" variant="success" @click="isNewAddressModalVisible = true"><b-icon-plus /> New Address</b-button>
       <b-button squared size="sm" variant="primary" @click="fetch">
         <b-icon-arrow-clockwise />Refresh
       </b-button>
     </div>
     <b-table :items="addresses" :fields="fields" selectable select-mode="single" @row-selected="onAddressSelected">
       <template v-slot:cell(options)="data">
-        <b-button
-          variant="danger"
-          squared
-          size="sm"
-          @click="onDeleteAddress(data.item.addressId)"
-        >Delete</b-button>
+        <b-button class="text-danger" variant="link" squared size="sm" @click="onDeleteAddress(data.item.addressId)">Delete</b-button>
       </template>
     </b-table>
     <b-collapse v-model="isAddressEditVisible">
