@@ -11,7 +11,12 @@
             <b-row>
                 <b-col>
                     <b-form-group label="URL" :state="urlState">
-                        <b-form-input v-model="url" :state="urlState" />
+                        <b-input-group prepend="http://">
+                            <b-form-input v-model="url" :state="urlState" />
+                            <b-input-group-append>
+                                <span><b-spinner v-if="isUrlTestBusy" class="mx-2" /></span>
+                            </b-input-group-append>
+                        </b-input-group>
                     </b-form-group>
                 </b-col>
             </b-row>
@@ -27,6 +32,7 @@
 
 <script>
 import { ACTIONS } from "@/store";
+import { http } from "@/axios";
 const Toast = require("@/helpers/toast");
 
 export default {
@@ -38,7 +44,9 @@ export default {
             name: null,
             url: null,
             nameState: null,
-            urlState: null
+            urlState: null,
+            urlTestTimeout: null,
+            isUrlTestBusy: false
         }
     },
     watch: {
@@ -46,7 +54,7 @@ export default {
             this.nameState = !!this.name && !!this.name.trim();
         },
         "url": function () {
-            this.urlState = !!this.url && !!this.url.trim();
+            this.validateUri(this.url)
         },
         "registry": {
             immediate: true,
@@ -65,6 +73,8 @@ export default {
             return this.nameState === true
                 && this.urlState === true;
         }
+    },
+    mounted() {
     },
     methods: {
         clear() {
@@ -104,6 +114,24 @@ export default {
         },
         onCancel() {
             this.close(null);
+        },
+        validateUri(url) {
+            this.isUrlTestBusy = true;
+
+            clearTimeout(this.urlTestTimeout);
+
+            if (!url) {
+                this.urlState = false;
+                this.isUrlTestBusy = false;
+                return
+            }
+
+            this.urlTestTimeout = setTimeout(async () => {
+                http.post("/registries/validate", JSON.stringify(url))
+                    .then(() => this.urlState = true)
+                    .catch(() => this.urlState = false)
+                    .finally(() => this.isUrlTestBusy = false);
+            }, 1.5 * 1000);
         }
     }
 }
