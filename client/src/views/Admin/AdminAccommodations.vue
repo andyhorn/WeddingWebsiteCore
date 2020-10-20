@@ -60,19 +60,7 @@
 
                 <template v-slot:cell(categoryId)="data">
                     <span v-if="data.item.categoryId == null">Uncategorized</span>
-                    <span v-else>
-                        <p>
-                            <span v-for="(category, index) in printCategoryTree(data.item.categoryId).split(',')"
-                                :key="category"
-                            >
-                                <span v-if="index == 0">{{ category }}</span>
-                                <span v-else :style="{ 'padding-left': `${(index - 1) * 15}px` }">
-                                    <b-icon-arrow-return-right /> {{ category }}
-                                </span>
-                                <br />
-                            </span>
-                        </p>
-                    </span>
+                    <span v-else>{{ printCategoryTree(data.item.categoryId) }}</span>
                 </template>
 
                 <template v-slot:cell(options)="data">
@@ -263,7 +251,7 @@ export default {
             const name = category.name;
 
             if (category.parentId != null)
-                return this.printCategoryTree(category.parentId) + "," + name;
+                return this.printCategoryTree(category.parentId) + " > " + name;
             else 
                 return name;
         },
