@@ -17,6 +17,7 @@
               <b-dropdown-item :to="{ name: 'Admin-Events' }">Events</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'Admin-Guests' }">Guests &amp; Families</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'Admin-Photos' }">Photos</b-dropdown-item>
+              <b-dropdown-item :to="{ name: 'Admin-Registries' }">Registries</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'Admin-RSVP' }">RSVPs</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'Admin-Party' }">Wedding Party</b-dropdown-item>
               <b-dropdown-divider />

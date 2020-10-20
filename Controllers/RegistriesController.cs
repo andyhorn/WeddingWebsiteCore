@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -42,12 +44,27 @@ namespace WeddingWebsiteCore.Controllers
             return Ok(registry);
         }
 
+        [HttpPost("validate")]
+        public IActionResult ValidateUri([FromBody]string url)
+        {
+            var isValid = ValidateUrl(url);
+            if (isValid)
+                return Ok();
+
+            return NotFound();
+        }
+
         [HttpPost(RouteContracts.PostItem)]
         public async Task<IActionResult> PostNewRegistry([FromBody]Models.Registry registry)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.Values);
+            }
+
+            if (!ValidateUrl(registry.Url))
+            {
+                return BadRequest("Invalid URL");
             }
 
             var exists = await ExistsAsync(registry.RegistryId);
@@ -58,6 +75,7 @@ namespace WeddingWebsiteCore.Controllers
 
             try
             {
+                FormatUrl(registry);
                 await _context.AddAsync(registry);
                 await _context.SaveChangesAsync();
             }
@@ -78,10 +96,9 @@ namespace WeddingWebsiteCore.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            var exists = await ExistsAsync(registry.RegistryId);
-            if (!exists)
+            if (!ValidateUrl(registry.Url))
             {
-                return NotFound();
+                return BadRequest("Invalid URL");
             }
 
             if (id != registry.RegistryId)
@@ -89,8 +106,16 @@ namespace WeddingWebsiteCore.Controllers
                 return BadRequest(ErrorMessageContracts.MismatchedId);
             }
 
+            var existing = await _context.Registries.FindAsync(id);
+            if (existing == null)
+            {
+                return NotFound();
+            }
+            
             try
             {
+                FormatUrl(registry);
+                _context.Entry(existing).State = EntityState.Detached;
                 _context.Entry(registry).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
@@ -132,6 +157,25 @@ namespace WeddingWebsiteCore.Controllers
         {
             var item = await _context.Registries.FindAsync(id);
             return item != null;
+        }
+
+        private bool ValidateUrl(string uri)
+        {
+            if (string.IsNullOrWhiteSpace(uri)) return false;
+
+            try {
+                var data = Dns.GetHostEntry(uri);
+                return data != null && data.AddressList.Length > 0;
+            } catch {
+                return false;
+            }
+        }
+
+        private void FormatUrl(Models.Registry registry)
+        {
+            var re = new Regex(@"https?://");
+            if (!re.IsMatch(registry.Url))
+                registry.Url = $"http://{registry.Url}";
         }
     }
 }

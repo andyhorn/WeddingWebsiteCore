@@ -8,6 +8,7 @@ import addresses from "@/store/modules/addresses.store.js";
 import rsvps from "@/store/modules/rsvps.store.js";
 import categories from "@/store/modules/categories.store.js";
 import accommodations from "@/store/modules/accommodations.store.js";
+import registries from "@/store/modules/registries.store.js";
 
 Vue.use(Vuex);
 
@@ -20,7 +21,8 @@ export const ACTIONS = {
   ADDRESS_ACTIONS: addresses.ACTIONS,
   RSVP_ACTIONS: rsvps.ACTIONS,
   ACCOMMODATION_ACTIONS: accommodations.ACCOMMODATION_ACTIONS,
-  CATEGORY_ACTIONS: categories.CATEGORY_ACTIONS
+  CATEGORY_ACTIONS: categories.CATEGORY_ACTIONS,
+  REGISTRY_ACTIONS: registries.ACTIONS
 }
 
 const defaultState = {
@@ -49,7 +51,8 @@ export default new Vuex.Store({
     addresses,
     rsvps,
     categories,
-    accommodations
+    accommodations,
+    registries
   },
   getters: {
 
