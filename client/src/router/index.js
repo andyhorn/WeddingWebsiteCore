@@ -10,6 +10,7 @@ import AdminEvents from "@/views/Admin/AdminEvents";
 import AdminAddresses from "@/views/Admin/AdminAddresses";
 import AdminAccommodations from "@/views/Admin/AdminAccommodations";
 import AdminRegistries from "@/views/Admin/AdminRegistries";
+import AdminWeddingParty from "@/views/Admin/AdminWeddingParty";
 
 Vue.use(VueRouter)
 
@@ -53,6 +54,11 @@ const routes = [
     path: "/admin/registries",
     name: "Admin-Registries",
     component: AdminRegistries
+  },
+  {
+    path: "/admin/party",
+    name: "Admin-Party",
+    component: AdminWeddingParty
   }
   // {
   //   path: '/about',
