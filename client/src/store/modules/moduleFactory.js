@@ -22,10 +22,10 @@ export default function (name, idKey, endpoint, namePlural = null) {
     const state = initialState();
 
     const MUTATIONS = {
-        [`SET_${namePlural.toUpperCase()}`]: [`SET_${namePlural.toUpperCase()}`],
-        [`RESET_${namePlural.toUpperCase()}`]: [`RESET_${namePlural.toUpperCase()}`],
-        [`ADD_${name.toUpperCase()}`]: [`ADD_${name.toUpperCase()}`],
-        [`REMOVE_${name.toUpperCase()}`]: [`REMOVE_${name.toUpperCase()}`]
+        [`SET_${namePlural.toUpperCase()}`]: `SET_${namePlural.toUpperCase()}`,
+        [`RESET_${namePlural.toUpperCase()}`]: `RESET_${namePlural.toUpperCase()}`,
+        [`ADD_${name.toUpperCase()}`]: `ADD_${name.toUpperCase()}`,
+        [`REMOVE_${name.toUpperCase()}`]: `REMOVE_${name.toUpperCase()}`
     };
 
     const ACTIONS = {
