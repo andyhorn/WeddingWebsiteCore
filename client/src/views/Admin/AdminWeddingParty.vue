@@ -11,10 +11,14 @@
                     <b-button squared size="sm" variant="success" @click="onNewRole"><b-icon-plus /> New Role</b-button>
                     <b-button squared size="sm" variant="primary" @click="fetchRoles"><b-icon-arrow-clockwise /> Refresh</b-button>
                 </div>
-                <b-table :fields="roleFields" :items="roles" sort-by="name">
+                <b-table :fields="roleFields" :items="roles" sort-by="name" small>
                     
                     <template v-slot:cell(members)="row">
                         {{ row.item.guestWeddingRoles.length }}
+                    </template>
+
+                    <template v-slot:cell(options)="row">
+                        <b-button size="sm" variant="link" class="text-danger" @click="onRoleDelete(row.item.weddingRoleId)">Delete</b-button>
                     </template>
 
                 </b-table>
@@ -56,16 +60,26 @@ export default {
         return {
             isNewWeddingRoleModalVisible: false,
             roleFields: [
-                "weddingRoleId",
                 {
                     key: "name",
-                    sortable: true
+                    sortable: true,
+                    tdClass: "align-middle"
                 },
                 {
                     key: "description",
-                    sortable: true
+                    sortable: true,
+                    tdClass: "align-middle"
                 },
-                "members"
+                {
+                    key: "members",
+                    sortable: true,
+                    tdClass: "align-middle"
+                },
+                {
+                    key: "options",
+                    thClass: "text-center",
+                    tdClass: "text-center"
+                }
             ],
             memberFields: [
                 "name",
