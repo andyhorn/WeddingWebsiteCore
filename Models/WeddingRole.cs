@@ -9,6 +9,6 @@ namespace WeddingWebsiteCore.Models
         public int WeddingRoleId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public ICollection<WeddingMemberRole> WeddingMemberRoles { get; set; }
+        public ICollection<GuestWeddingRole> GuestWeddingRoles { get; set; }
     }
 }

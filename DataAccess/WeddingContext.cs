@@ -16,7 +16,6 @@ namespace WeddingWebsiteCore.DataAccess
         public DbSet<Registry> Registries { get; set; }
         public DbSet<Rsvp> Rsvps { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
-        public DbSet<WeddingMember> WeddingMembers { get; set; }
         public DbSet<WeddingRole> WeddingRoles { get; set; }
         public DbSet<Tier> Tiers { get; set; }
         public DbSet<Accommodation> Accommodations { get; set; }
@@ -73,15 +72,17 @@ namespace WeddingWebsiteCore.DataAccess
                 .HasOne(guest => guest.Parent)
                 .WithMany(parent => parent.Children)
                 .OnDelete(DeleteBehavior.SetNull);
-
-            modelBuilder.Entity<WeddingMemberRole>()
-                .HasOne(weddingMemberRole => weddingMemberRole.WeddingRole)
-                .WithMany(weddingRole => weddingRole.WeddingMemberRoles)
-                .HasForeignKey(weddingRole => weddingRole.WeddingMemberId);
-            modelBuilder.Entity<WeddingMemberRole>()
-                .HasOne(weddingMemberRole => weddingMemberRole.WeddingMember)
-                .WithMany(weddingMember => weddingMember.WeddingMemberRoles)
-                .HasForeignKey(weddingMember => weddingMember.WeddingRoleId);
+            
+            modelBuilder.Entity<GuestWeddingRole>()
+                .HasKey(x => new { x.GuestId, x.WeddingRoleId });
+            modelBuilder.Entity<GuestWeddingRole>()
+                .HasOne(x => x.Guest)
+                .WithMany(y => y.GuestWeddingRoles)
+                .HasForeignKey(x => x.GuestId);
+            modelBuilder.Entity<GuestWeddingRole>()
+                .HasOne(x => x.WeddingRole)
+                .WithMany(y => y.GuestWeddingRoles)
+                .HasForeignKey(x => x.WeddingRoleId);
 
             modelBuilder.Entity<WeddingRole>()
                 .HasIndex(weddingRole => weddingRole.Name)

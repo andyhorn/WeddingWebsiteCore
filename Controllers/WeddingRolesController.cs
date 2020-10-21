@@ -21,7 +21,10 @@ namespace WeddingWebsiteCore.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllRoles()
         {
-            var roles = await _context.WeddingRoles.ToListAsync();
+            var roles = await _context.WeddingRoles
+                .Include(x => x.GuestWeddingRoles)
+                    .ThenInclude(y => y.Guest)
+                .ToListAsync();
 
             return Ok(roles);
         }

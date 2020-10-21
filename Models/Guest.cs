@@ -22,7 +22,10 @@ namespace WeddingWebsiteCore.Models
 
         [DataType(DataType.PhoneNumber)]
         public string Phone { get; set; }
+
+        // Wedding Member
         public bool IsWeddingMember { get; set; } = false;
+        public ICollection<GuestWeddingRole> GuestWeddingRoles { get; set; }
 
         // Child-Parent Relationships
         public bool IsChild { get; set; } = false;
