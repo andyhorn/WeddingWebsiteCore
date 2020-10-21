@@ -27,7 +27,7 @@
                 <template #title>
                     <h2>Assignments</h2>
                 </template>
-                <b-table :fields="memberFields" :items="members">
+                <b-table :fields="memberFields" :items="members" selectable select-mode="single" @row-selected="onGuestSelected">
 
                     <template v-slot:cell(name)="row">
                         {{ `${row.item.firstName} ${row.item.lastName}` }}
@@ -35,6 +35,10 @@
 
                     <template v-slot:cell(roles)="row">
                         {{ printMemberRoles(row.item.guestId) }}
+                    </template>
+
+                    <template v-slot:row-details="row">
+                        <GuestWeddingRoleFormList :roles="roles" :guestId="row.item.guestId" />
                     </template>
 
                 </b-table>
@@ -49,12 +53,14 @@
 import { ACTIONS } from "@/store";
 import NewWeddingRoleModal from "@/components/modals/NewWeddingRoleModal";
 import WeddingForm from "@/components/forms/WeddingRoleForm";
+import GuestWeddingRoleFormList from "@/components/forms/GuestWeddingRoleFormList";
 
 export default {
     name: "AdminWeddingParty",
     components: {
         NewWeddingRoleModal,
-        WeddingForm
+        WeddingForm,
+        GuestWeddingRoleFormList
     },
     data() {
         return {
@@ -122,6 +128,25 @@ export default {
         onNewWeddingRoleModalClose() {
             this.isNewWeddingRoleModalVisible = false;
         },
+        onRoleDelete(id) {
+            if (confirm("Are you sure you want to delete this role?"))
+                this.$store.dispatch(ACTIONS.WEDDING_ROLE_ACTIONS.DELETE, id);
+        },
+        onRoleChange(e, roleId, guestId) {
+            console.log(e)
+            console.log(roleId)
+            console.log(guestId)
+        },
+        onGuestSelected(rows) {
+            const ids = rows.map(x => x.guestId);
+
+            for (let guest of this.members) {
+                const isOpen = ids.includes(guest.guestId);
+
+                if (guest._showDetails != isOpen)
+                    this.$set(guest, "_showDetails", isOpen);
+            }
+        },
         printMemberRoles(guestId) {
             const roleIds = this.roles
                 .map(x => x.guestWeddingRoles)
@@ -138,3 +163,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .column-break {
+        columns: 3;
+    }
+</style>
