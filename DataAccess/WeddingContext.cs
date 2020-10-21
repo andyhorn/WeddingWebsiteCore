@@ -74,8 +74,6 @@ namespace WeddingWebsiteCore.DataAccess
                 .OnDelete(DeleteBehavior.SetNull);
             
             modelBuilder.Entity<GuestWeddingRole>()
-                .HasKey(x => new { x.GuestId, x.WeddingRoleId });
-            modelBuilder.Entity<GuestWeddingRole>()
                 .HasOne(x => x.Guest)
                 .WithMany(y => y.GuestWeddingRoles)
                 .HasForeignKey(x => x.GuestId);

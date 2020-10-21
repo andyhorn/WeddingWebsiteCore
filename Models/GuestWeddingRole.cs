@@ -4,6 +4,7 @@ namespace WeddingWebsiteCore.Models
 {
     public class GuestWeddingRole
     {
+        public int GuestWeddingRoleId { get; set; }
         [ForeignKey(nameof(GuestId))]
         public Guest Guest { get; set; }
         public int GuestId { get; set; }
