@@ -12,7 +12,7 @@
                         <b-icon-plus /> New
                     </template>
                     <b-dropdown-item @click="onNewFamily">Family</b-dropdown-item>
-                    <b-dropdown-item @click="onNewGuest">Guest</b-dropdown-item>
+                    <b-dropdown-item @click="() => onNewGuest()">Guest</b-dropdown-item>
                 </b-dropdown>
                 <b-table :fields="familyFields" :items="families" selectable
                     select-mode="single" @row-selected="item => onFamilySelected(item)"
