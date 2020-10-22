@@ -96,13 +96,11 @@ export default {
     computed: {
         roles() {
             const roles = this.$store.getters.weddingRoles;
-            console.log(roles)
             return roles;
         },
         members() {
             const members = this.$store.getters.guests
                 .filter(x => x.isWeddingMember);
-            console.log(members)
             return members;
         }
     },
@@ -131,11 +129,6 @@ export default {
         onRoleDelete(id) {
             if (confirm("Are you sure you want to delete this role?"))
                 this.$store.dispatch(ACTIONS.WEDDING_ROLE_ACTIONS.DELETE, id);
-        },
-        onRoleChange(e, roleId, guestId) {
-            console.log(e)
-            console.log(roleId)
-            console.log(guestId)
         },
         onGuestSelected(rows) {
             const ids = rows.map(x => x.guestId);

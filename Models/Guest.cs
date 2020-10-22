@@ -25,7 +25,6 @@ namespace WeddingWebsiteCore.Models
 
         // Wedding Member
         public bool IsWeddingMember { get; set; } = false;
-        //public ICollection<GuestWeddingRole> GuestWeddingRoles { get; set; }
 
         // Child-Parent Relationships
         public bool IsChild { get; set; } = false;
