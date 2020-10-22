@@ -26,6 +26,7 @@ namespace WeddingWebsiteCore.Controllers
         public async Task<IActionResult> GetAllRoles()
         {
             var roles = await _context.WeddingRoles
+                .OrderBy(weddingRole => weddingRole.Name)
                 .ToListAsync();
 
             return Ok(roles);

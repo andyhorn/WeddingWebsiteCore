@@ -9,14 +9,15 @@
         <b-row class="mb-3">
             <b-col class="d-flex justify-content-between">
                 <b-button squared size="sm" variant="success" @click="onSave" :disabled="isSaveButtonDisabled">Save</b-button>
-                <b-button squared size="sm" variant="warning" @click="onReset" class="text-light">Reset</b-button>
+                <b-button squared size="sm" variant="warning" @click="onReset" class="text-light" :disabled="isSaveButtonDisabled">Reset</b-button>
             </b-col>
         </b-row>
     </b-container>
 </template>
 
 <script>
-import { ACTIONS } from "@/store";
+    import { ACTIONS } from "@/store";
+    const Toast = require("@/helpers/toast");
 
 export default {
     name: "GuestWeddingRoleFormList",
@@ -50,11 +51,12 @@ export default {
             }
 
             return true;
-        }
+        },
     },
     methods: {
         async onSave() {
             // for each role
+            let allSaved = true;
             await Promise.all(this.roles.map(role => {
                 return new Promise(async resolve => {
                     // check the value of the role and whether an existing link exists
@@ -78,12 +80,20 @@ export default {
 
                         if (success) {
                             this.$set(this.savedValues, this.guestId, assigned);
+                        } else {
+                            allSaved = false;
                         }
                     }
 
                     resolve();
                 });
             }));
+
+            if (allSaved) {
+                Toast.success("Roles updated!");
+            } else {
+                Toast.error("Some roles could not be saved.")
+            }
         },
         onReset() {
             for (let role of this.roles) {

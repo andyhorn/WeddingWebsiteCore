@@ -52,14 +52,12 @@
 <script>
 import { ACTIONS } from "@/store";
 import NewWeddingRoleModal from "@/components/modals/NewWeddingRoleModal";
-import WeddingForm from "@/components/forms/WeddingRoleForm";
 import GuestWeddingRoleFormList from "@/components/forms/GuestWeddingRoleFormList";
 
 export default {
     name: "AdminWeddingParty",
     components: {
         NewWeddingRoleModal,
-        WeddingForm,
         GuestWeddingRoleFormList
     },
     data() {
@@ -78,7 +76,7 @@ export default {
                 },
                 {
                     key: "members",
-                    sortable: true,
+                    sortable: false,
                     tdClass: "align-middle"
                 },
                 {
@@ -153,9 +151,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-    .column-break {
-        columns: 3;
-    }
-</style>
