@@ -29,10 +29,6 @@
                 </template>
                 <b-table :fields="memberFields" :items="members" selectable select-mode="single" @row-selected="onGuestSelected">
 
-                    <template v-slot:cell(name)="row">
-                        {{ `${row.item.firstName} ${row.item.lastName}` }}
-                    </template>
-
                     <template v-slot:cell(roles)="row">
                         {{ printMemberRoles(row.item.guestId) }}
                     </template>
@@ -86,7 +82,12 @@ export default {
                 }
             ],
             memberFields: [
-                "name",
+                {
+                    key: "name",
+                    sortByFormatted: true,
+                    sortable: true,
+                    formatter: (value, key, item) => `${item.firstName} ${item.lastName}`
+                },
                 "roles"
             ]
         }
