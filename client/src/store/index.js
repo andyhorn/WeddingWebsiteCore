@@ -9,6 +9,8 @@ import rsvps from "@/store/modules/rsvps.store.js";
 import categories from "@/store/modules/categories.store.js";
 import accommodations from "@/store/modules/accommodations.store.js";
 import registries from "@/store/modules/registries.store.js";
+import weddingRoles from "@/store/modules/weddingRoles.store.js";
+import guestWeddingRoles from "@/store/modules/guestWeddingRoles.store.js";
 
 Vue.use(Vuex);
 
@@ -22,7 +24,9 @@ export const ACTIONS = {
   RSVP_ACTIONS: rsvps.ACTIONS,
   ACCOMMODATION_ACTIONS: accommodations.ACCOMMODATION_ACTIONS,
   CATEGORY_ACTIONS: categories.CATEGORY_ACTIONS,
-  REGISTRY_ACTIONS: registries.ACTIONS
+  REGISTRY_ACTIONS: registries.ACTIONS,
+  WEDDING_ROLE_ACTIONS: weddingRoles.ACTIONS,
+  GUEST_WEDDING_ROLE_ACTIONS: guestWeddingRoles.ACTIONS
 }
 
 const defaultState = {
@@ -52,7 +56,9 @@ export default new Vuex.Store({
     rsvps,
     categories,
     accommodations,
-    registries
+    registries,
+    weddingRoles,
+    guestWeddingRoles
   },
   getters: {
 

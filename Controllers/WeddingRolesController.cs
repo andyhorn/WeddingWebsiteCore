@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WeddingWebsiteCore.Contracts;
 using WeddingWebsiteCore.DataAccess;
 using WeddingWebsiteCore.Models;
 
@@ -21,7 +25,9 @@ namespace WeddingWebsiteCore.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllRoles()
         {
-            var roles = await _context.WeddingRoles.ToListAsync();
+            var roles = await _context.WeddingRoles
+                .OrderBy(weddingRole => weddingRole.Name)
+                .ToListAsync();
 
             return Ok(roles);
         }
@@ -64,14 +70,24 @@ namespace WeddingWebsiteCore.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRole(int id, [FromBody]WeddingRole role)
         {
-            var item = await _context.FindAsync<WeddingRole>(role.WeddingRoleId);
-            if (item == null)
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+            if (id != role.WeddingRoleId)
+            {
+                return BadRequest(ErrorMessageContracts.MismatchedId);
+            }
+
+            var existing = await _context.WeddingRoles.FindAsync(id);
+            if (existing == null)
             {
                 return NotFound();
             }
 
             try
             {
+                _context.Entry(existing).State = EntityState.Detached;
                 _context.Entry(role).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }

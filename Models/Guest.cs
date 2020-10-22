@@ -22,6 +22,8 @@ namespace WeddingWebsiteCore.Models
 
         [DataType(DataType.PhoneNumber)]
         public string Phone { get; set; }
+
+        // Wedding Member
         public bool IsWeddingMember { get; set; } = false;
 
         // Child-Parent Relationships

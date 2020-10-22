@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using WeddingWebsiteCore.Models;
 
@@ -16,7 +15,6 @@ namespace WeddingWebsiteCore.DataAccess
         public DbSet<Registry> Registries { get; set; }
         public DbSet<Rsvp> Rsvps { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
-        public DbSet<WeddingMember> WeddingMembers { get; set; }
         public DbSet<WeddingRole> WeddingRoles { get; set; }
         public DbSet<Tier> Tiers { get; set; }
         public DbSet<Accommodation> Accommodations { get; set; }
@@ -74,15 +72,6 @@ namespace WeddingWebsiteCore.DataAccess
                 .WithMany(parent => parent.Children)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<WeddingMemberRole>()
-                .HasOne(weddingMemberRole => weddingMemberRole.WeddingRole)
-                .WithMany(weddingRole => weddingRole.WeddingMemberRoles)
-                .HasForeignKey(weddingRole => weddingRole.WeddingMemberId);
-            modelBuilder.Entity<WeddingMemberRole>()
-                .HasOne(weddingMemberRole => weddingMemberRole.WeddingMember)
-                .WithMany(weddingMember => weddingMember.WeddingMemberRoles)
-                .HasForeignKey(weddingMember => weddingMember.WeddingRoleId);
-
             modelBuilder.Entity<WeddingRole>()
                 .HasIndex(weddingRole => weddingRole.Name)
                 .IsUnique();
@@ -91,97 +80,97 @@ namespace WeddingWebsiteCore.DataAccess
                 {
                     new WeddingRole
                     {
-                        WeddingRoleId = 1,
+                        WeddingRoleId = -1,
                         Name = "Bride"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 2,
+                        WeddingRoleId = -2,
                         Name = "Groom"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 3,
+                        WeddingRoleId = -3,
                         Name = "Maid of Honor"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 4,
+                        WeddingRoleId = -4,
                         Name = "Best Man"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 5,
+                        WeddingRoleId = -5,
                         Name = "Bridesmaid"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 6,
+                        WeddingRoleId = -6,
                         Name = "Groomsman"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 7,
+                        WeddingRoleId = -7,
                         Name = "Flower Girl"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 8,
+                        WeddingRoleId = -8,
                         Name = "Ring Bearer"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 9,
+                        WeddingRoleId = -9,
                         Name = "Officiant"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 10,
+                        WeddingRoleId = -10,
                         Name = "Father of the Bride"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 11,
+                        WeddingRoleId = -11,
                         Name = "Mother of the Bride"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 12,
+                        WeddingRoleId = -12,
                         Name = "Father of the Groom"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 13,
+                        WeddingRoleId = -13,
                         Name = "Mother of the Groom"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 14,
+                        WeddingRoleId = -14,
                         Name = "Grandmother of the Bride"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 15,
+                        WeddingRoleId = -15,
                         Name = "Grandfather of the Bride"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 16,
+                        WeddingRoleId = -16,
                         Name = "Grandmother of the Groom"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 17,
+                        WeddingRoleId = -17,
                         Name = "Grandfather of the Groom"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 18,
+                        WeddingRoleId = -18,
                         Name = "Junior Bridesmaid"
                     },
                     new WeddingRole
                     {
-                        WeddingRoleId = 19,
+                        WeddingRoleId = -19,
                         Name = "Usher"
                     }
                 });

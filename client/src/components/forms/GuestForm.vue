@@ -17,8 +17,8 @@
         <b-row>
             <b-col>
                 <b-form-group label="Family">
-                    <b-select v-model="familyId" :disabled="familySelectDisabled">
-                        <option :value="null">None</option>
+                    <b-select v-model="familyId">
+                        <option :value="null" :native-value="null">None</option>
                         <option v-for="family in families"
                             :key="family.familyId"
                             :value="family.familyId"
@@ -94,7 +94,7 @@ export default {
         }
     },
     mounted() {
-        if (this.selectedFamily != null) {
+        if (this.selectedFamily) {
             this.familyId = this.selectedFamily;
             this.familySelectDisabled = true;
             const family = this.families.find(x => x.familyId == this.selectedFamily);
@@ -145,7 +145,7 @@ export default {
             immediate: true,
             deep: true,
             handler: function () {
-                if (this.guest == null) return;
+                if (!this.guest) return;
 
                 this.id = this.guest.guestId;
                 this.firstName = this.guest.firstName;
@@ -185,18 +185,17 @@ export default {
         async onSubmit() {
             if (!this.isFormValid) return;
 
-            const guest = {
-                guestId: this.id || undefined,
-                firstName: this.firstName,
-                lastName: this.lastName,
-                familyId: this.familyId,
-                isChild: this.isChild,
-                isUnderTen: this.isChild ? this.isUnderTen : false,
-                isWeddingMember: this.isWeddingMember,
-                parentId: this.isChild ? this.parentId : null,
-                inviteCode: this.guest == null
-                    ? null : this.guest.inviteCode
-            };
+            const guest = Object.assign({}, this.guest == null ? {} : this.guest, 
+                { 
+                    guestId: this.id || undefined,
+                    firstName: this.firstName,
+                    lastName: this.lastName,
+                    familyId: this.familyId,
+                    isChild: this.isChild,
+                    isUnderTen: this.isChild ? this.isUnderTen : false,
+                    isWeddingMember: this.isWeddingMember,
+                    parentId: this.isChild ? this.parentId : null,
+                });
 
             const command = this.id == null
                 ? ACTIONS.GUEST_ACTIONS.CREATE
