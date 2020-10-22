@@ -4,12 +4,8 @@ export default function (name, idKey, endpoint, namePlural = null) {
     if (namePlural == null) namePlural = name;
     
     const nameCapitalized = `${name[0].toUpperCase()}${name.slice(1)}`;
-    // const nameCapitalized = name;
-    // nameCapitalized[0] = nameCapitalized[0].toUpperCase();
 
     const namePluralCapitalized = `${namePlural[0].toUpperCase()}${namePlural.slice(1)}`;
-    // const namePluralCapitalized = namePlural;
-    // namePluralCapitalized[0] = namePluralCapitalized[0].toUpperCase();
 
     const service = serviceFactory(endpoint);
 

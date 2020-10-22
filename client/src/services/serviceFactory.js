@@ -35,7 +35,7 @@ export default function (endpoint) {
             });
         },
 
-        update: function (item, itemId) {
+        update: function (itemId, item) {
             return new Promise(resolve => {
                 http.put(`${endpoint}/${itemId}`, item)
                     .then(res => resolve(true))
