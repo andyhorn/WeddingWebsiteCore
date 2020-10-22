@@ -16,14 +16,10 @@
 </template>
 
 <script>
-import GuestWeddingRoleForm from "@/components/forms/GuestWeddingRoleForm";
 import { ACTIONS } from "@/store";
 
 export default {
     name: "GuestWeddingRoleFormList",
-    components: {
-        GuestWeddingRoleForm
-    },
     props: [ "roles", "guestId" ],
     data() {
         return {
@@ -37,7 +33,7 @@ export default {
             immediate: true,
             handler: function () {
                 for (let role of this.roles) {
-                    const found = role.guestWeddingRoles.find(x => x.guestId == this.guestId) != null;
+                    const found = role.guestIds && role.guestIds.includes(this.guestId);
 
                     this.$set(this.values, role.weddingRoleId, found);
                     this.$set(this.savedValues, role.weddingRoleId, found);
@@ -58,24 +54,35 @@ export default {
     },
     methods: {
         async onSave() {
+            // for each role
             await Promise.all(this.roles.map(role => {
-                const value = this.values[role.weddingRoleId];
-                const guestWeddingRole = role.guestWeddingRoles.find(x => x.guestId == this.guestId);
+                return new Promise(async resolve => {
+                    // check the value of the role and whether an existing link exists
+                    const assigned = this.values[role.weddingRoleId];
+                    const exists = role.guestIds && role.guestIds.includes(this.guestId);
+                    let changed = false;
 
-                if (value && !guestWeddingRole) {
-                    // create a new link
-                    const weddingRole = {
-                        guestId: this.guestId,
-                        weddingRoleId: role.weddingRoleId
-                    };
+                    // if the role has been assigned and a role does not exist, create a new assignment
+                    if (assigned && !exists) {
+                        role.guestIds ? role.guestIds.push(this.guestId) : role.guestIds = [this.guestId];
+                        changed = true;
+                    }
+                    // if the role is not assigned and an assignment exists, remove the assignment
+                    else if (!assigned && exists) {
+                        role.guestIds = role.guestIds.filter(x => x != this.guestId);
+                        changed = true;
+                    }
 
-                    return await this.$store.dispatch(ACTIONS.WEDDING_ROLE_ACTIONS.CREATE, weddingRole);
-                } else if (!value && !!guestWeddingRole) {
-                    // delete an existing link
-                    return await this.$store.dispatch(ACTIONS.WEDDING_ROLE_ACTIONS.DELETE, guestWeddingRole.guestWeddingRoleId)
-                }
+                    if (changed) {
+                        const success = await this.$store.dispatch(ACTIONS.WEDDING_ROLE_ACTIONS.UPDATE, role);
 
-                return null;
+                        if (success) {
+                            this.$set(this.savedValues, this.guestId, assigned);
+                        }
+                    }
+
+                    resolve();
+                });
             }));
         },
         onReset() {
@@ -84,7 +91,6 @@ export default {
             }
         },
         onRoleChanged(e, roleId) {
-            // this.values[roleId] = e;
             this.$set(this.values, roleId, e);
         }
     }

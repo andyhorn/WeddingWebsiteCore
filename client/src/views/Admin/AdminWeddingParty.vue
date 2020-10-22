@@ -14,7 +14,7 @@
                 <b-table :fields="roleFields" :items="roles" sort-by="name" small>
                     
                     <template v-slot:cell(members)="row">
-                        {{ row.item.guestWeddingRoles.length }}
+                        {{ row.item.guestIds ? row.item.guestIds.length : 0 }}
                     </template>
 
                     <template v-slot:cell(options)="row">
@@ -148,12 +148,9 @@ export default {
             }
         },
         printMemberRoles(guestId) {
-            const roleIds = this.roles
-                .map(x => x.guestWeddingRoles)
-                .filter(x => x.guestId == guestId)
-                .map(x => x.weddingRoleId);
-
-            const roles = roleIds.map(x => this.roles.find(x => x.weddingRoleId == x).name);
+            const roles = this.roles
+                .filter(r => r.guestIds && r.guestIds.includes(guestId))
+                .map(r => r.name);
 
             if (roles.length)
                 return roles.join(", ");
