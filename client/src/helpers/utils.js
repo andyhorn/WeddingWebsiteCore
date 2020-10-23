@@ -8,9 +8,9 @@ export const deepCopy = (objIn) => {
     objOut = Array.isArray(objIn) ? [] : {};
 
     for (key in objIn) {
-        value = objIn[key];
+        //value = objIn[key];
 
-        objOut[key] = deepCopy(value);
+        objOut[key] = deepCopy(objIn[key]);
     }
 
     return objOut;

@@ -203,13 +203,19 @@ export default {
 
             const success = await this.$store.dispatch(command, guest);
             if (success) {
-                const refresh = ACTIONS.GUEST_ACTIONS.FETCH_ALL;
-                await this.$store.dispatch(refresh);
+                //const refresh = ACTIONS.GUEST_ACTIONS.FETCH_ALL;
+                //await this.$store.dispatch(refresh);
                 Toast.success("Guest saved!");
+                this.refreshFamily(guest.familyId);
                 this.close(success);
             } else {
                 Toast.error("Unable to save guest.");
             }
+        },
+        async refreshFamily(familyId) {
+            if (!familyId) return;
+
+            await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.FETCH, familyId);
         }
     }
 }

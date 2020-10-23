@@ -99,11 +99,13 @@ namespace WeddingWebsiteCore.Controllers
                 return NotFound();
             }
 
-            FamilyHelper.UpdateFamily(existing, family);
+            // FamilyHelper.UpdateFamily(existing, family);
 
             try
             {
-                _context.Families.Update(existing);
+                _context.Entry(existing).State = EntityState.Detached;
+                _context.Entry(family).State = EntityState.Modified;
+                // _context.Families.Update(existing);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)
