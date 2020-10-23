@@ -1,122 +1,131 @@
-import addressService from "@/services/addressService";
+import moduleFactory from "@/store/modules/moduleFactory";
 
-const MUTATIONS = {
-    SET_ADDRESSES: "SET_ADDRESSES",
-    RESET_ADDRESSES: "RESET_ADDRESSES",
-    ADD_ADDRESS: "ADD_ADDRESS",
-    REMOVE_ADDRESS: "REMOVE_ADDRESS"
-};
+const name = "address";
+const idKey = "addressId";
+const endpoint = "addresses";
+const namePlural = "addresses";
 
-const ACTIONS = {
-    CREATE: "createAddress",
-    UPDATE: "updateAddress",
-    FETCH: "fetchAddress",
-    FETCH_ALL: "fetchAllAddresses",
-    DELETE: "deleteAddress"
-};
+export default moduleFactory(name, idKey, endpoint, namePlural);
 
-const defaultState = {
-    addresses: []
-};
+// import addressService from "@/services/addressService";
 
-const initialState = () => defaultState;
+// const MUTATIONS = {
+//     SET_ADDRESSES: "SET_ADDRESSES",
+//     RESET_ADDRESSES: "RESET_ADDRESSES",
+//     ADD_ADDRESS: "ADD_ADDRESS",
+//     REMOVE_ADDRESS: "REMOVE_ADDRESS"
+// };
 
-const state = initialState();
+// const ACTIONS = {
+//     CREATE: "createAddress",
+//     UPDATE: "updateAddress",
+//     FETCH: "fetchAddress",
+//     FETCH_ALL: "fetchAllAddresses",
+//     DELETE: "deleteAddress"
+// };
 
-const getters = {
-    addresses: state => state.addresses,
-    findAddress: state => id => state.addresses.find(x => x.addressId == id)
-};
+// const defaultState = {
+//     addresses: []
+// };
 
-const actions = {
-    [ACTIONS.FETCH_ALL]({ commit }) {
-        return new Promise(async resolve => {
-            const addresses = await addressService.getAll();
-            if (addresses) {
-                commit(MUTATIONS.SET_ADDRESSES, addresses);
-            }
+// const initialState = () => defaultState;
 
-            resolve(addresses != null);
-        });
-    },
+// const state = initialState();
 
-    [ACTIONS.FETCH]({ commit }, addressId) {
-        return new Promise(async resolve => {
-            const address = await addressService.getOne(addressId);
-            if (address) {
-                commit(MUTATIONS.ADD_ADDRESS, address);
-            }
+// const getters = {
+//     addresses: state => state.addresses,
+//     findAddress: state => id => state.addresses.find(x => x.addressId == id)
+// };
 
-            resolve(address);
-        });
-    },
+// const actions = {
+//     [ACTIONS.FETCH_ALL]({ commit }) {
+//         return new Promise(async resolve => {
+//             const addresses = await addressService.getAll();
+//             if (addresses) {
+//                 commit(MUTATIONS.SET_ADDRESSES, addresses);
+//             }
 
-    [ACTIONS.UPDATE]({ commit }, address) {
-        return new Promise(async resolve => {
-            const updated = await addressService.update(address.addressId, address);
-            if (updated) {
-                // const refreshedAddress = await addressService.getOne(address.addressId);
-                commit(MUTATIONS.ADD_ADDRESS, refreshedAddress);
-            }
+//             resolve(addresses != null);
+//         });
+//     },
 
-            resolve(updated);
-        });
-    },
+//     [ACTIONS.FETCH]({ commit }, addressId) {
+//         return new Promise(async resolve => {
+//             const address = await addressService.getOne(addressId);
+//             if (address) {
+//                 commit(MUTATIONS.ADD_ADDRESS, address);
+//             }
 
-    [ACTIONS.DELETE]({ commit }, addressId) {
-        return new Promise(async resolve => {
-            const deleted = await addressService.delete(addressId);
-            if (deleted) {
-                commit(MUTATIONS.REMOVE_ADDRESS, addressId);
-            }
+//             resolve(address);
+//         });
+//     },
 
-            resolve(deleted);
-        });
-    },
+//     [ACTIONS.UPDATE]({ commit }, address) {
+//         return new Promise(async resolve => {
+//             const updated = await addressService.update(address.addressId, address);
+//             if (updated) {
+//                 // const refreshedAddress = await addressService.getOne(address.addressId);
+//                 commit(MUTATIONS.ADD_ADDRESS, refreshedAddress);
+//             }
 
-    [ACTIONS.CREATE]({ commit }, addressData) {
-        return new Promise(async resolve => {
-            const addressId = await addressService.create(addressData);
-            if (addressId) {
-                const address = await addressService.getOne(addressId);
-                commit(MUTATIONS.ADD_ADDRESS, address);
-            }
+//             resolve(updated);
+//         });
+//     },
 
-            resolve(addressId);
-        });
-    }
-};
+//     [ACTIONS.DELETE]({ commit }, addressId) {
+//         return new Promise(async resolve => {
+//             const deleted = await addressService.delete(addressId);
+//             if (deleted) {
+//                 commit(MUTATIONS.REMOVE_ADDRESS, addressId);
+//             }
 
-const mutations = {
-    [MUTATIONS.SET_ADDRESSES](state, addresses) {
-        state.addresses = addresses;
-    },
+//             resolve(deleted);
+//         });
+//     },
 
-    [MUTATIONS.RESET_ADDRESSES](state) {
-        state.addresses = [];
-    },
+//     [ACTIONS.CREATE]({ commit }, addressData) {
+//         return new Promise(async resolve => {
+//             const addressId = await addressService.create(addressData);
+//             if (addressId) {
+//                 const address = await addressService.getOne(addressId);
+//                 commit(MUTATIONS.ADD_ADDRESS, address);
+//             }
 
-    [MUTATIONS.REMOVE_ADDRESS](state, addressId) {
-        const index = state.addresses.findIndex(x => x.addressId == addressId);
-        if (index != -1) {
-            state.addresses.splice(index, 1);
-        }
-    },
+//             resolve(addressId);
+//         });
+//     }
+// };
 
-    [MUTATIONS.ADD_ADDRESS](state, address) {
-        const index = state.addresses.findIndex(x => x.addressId == address.addressId);
-        if (index == -1) {
-            state.addresses.push(address);
-        } else {
-            state.addresses.splice(index, 1, address);
-        }
-    }
-}
+// const mutations = {
+//     [MUTATIONS.SET_ADDRESSES](state, addresses) {
+//         state.addresses = addresses;
+//     },
 
-export default {
-    state,
-    getters,
-    actions,
-    mutations,
-    ACTIONS
-};
+//     [MUTATIONS.RESET_ADDRESSES](state) {
+//         state.addresses = [];
+//     },
+
+//     [MUTATIONS.REMOVE_ADDRESS](state, addressId) {
+//         const index = state.addresses.findIndex(x => x.addressId == addressId);
+//         if (index != -1) {
+//             state.addresses.splice(index, 1);
+//         }
+//     },
+
+//     [MUTATIONS.ADD_ADDRESS](state, address) {
+//         const index = state.addresses.findIndex(x => x.addressId == address.addressId);
+//         if (index == -1) {
+//             state.addresses.push(address);
+//         } else {
+//             state.addresses.splice(index, 1, address);
+//         }
+//     }
+// }
+
+// export default {
+//     state,
+//     getters,
+//     actions,
+//     mutations,
+//     ACTIONS
+// };

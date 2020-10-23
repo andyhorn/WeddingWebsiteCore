@@ -158,8 +158,6 @@ export default {
             this.isNewAccommodationModalVisible = true;
         },
         onAccommodationModalClose(success) {
-            if (success) Toast.success(this, "Accommodation saved!");
-
             this.isNewAccommodationModalVisible = false;
         },
         onAccommodationSelected(rows) {

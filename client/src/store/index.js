@@ -10,7 +10,6 @@ import categories from "@/store/modules/categories.store.js";
 import accommodations from "@/store/modules/accommodations.store.js";
 import registries from "@/store/modules/registries.store.js";
 import weddingRoles from "@/store/modules/weddingRoles.store.js";
-import guestWeddingRoles from "@/store/modules/guestWeddingRoles.store.js";
 
 Vue.use(Vuex);
 
@@ -18,15 +17,14 @@ export const TOKEN_IDENTIFIER = "x-kaw-auth-token-x";
 export const ACTIONS = {
   FAMILY_ACTIONS: families.ACTIONS,
   GUEST_ACTIONS: guests.ACTIONS,
-  EVENT_ACTIONS: events.EVENT_ACTIONS,
+  EVENT_ACTIONS: events.ACTIONS,
   AUTHENTICATION_ACTIONS: authentication.AUTHENTICATION_ACTIONS,
   ADDRESS_ACTIONS: addresses.ACTIONS,
   RSVP_ACTIONS: rsvps.ACTIONS,
-  ACCOMMODATION_ACTIONS: accommodations.ACCOMMODATION_ACTIONS,
-  CATEGORY_ACTIONS: categories.CATEGORY_ACTIONS,
+  ACCOMMODATION_ACTIONS: accommodations.ACTIONS,
+  CATEGORY_ACTIONS: categories.ACTIONS,
   REGISTRY_ACTIONS: registries.ACTIONS,
   WEDDING_ROLE_ACTIONS: weddingRoles.ACTIONS,
-  GUEST_WEDDING_ROLE_ACTIONS: guestWeddingRoles.ACTIONS
 }
 
 const defaultState = {
@@ -58,7 +56,6 @@ export default new Vuex.Store({
     accommodations,
     registries,
     weddingRoles,
-    guestWeddingRoles
   },
   getters: {
 

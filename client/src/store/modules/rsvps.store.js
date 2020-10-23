@@ -1,135 +1,144 @@
-import rsvpService from "@/services/rsvpService";
+import moduleFactory from "@/store/modules/moduleFactory";
 
-const MUTATIONS = {
-    SET_RSVPS: "SET_RSVPS",
-    RESET_RSVPS: "RESET_RSVPS",
-    ADD_RSVP: "ADD_RSVP",
-    REMOVE_RSVP: "REMOVE_RSVP"
-};
+const name = "rsvp";
+const idKey = "rsvpId";
+const endpoint = "rsvps";
+const namePlural = "rsvps";
 
-const ACTIONS = {
-    CREATE: "createRsvp",
-    UPDATE: "updateRsvp",
-    FETCH: "fetchRsvp",
-    FETCH_ALL: "fetchAllRsvps",
-    DELETE: "deleteRsvp"
-};
+export default moduleFactory(name, idKey, endpoint, namePlural);
 
-const defaultState = {
-    rsvps: []
-};
+// import rsvpService from "@/services/rsvpService";
 
-const initialState = () => defaultState;
+// const MUTATIONS = {
+//     SET_RSVPS: "SET_RSVPS",
+//     RESET_RSVPS: "RESET_RSVPS",
+//     ADD_RSVP: "ADD_RSVP",
+//     REMOVE_RSVP: "REMOVE_RSVP"
+// };
 
-const state = initialState();
+// const ACTIONS = {
+//     CREATE: "createRsvp",
+//     UPDATE: "updateRsvp",
+//     FETCH: "fetchRsvp",
+//     FETCH_ALL: "fetchAllRsvps",
+//     DELETE: "deleteRsvp"
+// };
 
-const getters = {
-    rsvps: state => state.rsvps,
-    findRsvp: state => rsvpId => state.rsvps.find(x => x.rsvpId == rsvpId),
-    findRsvpsForGuest: state => guestId => state.rsvps.filter(x => x.guestId == guestId)
-};
+// const defaultState = {
+//     rsvps: []
+// };
 
-const actions = {
-    [ACTIONS.FETCH_ALL]({ commit }) {
-        return new Promise(async resolve => {
-            const rsvps = await rsvpService.getAll();
+// const initialState = () => defaultState;
 
-            if (rsvps) {
-                commit(MUTATIONS.SET_RSVPS, rsvps);
-            }
+// const state = initialState();
 
-            resolve(rsvps != null);
-        });
-    },
+// const getters = {
+//     rsvps: state => state.rsvps,
+//     findRsvp: state => rsvpId => state.rsvps.find(x => x.rsvpId == rsvpId),
+//     findRsvpsForGuest: state => guestId => state.rsvps.filter(x => x.guestId == guestId)
+// };
 
-    [ACTIONS.FETCH]({ commit }, rsvpId) {
-        return new Promise(async resolve => {
-            const rsvp = await rsvpService.getOne(rsvpId);
+// const actions = {
+//     [ACTIONS.FETCH_ALL]({ commit }) {
+//         return new Promise(async resolve => {
+//             const rsvps = await rsvpService.getAll();
 
-            if (rsvp) {
-                commit(MUTATIONS.ADD_RSVP, rsvp);
-            }
+//             if (rsvps) {
+//                 commit(MUTATIONS.SET_RSVPS, rsvps);
+//             }
 
-            resolve(rsvp);
-        });
-    },
+//             resolve(rsvps != null);
+//         });
+//     },
 
-    [ACTIONS.DELETE]({ commit }, rsvpId) {
-        return new Promise(async resolve => {
-            const deleted = await rsvpService.delete(rsvpId);
+//     [ACTIONS.FETCH]({ commit }, rsvpId) {
+//         return new Promise(async resolve => {
+//             const rsvp = await rsvpService.getOne(rsvpId);
 
-            if (deleted) {
-                commit(MUTATIONS.REMOVE_RSVP, rsvpId);
-            }
+//             if (rsvp) {
+//                 commit(MUTATIONS.ADD_RSVP, rsvp);
+//             }
 
-            resolve(deleted);
-        });
-    },
+//             resolve(rsvp);
+//         });
+//     },
 
-    [ACTIONS.UPDATE]({ commit }, rsvp) {
-        return new Promise(async resolve => {
-            const updated = await rsvpService.update(rsvp.rsvpId, rsvp);
+//     [ACTIONS.DELETE]({ commit }, rsvpId) {
+//         return new Promise(async resolve => {
+//             const deleted = await rsvpService.delete(rsvpId);
 
-            if (updated) {
-                // const rsvp = await rsvpService.getOne(payload.rsvpId);
-                commit(MUTATIONS.ADD_RSVP, rsvp);
-            }
+//             if (deleted) {
+//                 commit(MUTATIONS.REMOVE_RSVP, rsvpId);
+//             }
 
-            resolve(updated);
-        });
-    },
+//             resolve(deleted);
+//         });
+//     },
 
-    [ACTIONS.CREATE]({ commit }, payload) {
-        return new Promise(async resolve => {
-            const rsvpId = await rsvpService.create(payload);
+//     [ACTIONS.UPDATE]({ commit }, rsvp) {
+//         return new Promise(async resolve => {
+//             const updated = await rsvpService.update(rsvp.rsvpId, rsvp);
 
-            if (rsvpId) {
-                const rsvp = await rsvpService.getOne(rsvpId);
-                commit(MUTATIONS.ADD_RSVP, rsvp);
-            }
+//             if (updated) {
+//                 // const rsvp = await rsvpService.getOne(payload.rsvpId);
+//                 commit(MUTATIONS.ADD_RSVP, rsvp);
+//             }
 
-            resolve(rsvpId);
-        });
-    }
-};
+//             resolve(updated);
+//         });
+//     },
 
-const mutations = {
-    [MUTATIONS.SET_RSVPS](state, rsvps) {
-        state.rsvps = rsvps;
-    },
+//     [ACTIONS.CREATE]({ commit }, payload) {
+//         return new Promise(async resolve => {
+//             const rsvpId = await rsvpService.create(payload);
 
-    [MUTATIONS.ADD_RSVP](state, rsvp) {
-        const rsvps = state.rsvps;
-        const index = state.rsvps.findIndex(x => x.rsvpId == rsvp.rsvpId);
+//             if (rsvpId) {
+//                 const rsvp = await rsvpService.getOne(rsvpId);
+//                 commit(MUTATIONS.ADD_RSVP, rsvp);
+//             }
 
-        if (index == -1) {
-            rsvps.push(rsvp);
-        } else {
-            rsvps.splice(index, 1, rsvp);
-        }
+//             resolve(rsvpId);
+//         });
+//     }
+// };
 
-        state.rsvps = rsvps;
-    },
+// const mutations = {
+//     [MUTATIONS.SET_RSVPS](state, rsvps) {
+//         state.rsvps = rsvps;
+//     },
 
-    [MUTATIONS.REMOVE_RSVP](state, rsvpId) {
-        const rsvps = state.rsvps;
-        const index = rsvps.findIndex(x => x.rsvpId == rsvpId);
+//     [MUTATIONS.ADD_RSVP](state, rsvp) {
+//         const rsvps = state.rsvps;
+//         const index = state.rsvps.findIndex(x => x.rsvpId == rsvp.rsvpId);
 
-        if (index != -1) {
-            rsvps.splice(index, 1);
-            state.rsvps = rsvps;
-        }
-    },
+//         if (index == -1) {
+//             rsvps.push(rsvp);
+//         } else {
+//             rsvps.splice(index, 1, rsvp);
+//         }
 
-    [MUTATIONS.RESET_RSVPS](state) {
-        state.rsvps = [];
-    }
-};
+//         state.rsvps = rsvps;
+//     },
 
-export default {
-    ACTIONS,
-    state,
-    getters,
-    actions,
-    mutations
-}
+//     [MUTATIONS.REMOVE_RSVP](state, rsvpId) {
+//         const rsvps = state.rsvps;
+//         const index = rsvps.findIndex(x => x.rsvpId == rsvpId);
+
+//         if (index != -1) {
+//             rsvps.splice(index, 1);
+//             state.rsvps = rsvps;
+//         }
+//     },
+
+//     [MUTATIONS.RESET_RSVPS](state) {
+//         state.rsvps = [];
+//     }
+// };
+
+// export default {
+//     ACTIONS,
+//     state,
+//     getters,
+//     actions,
+//     mutations
+// }
