@@ -16,7 +16,7 @@
                 </b-dropdown>
                 <b-table :fields="familyFields" :items="families" selectable
                     select-mode="single" @row-selected="item => onFamilySelected(item)"
-                    striped show-empty>
+                    striped show-empty :busy="isBusy">
 
                     <template v-slot:cell(headMemberId)="row">
                         {{ printGuestName(row.item.headMemberId) }}
@@ -39,7 +39,7 @@
                             <h3>The {{ parentRow.item.name }} family</h3>
                             <b-button size="sm" variant="link" @click="onNewGuest(parentRow.item.familyId)">New Family Member</b-button>
                             <b-table :fields="guestFields" :items="guests.filter(x => x.familyId == parentRow.item.familyId)"
-                                selectable select-mode="single" @row-selected="onGuestSelected" show-empty>
+                                selectable select-mode="single" @row-selected="onGuestSelected" show-empty :busy="isBusy">
 
                                 <template v-slot:cell(name)="row">
                                     {{ printGuestName(row.item.guestId) }}
@@ -92,6 +92,8 @@ import NewFamilyModal from "@/components/modals/NewFamilyModal";
 import GuestForm from "@/components/forms/GuestForm";
 import RsvpInviteForm from "@/components/Admin/Guests/RsvpInviteForm";
 import FamilyRsvpInviteForm from "@/components/Admin/Guests/FamilyRsvpInviteForm";
+    const cloneDeep = require("clone-deep");
+    const Toast = require("@/helpers/toast");
 
 export default {
     name: "AdminGuests2",
@@ -105,6 +107,7 @@ export default {
     },
     data() {
         return {
+            isBusy: false,
             isNewGuestModalVisible: false,
             isNewFamilyModalVisible: false,
             newGuestFamilyId: null,
@@ -112,7 +115,12 @@ export default {
                 "name",
                 {
                     key: "headMemberId",
-                    label: "Head Member"
+                    label: "Head Member",
+                    formatter: key => {
+                        const guest = this.guests.find(x => x.guestId == key);
+
+                        return guest ? `${guest.firstName} ${guest.lastName}` : "";
+                    }
                 },
                 {
                     key: "addressId",
@@ -153,7 +161,7 @@ export default {
                 }
             ]
         }
-    },
+        },
     computed: {
         families() {
             return this.$store.getters.families;
@@ -272,13 +280,19 @@ export default {
             return address.name;
         },
         async onPromoteGuest(guestId, familyId) {
-            const family = this.families.find(x => x.familyId == familyId);
-            if (family == null) return;
+            this.isBusy = true;
+            const index = this.families.findIndex(x => x.familyId == familyId);
+            if (index == -1) return;
 
-            if (confirm("Are you sure you want to make this guest the head of household?")) {
-                family.headMemberId = guestId;
-                await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.UPDATE, family);
-            }
+            if (!confirm("Are you sure you want to make this guest the head of their household?")) return;
+
+            this.$set(this.families[index], "headMemberId", guestId);
+
+            const success = await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.UPDATE, this.families[index]);
+
+            if (success) Toast.success("Guest promoted!");
+
+            this.isBusy = false;
         },
         async onDeleteGuest(guestId) {
             if (confirm("Are you sure you want to delete this guest?")) {

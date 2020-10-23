@@ -1,11 +1,16 @@
 import serviceFactory from "@/services/serviceFactory";
+import Vue from "vue";
 
 export default function (name, idKey, endpoint, namePlural = null) {
     if (namePlural == null) namePlural = name;
     
     const nameCapitalized = `${name[0].toUpperCase()}${name.slice(1)}`;
-
     const namePluralCapitalized = `${namePlural[0].toUpperCase()}${namePlural.slice(1)}`;
+
+    const set = () => `SET_${namePlural.toUpperCase()}`;
+    const reset = () => `RESET_${namePlural.toUpperCase()}`;
+    const add = () => `ADD_${name.toUpperCase()}`;
+    const remove = () => `REMOVE_${name.toUpperCase()}`;
 
     const service = serviceFactory(endpoint);
 
@@ -18,10 +23,10 @@ export default function (name, idKey, endpoint, namePlural = null) {
     const state = initialState();
 
     const MUTATIONS = {
-        [`SET_${namePlural.toUpperCase()}`]: `SET_${namePlural.toUpperCase()}`,
-        [`RESET_${namePlural.toUpperCase()}`]: `RESET_${namePlural.toUpperCase()}`,
-        [`ADD_${name.toUpperCase()}`]: `ADD_${name.toUpperCase()}`,
-        [`REMOVE_${name.toUpperCase()}`]: `REMOVE_${name.toUpperCase()}`
+        [set()]: set(),
+        [reset()]: reset(),
+        [add()]: add(),
+        [remove()]: remove(),
     };
 
     const ACTIONS = {
@@ -42,7 +47,7 @@ export default function (name, idKey, endpoint, namePlural = null) {
             return new Promise(async resolve => {
                 const items = await service.getAll();
                 if (items) {
-                    commit(MUTATIONS[`SET_${namePlural.toUpperCase()}`], items);
+                    commit(MUTATIONS[set()], items);
                 }
 
                 resolve(items != null);
@@ -53,7 +58,7 @@ export default function (name, idKey, endpoint, namePlural = null) {
             return new Promise(async resolve => {
                 const item = await service.getOne(id);
                 if (item) {
-                    commit(MUTATIONS[`ADD${name.toUpperCase()}`], item);
+                    commit(MUTATIONS[add()], item);
                 }
 
                 resolve(item);
@@ -64,7 +69,8 @@ export default function (name, idKey, endpoint, namePlural = null) {
             return new Promise(async resolve => {
                 const updated = await service.update(item[idKey], item);
                 if (updated) {
-                    commit(MUTATIONS[`ADD_${name.toUpperCase()}`], item);
+                    const refresh = await service.getOne(item[idKey]);
+                    commit(MUTATIONS[add()], refresh);
                 }
 
                 resolve(updated);
@@ -75,7 +81,7 @@ export default function (name, idKey, endpoint, namePlural = null) {
             return new Promise(async resolve => {
                 const deleted = await service.delete(id);
                 if (deleted) {
-                    commit(MUTATIONS[`REMOVE_${name.toUpperCase()}`], id);
+                    commit(MUTATIONS[remove()], id);
                 }
 
                 resolve(deleted);
@@ -87,7 +93,7 @@ export default function (name, idKey, endpoint, namePlural = null) {
                 const id = await service.create(data);
                 if (id) {
                     const item = await service.getOne(id);
-                    commit(MUTATIONS[`ADD_${name.toUpperCase()}`], item);
+                    commit(MUTATIONS[add()], item);
                 }
 
                 resolve(id);
@@ -95,28 +101,33 @@ export default function (name, idKey, endpoint, namePlural = null) {
         }
     };
 
+    const updateInPlace = (existing, update) => {
+        for (var key of Object.keys(update)) 
+            Vue.set(existing, key, update[key]);
+    }
+
     const mutations = {
-        [MUTATIONS[`SET_${namePlural.toUpperCase()}`]](state, items) {
+        [MUTATIONS[set()]](state, items) {
             state[namePlural] = items;
         },
 
-        [MUTATIONS[`RESET_${namePlural.toUpperCase()}`]](state) {
+        [MUTATIONS[reset()]](state) {
             state[namePlural] = [];
         },
 
-        [MUTATIONS[`REMOVE_${name.toUpperCase()}`]](state, id) {
+        [MUTATIONS[remove()]](state, id) {
             const index = state[namePlural].findIndex(x => x[idKey] == id);
             if (index != -1) {
                 state[namePlural].splice(index, 1);
             }
         },
 
-        [MUTATIONS[`ADD_${name.toUpperCase()}`]](state, item) {
+        [MUTATIONS[add()]](state, item) {
             const index = state[namePlural].findIndex(x => x[idKey] == item[idKey]);
             if (index == -1) {
                 state[namePlural].push(item);
             } else {
-                state[namePlural].splice(index, 1, item);
+                updateInPlace(state[namePlural], item);
             }
         }
     };
