@@ -259,7 +259,7 @@ export default {
                 await this.$store.dispatch(ACTIONS.FAMILIES.DELETE, id);
                 
                 const affectedGuests = this.guests.filter(x => x.familyId == id);
-                await Promise.all(affectedGuests.map(x => this.$store.dispatch(ACTIONS.GUESTS.FETCH, x)));
+                await Promise.all(affectedGuests.map(x => this.$store.dispatch(ACTIONS.GUESTS.FETCH, x.guestId)));
             }
         },
         async onGuestDelete(id) {

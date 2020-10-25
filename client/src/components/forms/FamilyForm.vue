@@ -13,7 +13,7 @@
                     <b-form-group label="Family Head">
                         <b-select v-model="headMemberId">
                             <option :value="null">None</option>
-                            <option v-for="guest in nonChildren"
+                            <option v-for="guest in potentialHeads"
                                 :key="guest.guestId"
                                 :value="guest.guestId"
                             >
@@ -49,8 +49,10 @@ export default {
         }
     },
     computed: {
-        nonChildren() {
-            return this.$store.getters.guests.filter(x => !x.isChild);
+        potentialHeads() {
+            return this.$store.getters.guests
+                .filter(x => !x.isChild)
+                .filter(x => !x.familyId);
         },
         isFormValid() {
             return this.nameState === true;
