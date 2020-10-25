@@ -63,10 +63,6 @@
                             <b-button size="sm" variant="link" @click="onNewGuest(parentRow.item.familyId)">New Family Member</b-button>
                             <b-table :fields="guestFields" :items="guests.filter(x => x.familyId == parentRow.item.familyId)" show-empty :busy="isBusy">
 
-                                <template v-slot:cell(name)="row">
-                                    {{ printGuestName(row.item.guestId) }}
-                                </template>
-
                                 <template v-slot:cell(parentId)="row">
                                     {{ printGuestName(row.item.parentId) }}
                                 </template>
@@ -155,7 +151,10 @@ export default {
             ],
             guestFields: [
                 "inviteCode",
-                "name",
+                {
+                    key: "name",
+                    formatter: (key, value, item) => `${item.firstName} ${item.lastName}`
+                },
                 {
                     key: "isWeddingMember",
                     label: "Wedding Party Member?",
@@ -173,7 +172,7 @@ export default {
                 },
                 {
                     key: "parentId",
-                    label: "Parent"
+                    label: "Parent",
                 },
                 {
                     key: "rsvps",
@@ -317,8 +316,10 @@ export default {
 
             const success = await this.$store.dispatch(ACTIONS.FAMILIES.UPDATE, this.families[index]);
 
-            if (success) Toast.success("Guest promoted!");
-
+            if (success) {
+                Toast.success("Guest promoted!");
+            }
+            
             this.isBusy = false;
         },
         async onDeleteGuest(guestId) {

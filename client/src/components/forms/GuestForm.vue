@@ -196,9 +196,6 @@ export default {
                 parentId: this.isChild ? this.parentId : null
             });
 
-            console.log("Saving guest:")
-            console.log(guest)
-
             const command = this.id == null
                 ? ACTIONS.GUESTS.CREATE
                 : ACTIONS.GUESTS.UPDATE;
