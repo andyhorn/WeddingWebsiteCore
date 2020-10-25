@@ -47,6 +47,7 @@
 
 <script>
 import { ACTIONS } from "@/store";
+import arraySort from "@/helpers/arraySort";
 import NewWeddingRoleModal from "@/components/modals/NewWeddingRoleModal";
 import GuestWeddingRoleFormList from "@/components/forms/GuestWeddingRoleFormList";
 
@@ -94,13 +95,11 @@ export default {
     },
     computed: {
         roles() {
-            const roles = this.$store.getters.weddingRoles;
-            return roles;
+            return arraySort(this.$store.getters.weddingRoles, "name");
         },
         members() {
-            const members = this.$store.getters.guests
-                .filter(x => x.isWeddingMember);
-            return members;
+            return arraySort(this.$store.getters.guests
+                .filter(x => x.isWeddingMember), "firstName");
         }
     },
     mounted() {

@@ -52,7 +52,8 @@ export default {
         potentialHeads() {
             return this.$store.getters.guests
                 .filter(x => !x.isChild)
-                .filter(x => !x.familyId);
+                .filter(x => !x.familyId)
+                .sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
         },
         isFormValid() {
             return this.nameState === true;

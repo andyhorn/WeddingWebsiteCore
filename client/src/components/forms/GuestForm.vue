@@ -111,10 +111,13 @@ export default {
                 && (this.isChild && this.parentState || !this.isChild && this.parentState == null);
         },
         families() {
-            return this.$store.getters.families;
+            return this.$store.getters.families
+                .sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
         },
         parents() {
-            return this.$store.getters.nonChildren;
+            return this.$store.getters.guests
+                .filter(x => !x.isChild)
+                .sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
         }
     },
     watch: {
@@ -203,7 +206,19 @@ export default {
             const success = await this.$store.dispatch(command, guest);
             if (success) {
                 Toast.success("Guest saved!");
-                await this.refresh(this.id || success, this.familyId);
+                await this.$store.dispatch(ACTIONS.GUESTS.FETCH, this.id || success);
+                if (this.familyId) {
+                    const family = this.$store.getters.findFamily(this.familyId);
+                    const guest = this.$store.getters.findGuest(this.id || success);
+                    const index = family.members.findIndex(x => x.guestId == guest.guestId);
+
+                    if (index == -1) {
+                        family.members.push(guest);
+                    } else {
+                        family.members.splice(index, 1, guest);
+                    }
+                }
+                // await this.refresh(this.id || success, this.familyId);
                 this.close(this.id || success);
             } else {
                 Toast.error("Unable to save guest.");

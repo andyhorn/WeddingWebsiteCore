@@ -87,6 +87,7 @@ import NewAccommodationModal from "@/components/modals/NewAccommodationModal";
 import AccommodationForm from "@/components/forms/AccommodationForm";
 import AdminAccommodation from "@/components/Admin/Accommodations/Accommodation";
 import { ACTIONS } from "@/store";
+import arraySort from "@/helpers/arraySort";
 const Toast = require("@/helpers/toast");
 
 export default {
@@ -144,13 +145,14 @@ export default {
     },
     computed: {
         categories() {
-            return this.$store.getters.categories;
+            return arraySort(this.$store.getters.categories, "name");
         },
         accommodations() {
-            return this.$store.getters.accommodations;
+            return arraySort(this.$store.getters.accommodations, "name");
         },
         topLevelCategories() {
-            return this.$store.getters.categories.filter(x => x.parentId == null);
+            return arraySort(this.$store.getters.categories
+                .filter(x => x.parentId == null), "name");
         }
     },
     methods: {

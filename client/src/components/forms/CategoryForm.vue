@@ -33,6 +33,7 @@
 
 <script>
 import { ACTIONS } from "@/store";
+import arraySort from "@/helpers/arraySort";
 const Toast = require("@/helpers/toast");
 
 export default {
@@ -53,7 +54,7 @@ export default {
             if (this.category && this.category.categoryId)
                 return categories.filter(x => x.categoryId != this.category.categoryId);
 
-            return categories;
+            return arraySort(categories, "name");
         },
         isSaveButtonDisabled() {
             return this.nameState !== true;

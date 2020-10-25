@@ -112,6 +112,7 @@ import NewFamilyModal from "@/components/modals/NewFamilyModal";
 import GuestForm from "@/components/forms/GuestForm";
 import RsvpInviteForm from "@/components/Admin/Guests/RsvpInviteForm";
 import FamilyRsvpInviteForm from "@/components/Admin/Guests/FamilyRsvpInviteForm";
+import arraySort from "@/helpers/arraySort";
 const cloneDeep = require("clone-deep");
 const Toast = require("@/helpers/toast");
 
@@ -187,23 +188,26 @@ export default {
         },
     computed: {
         families() {
-            return this.$store.getters.families;
+            return arraySort(this.$store.getters.families, "name");
         },
         guests() {
-            return this.$store.getters.guests;
+            return arraySort(this.$store.getters.guests, "firstName");
         },
         children() {
-            return this.$store.getters.children;
+            return arraySort(this.$store.getters.guests
+                .filter(x => x.isChild), "firstName");
         },
         nonChildren() {
-            return this.$store.getters.nonChildren;
+            return arraySort(this.$store.getters.guests
+                .filter(x => !x.isChild), "firstName");
         },
         guestsWithNoFamily() {
-            return this.$store.getters.guests.filter(x => !x.familyId);
+            return arraySort(this.$store.getters.guests.filter(x => !x.familyId));
         }
     },
     mounted() {
         this.fetch();
+        console.log(arraySort)
     },
     methods: {
         onGuestEditClose(id) {

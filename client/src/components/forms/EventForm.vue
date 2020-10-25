@@ -76,6 +76,7 @@
 <script>
 import AddressForm from "@/components/forms/AddressForm";
 import { ACTIONS } from "@/store";
+import arraySort from "@/helpers/arraySort";
 const Toast = require("@/helpers/toast");
 
 export default {
@@ -102,7 +103,7 @@ export default {
     },
     computed: {
         addresses() {
-            return this.$store.getters.addresses;
+            return arraySort(this.$store.getters.addresses, "name");
         },
         isFormValid() {
             return this.nameState === true

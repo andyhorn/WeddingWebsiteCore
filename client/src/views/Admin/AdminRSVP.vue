@@ -45,6 +45,7 @@
 
 <script>
 import { ACTIONS } from "@/store";
+import arraySort from "@/helpers/arraySort";
 import RsvpInviteForm from "@/components/Admin/Guests/RsvpInviteForm";
 
 export default {
@@ -73,13 +74,13 @@ export default {
     },
     computed: {
       guests() {
-        return this.$store.getters.guests;
+        return arraySort(this.$store.getters.guests, "firstName");
       },
       rsvps() {
         return this.$store.getters.rsvps;
       },
       events() {
-        return this.$store.getters.events;
+        return arraySort(this.$store.getters.events, "name");
       }
     },
     methods: {

@@ -30,6 +30,7 @@
 
 <script>
 import { ACTIONS } from "@/store";
+import arraySort from "@/helpers/arraySort";
 import NewRegistryModal from "@/components/modals/NewRegistryModal";
 import RegistryForm from "@/components/forms/RegistryForm";
 
@@ -54,7 +55,7 @@ export default {
     },
     computed: {
         registries() {
-            return this.$store.getters.registries;
+            return arraySort(this.$store.getters.registries, "name");
         }
     },
     mounted() {

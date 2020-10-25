@@ -55,6 +55,7 @@
 
 <script>
 import { ACTIONS } from "@/store";
+import arraySort from "@/helpers/arraySort";
 const Toast = require("@/helpers/toast");
 
 export default {
@@ -94,10 +95,10 @@ export default {
     },
     computed: {
         addresses() {
-            return this.$store.getters.addresses;
+            return arraySort(this.$store.getters.addresses, "name");
         },
         categories() {
-            return this.$store.getters.categories;
+            return arraySort(this.$store.getters.categories, "name");
         },
         isSaveButtonDisabled() {
             return this.nameState !== true || this.categoryState !== true;
