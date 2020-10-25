@@ -3,42 +3,22 @@
         <b-row class="my-3">
             <b-col>
                 <h1 class="text-center">Guest List ({{ guests.length }})</h1>
-                <b-dropdown size="sm" squared variant="success">
+                <b-dropdown size="sm" no-caret variant="link">
                     <template v-slot:button-content>
-                        <b-icon-plus /> New
+                        <b-button size="sm" squared variant="success">
+                            <b-icon-plus /> New
+                        </b-button>
                     </template>
-                    <b-dropdown-item @click="onNewFamily">Family</b-dropdown-item>
-                    <b-dropdown-item @click="() => onNewGuest()">Guest</b-dropdown-item>
+                    <b-dropdown-item-button @click="onNewFamily">Family</b-dropdown-item-button>
+                    <b-dropdown-item-button @click="() => onNewGuest()">Guest</b-dropdown-item-button>
                 </b-dropdown>
-            </b-col>
-        </b-row>
-        <b-row class="my-3">
-            <b-col>
-                <h3>Guests without a Family</h3>
-                <b-table :items="guestsWithNoFamily" :fields="guestFields" caption="Select a Guest to edit" show-empty striped>
-
-                    <template v-slot:cell(options)="row">
-                        <b-button class="text-success" size="sm" variant="link" @click="$set(row.item, '_showDetails', !row.item._showDetails)">Edit</b-button>
-                        <b-button class="text-danger" size="sm" variant="link" @click="onGuestDelete(row.item.guestId)">Delete</b-button>
-                    </template>
-
-                    <template v-slot:row-details="row">
-                        <b-container class="border border-secondary rounded p-3 bg-white">
-                            <div class="d-flex align-items-baseline mb-3">
-                                <p class="m-0 p-0"><strong>Edit Guest:</strong></p>
-                                <h2 class="ml-2">{{ `${row.item.firstName} ${row.item.lastName}` }}</h2>
-                            </div>
-                            <GuestForm :guest="row.item" @close="onGuestEditClose(row.item.guestId)" />
-                        </b-container>
-                    </template>
-
-                </b-table>
             </b-col>
         </b-row>
         <b-row>
             <b-col>
                 <h3>Families</h3>
-                <b-table :fields="familyFields" :items="families" striped show-empty :busy="isBusy" caption="Select a family to expand">
+                <b-table :fields="familyFields" :items="families" striped show-empty :busy="isBusy" caption="Select a family to expand"
+                    selectable select-mode="single" @row-selected="rows => onRowSelected(rows, 'families')">
 
                     <template v-slot:cell(headMemberId)="row">
                         {{ printGuestName(row.item.headMemberId) }}
@@ -53,7 +33,6 @@
                     </template>
 
                     <template v-slot:cell(options)="row">
-                        <b-button size="sm" class="text-success" variant="link" @click="$set(row.item, '_showDetails', !row.item['_showDetails'])">Edit</b-button>
                         <b-button squared size="sm" variant="link" class="text-danger" @click="onFamilyDelete(row.item.familyId)">Delete</b-button>
                     </template>
 
@@ -61,7 +40,8 @@
                         <b-container class="border border-secondary rounded p-3 bg-white">
                             <h3>The {{ parentRow.item.name }} family</h3>
                             <b-button size="sm" variant="link" @click="onNewGuest(parentRow.item.familyId)">New Family Member</b-button>
-                            <b-table :fields="guestFields" :items="guests.filter(x => x.familyId == parentRow.item.familyId)" show-empty :busy="isBusy">
+                            <b-table :fields="guestFields" :items="guests.filter(x => x.familyId == parentRow.item.familyId)" show-empty :busy="isBusy"
+                                selectable select-mode="single" @row-selected="rows => onRowSelected(rows, 'guests')">
 
                                 <template v-slot:cell(parentId)="row">
                                     {{ printGuestName(row.item.parentId) }}
@@ -73,8 +53,6 @@
 
                                 <template v-slot:cell(options)="row">
                                     <div class="d-flex flex-column align-items-center justify-content-start">
-                                        <b-button size="sm" variant="link" class="text-success" 
-                                            @click="$set(row.item, '_showDetails', !row.item['_showDetails'])">Edit</b-button>
                                         <b-button squared size="sm" variant="link" class="text-primary p-1"
                                             @click="onPromoteGuest(row.item.guestId, parentRow.item.familyId)">Promote</b-button>
                                         <b-button squared size="sm" variant="link" class="text-danger p-1"
@@ -98,7 +76,29 @@
                 </b-table>
             </b-col>
         </b-row>
+        <b-row class="my-3">
+            <b-col>
+                <h3>Guests without a Family</h3>
+                <b-table :items="guestsWithNoFamily" :fields="guestFields" caption="Select a Guest to edit" show-empty striped
+                    selectable select-mode="single" @row-selected="rows => onRowSelected(rows, 'guests')">
 
+                    <template v-slot:cell(options)="row">
+                        <b-button class="text-danger" size="sm" variant="link" @click="onGuestDelete(row.item.guestId)">Delete</b-button>
+                    </template>
+
+                    <template v-slot:row-details="row">
+                        <b-container class="border border-secondary rounded p-3 bg-white">
+                            <div class="d-flex align-items-baseline mb-3">
+                                <p class="m-0 p-0"><strong>Edit Guest:</strong></p>
+                                <h2 class="ml-2">{{ `${row.item.firstName} ${row.item.lastName}` }}</h2>
+                            </div>
+                            <GuestForm :guest="row.item" @close="onGuestEditClose(row.item.guestId)" />
+                        </b-container>
+                    </template>
+
+                </b-table>
+            </b-col>
+        </b-row>
         <NewGuestModal :visible="isNewGuestModalVisible" @close="onNewGuestModalClose" :familyId="newGuestFamilyId" />
         <NewFamilyModal :visible="isNewFamilyModalVisible" @close="onNewFamilyModalClose" />
     </b-container>
@@ -206,30 +206,22 @@ export default {
         this.fetch();
     },
     methods: {
-        onGuestSelected(rows) {
-            const openGuests = rows.map(x => x.guestId);
-
-            for (let guest of this.guests) {
-                const isOpen = openGuests.includes(guest.guestId);
-
-                if (guest._showDetails != isOpen)
-                    this.$set(guest, "_showDetails", isOpen);
-            }
-        },
         onGuestEditClose(id) {
             const guest = this.guests.find(x => x.guestId == id);
             if (guest == null) return;
 
             this.$set(guest, "_showDetails", false);
         },
-        onFamilySelected(items) {
-            const openFamilies = items.map(x => x.familyId);
+        onRowSelected(rows, collection) {
+            const idKey = collection == "guests" ? "guestId" : "familyId";
+            const open = rows.map(x => x[idKey]);
 
-            for (let family of this.families) {
-                const isOpen = openFamilies.includes(family.familyId);
+            for (let entity of this[collection]) {
+                const isOpen = open.includes(entity[idKey]);
 
-                if (family._showDetails != isOpen)
-                    this.$set(family, "_showDetails", isOpen);
+                if (entity._showDetails != isOpen) {
+                    this.$set(entity, "_showDetails", isOpen);
+                }
             }
         },
         async fetch() {

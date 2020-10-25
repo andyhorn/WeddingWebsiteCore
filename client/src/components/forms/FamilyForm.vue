@@ -50,7 +50,7 @@ export default {
     },
     computed: {
         nonChildren() {
-            return this.$store.getters.nonChildren;
+            return this.$store.getters.guests.filter(x => !x.isChild);
         },
         isFormValid() {
             return this.nameState === true;
@@ -105,10 +105,24 @@ export default {
             const success = await this.$store.dispatch(command, family);
             if (success) {
                 Toast.success("Family saved!");
+                await this.updateMembers(this.familyId || success);
                 this.close(success);
             } else {
                 Toast.error("Unable to save family.");
             }
+        },
+        async updateMembers(familyId) {
+            await this.$store.dispatch(ACTIONS.FAMILIES.FETCH, familyId);
+            const memberIds = this.$store.getters
+                .findFamily(familyId)
+                .members
+                .map(y => y.guestId);
+
+            const refreshes = this.$store.getters.guests
+                .filter(x => memberIds.includes(x.guestId))
+                .map(x => this.$store.dispatch(ACTIONS.GUESTS.FETCH, x.guestId));
+
+            await Promise.all(refreshes);
         }
     }
 }
