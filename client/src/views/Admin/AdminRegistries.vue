@@ -30,6 +30,7 @@
 
 <script>
 import { ACTIONS } from "@/store";
+import arraySort from "@/helpers/arraySort";
 import NewRegistryModal from "@/components/modals/NewRegistryModal";
 import RegistryForm from "@/components/forms/RegistryForm";
 
@@ -54,7 +55,7 @@ export default {
     },
     computed: {
         registries() {
-            return this.$store.getters.registries;
+            return arraySort(this.$store.getters.registries, "name");
         }
     },
     mounted() {
@@ -62,7 +63,7 @@ export default {
     },
     methods: {
         async fetchRegistries() {
-            await this.$store.dispatch(ACTIONS.REGISTRY_ACTIONS.FETCH_ALL);
+            await this.$store.dispatch(ACTIONS.REGISTRIES.FETCH_ALL);
         },
         async onNewRegistry() {
             this.isNewRegistryModalVisible = true;
@@ -89,7 +90,7 @@ export default {
         },
         onDeleteRegistry(id) {
             if (confirm("Are you sure you want to delete this registry?")) {
-                this.$store.dispatch(ACTIONS.REGISTRY_ACTIONS.DELETE, id);
+                this.$store.dispatch(ACTIONS.REGISTRIES.DELETE, id);
             }
         },
         openLink(url) {

@@ -87,6 +87,7 @@ import NewAccommodationModal from "@/components/modals/NewAccommodationModal";
 import AccommodationForm from "@/components/forms/AccommodationForm";
 import AdminAccommodation from "@/components/Admin/Accommodations/Accommodation";
 import { ACTIONS } from "@/store";
+import arraySort from "@/helpers/arraySort";
 const Toast = require("@/helpers/toast");
 
 export default {
@@ -144,13 +145,14 @@ export default {
     },
     computed: {
         categories() {
-            return this.$store.getters.categories;
+            return arraySort(this.$store.getters.categories, "name");
         },
         accommodations() {
-            return this.$store.getters.accommodations;
+            return arraySort(this.$store.getters.accommodations, "name");
         },
         topLevelCategories() {
-            return this.$store.getters.categories.filter(x => x.parentId == null);
+            return arraySort(this.$store.getters.categories
+                .filter(x => x.parentId == null), "name");
         }
     },
     methods: {
@@ -175,7 +177,7 @@ export default {
         async onDeleteAccommodation(accommodationId) {
             if (confirm("Are you sure you want to delete this accommodation?")) {
                 this.isBusy = true;
-                await this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.DELETE, accommodationId);
+                await this.$store.dispatch(ACTIONS.ACCOMMODATIONS.DELETE, accommodationId);
                 this.fetch();
             }
         },
@@ -209,7 +211,7 @@ export default {
                     accommodation.categoryId = parentId;
                 }
 
-                await this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.DELETE, categoryId);
+                await this.$store.dispatch(ACTIONS.CATEGORIES.DELETE, categoryId);
                 this.fetch();
             }
         },
@@ -222,10 +224,10 @@ export default {
             this.isBusy = false;
         },
         async fetchAccommodations() {
-            await this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.FETCH_ALL);
+            await this.$store.dispatch(ACTIONS.ACCOMMODATIONS.FETCH_ALL);
         },
         async fetchCategories() {
-            await this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.FETCH_ALL);
+            await this.$store.dispatch(ACTIONS.CATEGORIES.FETCH_ALL);
         },
         printAddress(addressId) {
             if (addressId == null) return "";

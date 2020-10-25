@@ -69,8 +69,8 @@ export default function (name, idKey, endpoint, namePlural = null) {
             return new Promise(async resolve => {
                 const updated = await service.update(item[idKey], item);
                 if (updated) {
-                    const refresh = await service.getOne(item[idKey]);
-                    commit(MUTATIONS[add()], refresh);
+                    // const refresh = await service.getOne(item[idKey]);
+                    // commit(MUTATIONS[add()], refresh);
                 }
 
                 resolve(updated);
@@ -127,7 +127,8 @@ export default function (name, idKey, endpoint, namePlural = null) {
             if (index == -1) {
                 state[namePlural].push(item);
             } else {
-                updateInPlace(state[namePlural], item);
+                // updateInPlace(state[namePlural], item);
+                Vue.set(state[namePlural], index, item);
             }
         }
     };

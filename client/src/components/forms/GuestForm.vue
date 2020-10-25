@@ -111,10 +111,13 @@ export default {
                 && (this.isChild && this.parentState || !this.isChild && this.parentState == null);
         },
         families() {
-            return this.$store.getters.families;
+            return this.$store.getters.families
+                .sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
         },
         parents() {
-            return this.$store.getters.nonChildren;
+            return this.$store.getters.guests
+                .filter(x => !x.isChild)
+                .sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
         }
     },
     watch: {
@@ -185,37 +188,54 @@ export default {
         async onSubmit() {
             if (!this.isFormValid) return;
 
-            const guest = Object.assign({}, this.guest == null ? {} : this.guest, 
-                { 
-                    guestId: this.id || undefined,
-                    firstName: this.firstName,
-                    lastName: this.lastName,
-                    familyId: this.familyId,
-                    isChild: this.isChild,
-                    isUnderTen: this.isChild ? this.isUnderTen : false,
-                    isWeddingMember: this.isWeddingMember,
-                    parentId: this.isChild ? this.parentId : null,
-                });
+            const guest = Object.assign({}, this.guest, {
+                guestId: this.id || undefined,
+                firstName: this.firstName,
+                lastName: this.lastName,
+                familyId: this.familyId,
+                isChild: this.isChild,
+                isUnderTen: this.isChild ? this.isUnderTen : false,
+                isWeddingMember: this.isWeddingMember,
+                parentId: this.isChild ? this.parentId : null
+            });
 
             const command = this.id == null
-                ? ACTIONS.GUEST_ACTIONS.CREATE
-                : ACTIONS.GUEST_ACTIONS.UPDATE;
+                ? ACTIONS.GUESTS.CREATE
+                : ACTIONS.GUESTS.UPDATE;
 
             const success = await this.$store.dispatch(command, guest);
             if (success) {
-                //const refresh = ACTIONS.GUEST_ACTIONS.FETCH_ALL;
-                //await this.$store.dispatch(refresh);
                 Toast.success("Guest saved!");
-                this.refreshFamily(guest.familyId);
-                this.close(success);
+                await this.$store.dispatch(ACTIONS.GUESTS.FETCH, this.id || success);
+                if (this.familyId) {
+                    const family = this.$store.getters.findFamily(this.familyId);
+                    const guest = this.$store.getters.findGuest(this.id || success);
+                    const index = family.members.findIndex(x => x.guestId == guest.guestId);
+
+                    if (index == -1) {
+                        family.members.push(guest);
+                    } else {
+                        family.members.splice(index, 1, guest);
+                    }
+                }
+                // await this.refresh(this.id || success, this.familyId);
+                this.close(this.id || success);
             } else {
                 Toast.error("Unable to save guest.");
             }
         },
+        async refresh(guestId, familyId) {
+            const routines = [];
+
+            if (guestId) routines.push(this.$store.dispatch(ACTIONS.GUESTS.FETCH, guestId));
+            if (familyId) routines.push(this.$store.dispatch(ACTIONS.FAMILIES.FETCH, familyId));
+
+            await Promise.all(routines);
+        },
         async refreshFamily(familyId) {
             if (!familyId) return;
 
-            await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.FETCH, familyId);
+            await this.$store.dispatch(ACTIONS.FAMILIES.FETCH, familyId);
         }
     }
 }

@@ -7,7 +7,7 @@
         <b-icon-arrow-clockwise />Refresh
       </b-button>
     </div>
-    <b-table :items="addresses" :fields="fields" selectable select-mode="single" @row-selected="onAddressSelected">
+    <b-table :items="addresses" :fields="fields" selectable select-mode="single" @row-selected="onAddressSelected" show-empty>
       <template v-slot:cell(options)="data">
         <b-button class="text-danger" variant="link" squared size="sm" @click="onDeleteAddress(data.item.addressId)">Delete</b-button>
       </template>
@@ -26,6 +26,7 @@
 import NewAddressModal from "@/components/modals/NewAddressModal";
 import AddressForm from "@/components/forms/AddressForm";
 import { ACTIONS } from "@/store";
+import arraySort from "@/helpers/arraySort";
 const Toast = require("@/helpers/toast");
 
 export default {
@@ -54,7 +55,7 @@ export default {
   },
   computed: {
     addresses() {
-      return this.$store.getters.addresses;
+      return arraySort(this.$store.getters.addresses, "name");
     },
   },
   mounted() {
@@ -62,7 +63,7 @@ export default {
   },
   methods: {
     async fetch() {
-      await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.FETCH_ALL);
+      await this.$store.dispatch(ACTIONS.ADDRESSES.FETCH_ALL);
     },
     async onDeleteAddress(addressId) {
       const deleteAddress = confirm(
@@ -70,7 +71,7 @@ export default {
       );
 
       if (deleteAddress) {
-        await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.DELETE, addressId);
+        await this.$store.dispatch(ACTIONS.ADDRESSES.DELETE, addressId);
       }
     },
     onNewAddressModalClose(success) {

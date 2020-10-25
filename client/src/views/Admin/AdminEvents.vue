@@ -19,7 +19,6 @@
         </template>
         <template v-slot:cell(options)="data">
           <b-button variant="link" squared size="sm" class="text-danger" @click="onDeleteEvent(data.item.eventId)">Delete</b-button>
-          </div>
         </template>
         <template v-slot:empty>
           <p class="text-center mt-3 text-dark">No events found</p>
@@ -40,6 +39,7 @@ import NewEventModal from "@/components/modals/NewEventModal.vue";
 import EventForm from "@/components/forms/EventForm";
 import { ACTIONS } from "@/store";
 import * as DateTime from "@/helpers/dateTime";
+import arraySort from "@/helpers/arraySort";
 const Toast = require("@/helpers/toast");
 
 export default {
@@ -66,7 +66,7 @@ export default {
   },
   computed: {
     events() {
-      return this.$store.getters.events;
+      return arraySort(this.$store.getters.events, "name");
     },
   },
   mounted() {
@@ -75,7 +75,7 @@ export default {
   methods: {
     async fetch() {
       this.isTableBusy = true;
-      await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.FETCH_ALL);
+      await this.$store.dispatch(ACTIONS.EVENTS.FETCH_ALL);
       this.isTableBusy = false;
     },
     async onRefreshTable() {
@@ -101,7 +101,7 @@ export default {
 
       if (deleteEvent) {
         this.isTableBusy = true;
-        await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.DELETE, eventId);
+        await this.$store.dispatch(ACTIONS.EVENTS.DELETE, eventId);
         this.isTableBusy = false;
       }
     },

@@ -101,8 +101,8 @@ export default {
             };
 
             const command = this.id == null
-                ? ACTIONS.REGISTRY_ACTIONS.CREATE
-                : ACTIONS.REGISTRY_ACTIONS.UPDATE;
+                ? ACTIONS.REGISTRIES.CREATE
+                : ACTIONS.REGISTRIES.UPDATE;
 
             const success = await this.$store.dispatch(command, registry);
             if (success) {

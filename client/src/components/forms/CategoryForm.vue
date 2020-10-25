@@ -33,6 +33,7 @@
 
 <script>
 import { ACTIONS } from "@/store";
+import arraySort from "@/helpers/arraySort";
 const Toast = require("@/helpers/toast");
 
 export default {
@@ -53,7 +54,7 @@ export default {
             if (this.category && this.category.categoryId)
                 return categories.filter(x => x.categoryId != this.category.categoryId);
 
-            return categories;
+            return arraySort(categories, "name");
         },
         isSaveButtonDisabled() {
             return this.nameState !== true;
@@ -112,13 +113,13 @@ export default {
             };
 
             const command = this.id == null
-                ? ACTIONS.CATEGORY_ACTIONS.CREATE
-                : ACTIONS.CATEGORY_ACTIONS.UPDATE;
+                ? ACTIONS.CATEGORIES.CREATE
+                : ACTIONS.CATEGORIES.UPDATE;
 
             const success = await this.$store.dispatch(command, category);
 
             if (!!success) {
-                await this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.FETCH_ALL);
+                await this.$store.dispatch(ACTIONS.CATEGORIES.FETCH_ALL);
                 Toast.success("Category saved!");
                 this.close(true);
             } else {

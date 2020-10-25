@@ -55,6 +55,7 @@
 
 <script>
 import { ACTIONS } from "@/store";
+import arraySort from "@/helpers/arraySort";
 const Toast = require("@/helpers/toast");
 
 export default {
@@ -94,10 +95,10 @@ export default {
     },
     computed: {
         addresses() {
-            return this.$store.getters.addresses;
+            return arraySort(this.$store.getters.addresses, "name");
         },
         categories() {
-            return this.$store.getters.categories;
+            return arraySort(this.$store.getters.categories, "name");
         },
         isSaveButtonDisabled() {
             return this.nameState !== true || this.categoryState !== true;
@@ -135,13 +136,13 @@ export default {
             };
 
             const command = this.id == null
-                ? ACTIONS.ACCOMMODATION_ACTIONS.CREATE
-                : ACTIONS.ACCOMMODATION_ACTIONS.UPDATE;
+                ? ACTIONS.ACCOMMODATIONS.CREATE
+                : ACTIONS.ACCOMMODATIONS.UPDATE;
 
             const success = await this.$store.dispatch(command, accommodation);
             if (!!success) {
                 Toast.success("Accommodation saved!");
-                await this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.FETCH_ALL);
+                await this.$store.dispatch(ACTIONS.ACCOMMODATIONS.FETCH_ALL);
                 this.close(true);
             } else {
                 Toast.error("Unable to save accommodation.");

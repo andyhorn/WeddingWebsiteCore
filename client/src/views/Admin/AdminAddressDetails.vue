@@ -92,7 +92,7 @@ export default {
     },
     async onFormSubmit() {
       const saved = await this.$store.dispatch(
-        ACTIONS.ADDRESS_ACTIONS.UPDATE,
+        ACTIONS.ADDRESSES.UPDATE,
         this.address
       );
 

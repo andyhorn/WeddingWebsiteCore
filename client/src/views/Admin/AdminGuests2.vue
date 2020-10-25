@@ -3,20 +3,22 @@
         <b-row class="my-3">
             <b-col>
                 <h1 class="text-center">Guest List ({{ guests.length }})</h1>
+                <b-dropdown size="sm" no-caret variant="link">
+                    <template v-slot:button-content>
+                        <b-button size="sm" squared variant="success">
+                            <b-icon-plus /> New
+                        </b-button>
+                    </template>
+                    <b-dropdown-item-button @click="onNewFamily">Family</b-dropdown-item-button>
+                    <b-dropdown-item-button @click="() => onNewGuest()">Guest</b-dropdown-item-button>
+                </b-dropdown>
             </b-col>
         </b-row>
         <b-row>
             <b-col>
-                <b-dropdown size="sm" squared variant="success">
-                    <template v-slot:button-content>
-                        <b-icon-plus /> New
-                    </template>
-                    <b-dropdown-item @click="onNewFamily">Family</b-dropdown-item>
-                    <b-dropdown-item @click="() => onNewGuest()">Guest</b-dropdown-item>
-                </b-dropdown>
-                <b-table :fields="familyFields" :items="families" selectable
-                    select-mode="single" @row-selected="item => onFamilySelected(item)"
-                    striped show-empty :busy="isBusy">
+                <h3>Families</h3>
+                <b-table :fields="familyFields" :items="families" striped show-empty :busy="isBusy" caption="Select a family to expand"
+                    selectable select-mode="single" @row-selected="rows => onRowSelected(rows, 'families')">
 
                     <template v-slot:cell(headMemberId)="row">
                         {{ printGuestName(row.item.headMemberId) }}
@@ -38,12 +40,8 @@
                         <b-container class="border border-secondary rounded p-3 bg-white">
                             <h3>The {{ parentRow.item.name }} family</h3>
                             <b-button size="sm" variant="link" @click="onNewGuest(parentRow.item.familyId)">New Family Member</b-button>
-                            <b-table :fields="guestFields" :items="guests.filter(x => x.familyId == parentRow.item.familyId)"
-                                selectable select-mode="single" @row-selected="onGuestSelected" show-empty :busy="isBusy">
-
-                                <template v-slot:cell(name)="row">
-                                    {{ printGuestName(row.item.guestId) }}
-                                </template>
+                            <b-table :fields="guestFields" :items="guests.filter(x => x.familyId == parentRow.item.familyId)" show-empty :busy="isBusy"
+                                selectable select-mode="single" @row-selected="rows => onRowSelected(rows, 'guests')">
 
                                 <template v-slot:cell(parentId)="row">
                                     {{ printGuestName(row.item.parentId) }}
@@ -78,7 +76,29 @@
                 </b-table>
             </b-col>
         </b-row>
+        <b-row class="my-3">
+            <b-col>
+                <h3>Guests without a Family</h3>
+                <b-table :items="guestsWithNoFamily" :fields="guestFields" caption="Select a Guest to edit" show-empty striped
+                    selectable select-mode="single" @row-selected="rows => onRowSelected(rows, 'guests')">
 
+                    <template v-slot:cell(options)="row">
+                        <b-button class="text-danger" size="sm" variant="link" @click="onGuestDelete(row.item.guestId)">Delete</b-button>
+                    </template>
+
+                    <template v-slot:row-details="row">
+                        <b-container class="border border-secondary rounded p-3 bg-white">
+                            <div class="d-flex align-items-baseline mb-3">
+                                <p class="m-0 p-0"><strong>Edit Guest:</strong></p>
+                                <h2 class="ml-2">{{ `${row.item.firstName} ${row.item.lastName}` }}</h2>
+                            </div>
+                            <GuestForm :guest="row.item" @close="onGuestEditClose(row.item.guestId)" />
+                        </b-container>
+                    </template>
+
+                </b-table>
+            </b-col>
+        </b-row>
         <NewGuestModal :visible="isNewGuestModalVisible" @close="onNewGuestModalClose" :familyId="newGuestFamilyId" />
         <NewFamilyModal :visible="isNewFamilyModalVisible" @close="onNewFamilyModalClose" />
     </b-container>
@@ -92,8 +112,9 @@ import NewFamilyModal from "@/components/modals/NewFamilyModal";
 import GuestForm from "@/components/forms/GuestForm";
 import RsvpInviteForm from "@/components/Admin/Guests/RsvpInviteForm";
 import FamilyRsvpInviteForm from "@/components/Admin/Guests/FamilyRsvpInviteForm";
-    const cloneDeep = require("clone-deep");
-    const Toast = require("@/helpers/toast");
+import arraySort from "@/helpers/arraySort";
+const cloneDeep = require("clone-deep");
+const Toast = require("@/helpers/toast");
 
 export default {
     name: "AdminGuests2",
@@ -131,7 +152,10 @@ export default {
             ],
             guestFields: [
                 "inviteCode",
-                "name",
+                {
+                    key: "name",
+                    formatter: (key, value, item) => `${item.firstName} ${item.lastName}`
+                },
                 {
                     key: "isWeddingMember",
                     label: "Wedding Party Member?",
@@ -149,7 +173,7 @@ export default {
                 },
                 {
                     key: "parentId",
-                    label: "Parent"
+                    label: "Parent",
                 },
                 {
                     key: "rsvps",
@@ -164,46 +188,44 @@ export default {
         },
     computed: {
         families() {
-            return this.$store.getters.families;
+            return arraySort(this.$store.getters.families, "name");
         },
         guests() {
-            return this.$store.getters.guests;
+            return arraySort(this.$store.getters.guests, "firstName");
         },
         children() {
-            return this.$store.getters.children;
+            return arraySort(this.$store.getters.guests
+                .filter(x => x.isChild), "firstName");
         },
         nonChildren() {
-            return this.$store.getters.nonChildren;
+            return arraySort(this.$store.getters.guests
+                .filter(x => !x.isChild), "firstName");
+        },
+        guestsWithNoFamily() {
+            return arraySort(this.$store.getters.guests.filter(x => !x.familyId));
         }
     },
     mounted() {
         this.fetch();
+        console.log(arraySort)
     },
     methods: {
-        onGuestSelected(rows) {
-            const openGuests = rows.map(x => x.guestId);
-
-            for (let guest of this.guests) {
-                const isOpen = openGuests.includes(guest.guestId);
-
-                if (guest._showDetails != isOpen)
-                    this.$set(guest, "_showDetails", isOpen);
-            }
-        },
         onGuestEditClose(id) {
             const guest = this.guests.find(x => x.guestId == id);
             if (guest == null) return;
 
             this.$set(guest, "_showDetails", false);
         },
-        onFamilySelected(items) {
-            const openFamilies = items.map(x => x.familyId);
+        onRowSelected(rows, collection) {
+            const idKey = collection == "guests" ? "guestId" : "familyId";
+            const open = rows.map(x => x[idKey]);
 
-            for (let family of this.families) {
-                const isOpen = openFamilies.includes(family.familyId);
+            for (let entity of this[collection]) {
+                const isOpen = open.includes(entity[idKey]);
 
-                if (family._showDetails != isOpen)
-                    this.$set(family, "_showDetails", isOpen);
+                if (entity._showDetails != isOpen) {
+                    this.$set(entity, "_showDetails", isOpen);
+                }
             }
         },
         async fetch() {
@@ -216,19 +238,19 @@ export default {
             ]);
         },
         async fetchFamilies() {
-            await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.FETCH_ALL);
+            await this.$store.dispatch(ACTIONS.FAMILIES.FETCH_ALL);
         },
         async fetchGuests() {
-            await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.FETCH_ALL);
+            await this.$store.dispatch(ACTIONS.GUESTS.FETCH_ALL);
         },
         async fetchAddresses() {
-            await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.FETCH_ALL);
+            await this.$store.dispatch(ACTIONS.ADDRESSES.FETCH_ALL);
         },
         async fetchEvents() {
-            await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.FETCH_ALL);
+            await this.$store.dispatch(ACTIONS.EVENTS.FETCH_ALL);
         },
         async fetchRsvps() {
-            await this.$store.dispatch(ACTIONS.RSVP_ACTIONS.FETCH_ALL);
+            await this.$store.dispatch(ACTIONS.RSVPS.FETCH_ALL);
         },
         familyMembers(familyId) {
             return this.guests.filter(x => x.familyId == familyId);
@@ -238,17 +260,17 @@ export default {
             if (family == null) return;
 
             if (confirm(`Are you sure you want to delete the ${family.name} family?`)) {
-                await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.DELETE, id);
+                await this.$store.dispatch(ACTIONS.FAMILIES.DELETE, id);
                 
                 const affectedGuests = this.guests.filter(x => x.familyId == id);
-                await Promise.all(affectedGuests.map(x => this.$store.dispatch(ACTIONS.GUEST_ACTIONS.FETCH, x)));
+                await Promise.all(affectedGuests.map(x => this.$store.dispatch(ACTIONS.GUESTS.FETCH, x.guestId)));
             }
         },
         async onGuestDelete(id) {
             const guest = this.guests.find(x => x.guestId == id);
 
             if (confirm(`Are you sure you want to delete ${guest.firstName} ${guest.lastName}?`)) {
-                await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.DELETE, id);
+                await this.$store.dispatch(ACTIONS.GUESTS.DELETE, id);
             }
         },
         onNewGuest(familyId) {
@@ -288,15 +310,17 @@ export default {
 
             this.$set(this.families[index], "headMemberId", guestId);
 
-            const success = await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.UPDATE, this.families[index]);
+            const success = await this.$store.dispatch(ACTIONS.FAMILIES.UPDATE, this.families[index]);
 
-            if (success) Toast.success("Guest promoted!");
-
+            if (success) {
+                Toast.success("Guest promoted!");
+            }
+            
             this.isBusy = false;
         },
         async onDeleteGuest(guestId) {
             if (confirm("Are you sure you want to delete this guest?")) {
-                await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.DELETE, guestId);
+                await this.$store.dispatch(ACTIONS.GUESTS.DELETE, guestId);
             }
         }
     }
