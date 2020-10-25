@@ -112,13 +112,13 @@ export default {
             };
 
             const command = this.id == null
-                ? ACTIONS.CATEGORY_ACTIONS.CREATE
-                : ACTIONS.CATEGORY_ACTIONS.UPDATE;
+                ? ACTIONS.CATEGORIES.CREATE
+                : ACTIONS.CATEGORIES.UPDATE;
 
             const success = await this.$store.dispatch(command, category);
 
             if (!!success) {
-                await this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.FETCH_ALL);
+                await this.$store.dispatch(ACTIONS.CATEGORIES.FETCH_ALL);
                 Toast.success("Category saved!");
                 this.close(true);
             } else {

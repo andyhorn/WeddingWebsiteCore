@@ -127,7 +127,8 @@ export default function (name, idKey, endpoint, namePlural = null) {
             if (index == -1) {
                 state[namePlural].push(item);
             } else {
-                updateInPlace(state[namePlural], item);
+                // updateInPlace(state[namePlural], item);
+                Vue.set(state[namePlural], index, item);
             }
         }
     };

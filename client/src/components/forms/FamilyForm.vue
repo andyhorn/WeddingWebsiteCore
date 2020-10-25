@@ -99,8 +99,8 @@ export default {
             };
 
             const command = this.id == null
-                ? ACTIONS.FAMILY_ACTIONS.CREATE
-                : ACTIONS.FAMILY_ACTIONS.UPDATE;
+                ? ACTIONS.FAMILIES.CREATE
+                : ACTIONS.FAMILIES.UPDATE;
 
             const success = await this.$store.dispatch(command, family);
             if (success) {

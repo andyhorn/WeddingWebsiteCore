@@ -76,7 +76,7 @@ export default {
                     }
 
                     if (changed) {
-                        const success = await this.$store.dispatch(ACTIONS.WEDDING_ROLE_ACTIONS.UPDATE, role);
+                        const success = await this.$store.dispatch(ACTIONS.WEDDING_ROLES.UPDATE, role);
 
                         if (success) {
                             this.$set(this.savedValues, this.guestId, assigned);

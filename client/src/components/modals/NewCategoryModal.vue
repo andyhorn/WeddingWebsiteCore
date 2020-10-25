@@ -14,7 +14,6 @@
 
 <script>
 import CategoryForm from "@/components/forms/CategoryForm";
-const Toast = require("@/helpers/toast");
 
 export default {
     name: "NewCategoryModal",

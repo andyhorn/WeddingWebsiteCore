@@ -100,19 +100,19 @@ export default {
       this.isNewGuestModalVisible = false;
     },
     async fetchAllFamilies() {
-      await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.FETCH_ALL);
+      await this.$store.dispatch(ACTIONS.FAMILIES.FETCH_ALL);
     },
     async fetchAllGuests() {
-      await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.FETCH_ALL);
+      await this.$store.dispatch(ACTIONS.GUESTS.FETCH_ALL);
     },
     async fetchAllAddresses() {
-      await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.FETCH_ALL);
+      await this.$store.dispatch(ACTIONS.ADDRESSES.FETCH_ALL);
     },
     async fetchAllEvents() {
-      await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.FETCH_ALL);
+      await this.$store.dispatch(ACTIONS.EVENTS.FETCH_ALL);
     },
     async fetchAllRsvps() {
-      await this.$store.dispatch(ACTIONS.RSVP_ACTIONS.FETCH_ALL);
+      await this.$store.dispatch(ACTIONS.RSVPS.FETCH_ALL);
     },
     async fetch() {
       this.isLoading = true;

@@ -175,7 +175,7 @@ export default {
         async onDeleteAccommodation(accommodationId) {
             if (confirm("Are you sure you want to delete this accommodation?")) {
                 this.isBusy = true;
-                await this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.DELETE, accommodationId);
+                await this.$store.dispatch(ACTIONS.ACCOMMODATIONS.DELETE, accommodationId);
                 this.fetch();
             }
         },
@@ -209,7 +209,7 @@ export default {
                     accommodation.categoryId = parentId;
                 }
 
-                await this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.DELETE, categoryId);
+                await this.$store.dispatch(ACTIONS.CATEGORIES.DELETE, categoryId);
                 this.fetch();
             }
         },
@@ -222,10 +222,10 @@ export default {
             this.isBusy = false;
         },
         async fetchAccommodations() {
-            await this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.FETCH_ALL);
+            await this.$store.dispatch(ACTIONS.ACCOMMODATIONS.FETCH_ALL);
         },
         async fetchCategories() {
-            await this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.FETCH_ALL);
+            await this.$store.dispatch(ACTIONS.CATEGORIES.FETCH_ALL);
         },
         printAddress(addressId) {
             if (addressId == null) return "";

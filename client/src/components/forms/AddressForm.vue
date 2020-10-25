@@ -202,12 +202,12 @@ export default {
             };
 
             const command = this.id == null
-                ? ACTIONS.ADDRESS_ACTIONS.CREATE
-                : ACTIONS.ADDRESS_ACTIONS.UPDATE;
+                ? ACTIONS.ADDRESSES.CREATE
+                : ACTIONS.ADDRESSES.UPDATE;
 
             const success = await this.$store.dispatch(command, address);
             if (!!success) {
-                await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.FETCH_ALL);
+                await this.$store.dispatch(ACTIONS.ADDRESSES.FETCH_ALL);
                 this.close(success);
             } else {
                 Toast.error(this, "Unable to save address.");

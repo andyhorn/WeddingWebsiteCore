@@ -82,8 +82,8 @@ export default {
             });
 
             const command = !!this.weddingRole 
-                ? ACTIONS.WEDDING_ROLE_ACTIONS.UPDATE
-                : ACTIONS.WEDDING_ROLE_ACTIONS.CREATE;
+                ? ACTIONS.WEDDING_ROLES.UPDATE
+                : ACTIONS.WEDDING_ROLES.CREATE;
 
             const success = await this.$store.dispatch(command, role);
             if (success) {

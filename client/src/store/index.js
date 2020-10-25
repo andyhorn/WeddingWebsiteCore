@@ -14,18 +14,19 @@ import weddingRoles from "@/store/modules/weddingRoles.store.js";
 Vue.use(Vuex);
 
 export const TOKEN_IDENTIFIER = "x-kaw-auth-token-x";
+
 export const ACTIONS = {
-  FAMILY_ACTIONS: families.ACTIONS,
-  GUEST_ACTIONS: guests.ACTIONS,
-  EVENT_ACTIONS: events.ACTIONS,
+  FAMILIES: families.ACTIONS,
+  GUESTS: guests.ACTIONS,
+  EVENTS: events.ACTIONS,
   AUTHENTICATION_ACTIONS: authentication.AUTHENTICATION_ACTIONS,
-  ADDRESS_ACTIONS: addresses.ACTIONS,
-  RSVP_ACTIONS: rsvps.ACTIONS,
-  ACCOMMODATION_ACTIONS: accommodations.ACTIONS,
-  CATEGORY_ACTIONS: categories.ACTIONS,
-  REGISTRY_ACTIONS: registries.ACTIONS,
-  WEDDING_ROLE_ACTIONS: weddingRoles.ACTIONS,
-}
+  ADDRESSES: addresses.ACTIONS,
+  RSVPS: rsvps.ACTIONS,
+  ACCOMMODATIONS: accommodations.ACTIONS,
+  CATEGORIES: categories.ACTIONS,
+  REGISTRIES: registries.ACTIONS,
+  WEDDING_ROLES: weddingRoles.ACTIONS,
+};
 
 const defaultState = {
   error: "",

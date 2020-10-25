@@ -7,7 +7,7 @@
         <b-icon-arrow-clockwise />Refresh
       </b-button>
     </div>
-    <b-table :items="addresses" :fields="fields" selectable select-mode="single" @row-selected="onAddressSelected">
+    <b-table :items="addresses" :fields="fields" selectable select-mode="single" @row-selected="onAddressSelected" show-empty>
       <template v-slot:cell(options)="data">
         <b-button class="text-danger" variant="link" squared size="sm" @click="onDeleteAddress(data.item.addressId)">Delete</b-button>
       </template>
@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     async fetch() {
-      await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.FETCH_ALL);
+      await this.$store.dispatch(ACTIONS.ADDRESSES.FETCH_ALL);
     },
     async onDeleteAddress(addressId) {
       const deleteAddress = confirm(
@@ -70,7 +70,7 @@ export default {
       );
 
       if (deleteAddress) {
-        await this.$store.dispatch(ACTIONS.ADDRESS_ACTIONS.DELETE, addressId);
+        await this.$store.dispatch(ACTIONS.ADDRESSES.DELETE, addressId);
       }
     },
     onNewAddressModalClose(success) {

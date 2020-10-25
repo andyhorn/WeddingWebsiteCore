@@ -75,7 +75,7 @@ export default {
   methods: {
     async fetch() {
       this.isTableBusy = true;
-      await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.FETCH_ALL);
+      await this.$store.dispatch(ACTIONS.EVENTS.FETCH_ALL);
       this.isTableBusy = false;
     },
     async onRefreshTable() {
@@ -101,7 +101,7 @@ export default {
 
       if (deleteEvent) {
         this.isTableBusy = true;
-        await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.DELETE, eventId);
+        await this.$store.dispatch(ACTIONS.EVENTS.DELETE, eventId);
         this.isTableBusy = false;
       }
     },

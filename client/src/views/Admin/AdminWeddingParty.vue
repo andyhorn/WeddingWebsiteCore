@@ -114,10 +114,10 @@ export default {
             ]);
         },
         async fetchRoles() {
-            await this.$store.dispatch(ACTIONS.WEDDING_ROLE_ACTIONS.FETCH_ALL);
+            await this.$store.dispatch(ACTIONS.WEDDING_ROLES.FETCH_ALL);
         },
         async fetchGuests() {
-            await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.FETCH_ALL);
+            await this.$store.dispatch(ACTIONS.GUESTS.FETCH_ALL);
         },
         onNewRole() {
             this.isNewWeddingRoleModalVisible = true;
@@ -127,7 +127,7 @@ export default {
         },
         onRoleDelete(id) {
             if (confirm("Are you sure you want to delete this role?"))
-                this.$store.dispatch(ACTIONS.WEDDING_ROLE_ACTIONS.DELETE, id);
+                this.$store.dispatch(ACTIONS.WEDDING_ROLES.DELETE, id);
         },
         onGuestSelected(rows) {
             const ids = rows.map(x => x.guestId);

@@ -128,13 +128,13 @@ export default {
         ]);
       },
       async fetchGuests() {
-        await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.FETCH_ALL);
+        await this.$store.dispatch(ACTIONS.GUESTS.FETCH_ALL);
       },
       async fetchRsvps() {
-        await this.$store.dispatch(ACTIONS.RSVP_ACTIONS.FETCH_ALL);
+        await this.$store.dispatch(ACTIONS.RSVPS.FETCH_ALL);
       },
       async fetchEvents() {
-        await this.$store.dispatch(ACTIONS.EVENT_ACTIONS.FETCH_ALL);
+        await this.$store.dispatch(ACTIONS.EVENTS.FETCH_ALL);
       }
     }
 }

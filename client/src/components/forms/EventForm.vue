@@ -233,8 +233,8 @@ export default {
             };
 
             const command = this.id == null
-                ? ACTIONS.EVENT_ACTIONS.CREATE
-                : ACTIONS.EVENT_ACTIONS.UPDATE;
+                ? ACTIONS.EVENTS.CREATE
+                : ACTIONS.EVENTS.UPDATE;
 
             const success = await this.$store.dispatch(command, event);
             if (!!success) {

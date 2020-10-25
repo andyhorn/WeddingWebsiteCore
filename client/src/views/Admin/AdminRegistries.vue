@@ -62,7 +62,7 @@ export default {
     },
     methods: {
         async fetchRegistries() {
-            await this.$store.dispatch(ACTIONS.REGISTRY_ACTIONS.FETCH_ALL);
+            await this.$store.dispatch(ACTIONS.REGISTRIES.FETCH_ALL);
         },
         async onNewRegistry() {
             this.isNewRegistryModalVisible = true;
@@ -89,7 +89,7 @@ export default {
         },
         onDeleteRegistry(id) {
             if (confirm("Are you sure you want to delete this registry?")) {
-                this.$store.dispatch(ACTIONS.REGISTRY_ACTIONS.DELETE, id);
+                this.$store.dispatch(ACTIONS.REGISTRIES.DELETE, id);
             }
         },
         openLink(url) {

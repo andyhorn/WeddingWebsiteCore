@@ -19,8 +19,6 @@
 <script>
 import AddressForm from "@/components/forms/AddressForm";
 import EventForm from "@/components/forms/EventForm";
-import { ACTIONS } from "@/store";
-const Toast = require("@/helpers/toast");
 
 export default {
   name: "NewEventModal",

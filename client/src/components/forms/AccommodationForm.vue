@@ -135,13 +135,13 @@ export default {
             };
 
             const command = this.id == null
-                ? ACTIONS.ACCOMMODATION_ACTIONS.CREATE
-                : ACTIONS.ACCOMMODATION_ACTIONS.UPDATE;
+                ? ACTIONS.ACCOMMODATIONS.CREATE
+                : ACTIONS.ACCOMMODATIONS.UPDATE;
 
             const success = await this.$store.dispatch(command, accommodation);
             if (!!success) {
                 Toast.success("Accommodation saved!");
-                await this.$store.dispatch(ACTIONS.ACCOMMODATION_ACTIONS.FETCH_ALL);
+                await this.$store.dispatch(ACTIONS.ACCOMMODATIONS.FETCH_ALL);
                 this.close(true);
             } else {
                 Toast.error("Unable to save accommodation.");

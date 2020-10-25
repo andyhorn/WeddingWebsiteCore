@@ -185,37 +185,45 @@ export default {
         async onSubmit() {
             if (!this.isFormValid) return;
 
-            const guest = Object.assign({}, this.guest == null ? {} : this.guest, 
-                { 
-                    guestId: this.id || undefined,
-                    firstName: this.firstName,
-                    lastName: this.lastName,
-                    familyId: this.familyId,
-                    isChild: this.isChild,
-                    isUnderTen: this.isChild ? this.isUnderTen : false,
-                    isWeddingMember: this.isWeddingMember,
-                    parentId: this.isChild ? this.parentId : null,
-                });
+            const guest = Object.assign({}, this.guest, {
+                guestId: this.id || undefined,
+                firstName: this.firstName,
+                lastName: this.lastName,
+                familyId: this.familyId,
+                isChild: this.isChild,
+                isUnderTen: this.isChild ? this.isUnderTen : false,
+                isWeddingMember: this.isWeddingMember,
+                parentId: this.isChild ? this.parentId : null
+            });
+
+            console.log("Saving guest:")
+            console.log(guest)
 
             const command = this.id == null
-                ? ACTIONS.GUEST_ACTIONS.CREATE
-                : ACTIONS.GUEST_ACTIONS.UPDATE;
+                ? ACTIONS.GUESTS.CREATE
+                : ACTIONS.GUESTS.UPDATE;
 
             const success = await this.$store.dispatch(command, guest);
             if (success) {
-                //const refresh = ACTIONS.GUEST_ACTIONS.FETCH_ALL;
-                //await this.$store.dispatch(refresh);
                 Toast.success("Guest saved!");
-                this.refreshFamily(guest.familyId);
-                this.close(success);
+                await this.refresh(this.id || success, this.familyId);
+                this.close(this.id || success);
             } else {
                 Toast.error("Unable to save guest.");
             }
         },
+        async refresh(guestId, familyId) {
+            const routines = [];
+
+            if (guestId) routines.push(this.$store.dispatch(ACTIONS.GUESTS.FETCH, guestId));
+            if (familyId) routines.push(this.$store.dispatch(ACTIONS.FAMILIES.FETCH, familyId));
+
+            await Promise.all(routines);
+        },
         async refreshFamily(familyId) {
             if (!familyId) return;
 
-            await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.FETCH, familyId);
+            await this.$store.dispatch(ACTIONS.FAMILIES.FETCH, familyId);
         }
     }
 }
