@@ -75,7 +75,12 @@ export default {
   methods: {
     async fetch() {
       this.isTableBusy = true;
-      await this.$store.dispatch(ACTIONS.EVENTS.FETCH_ALL);
+      
+      await Promise.all([
+        this.$store.dispatch(ACTIONS.EVENTS.FETCH_ALL),
+        this.$store.dispatch(ACTIONS.ADDRESSES.FETCH_ALL)
+      ]);
+
       this.isTableBusy = false;
     },
     async onRefreshTable() {

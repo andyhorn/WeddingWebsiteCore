@@ -137,9 +137,10 @@ export default {
                 this.description = this.event.description;
                 this.date = this.getDateFromString(this.event.startTime);
                 this.startTime = this.getTimeFromString(this.event.startTime);
-                this.endTime = this.event.endTime == null
-                    ? null 
-                    : this.getTimeFromString(this.event.endTime);
+                this.endTime = !!this.event.endTime 
+                    ? this.getTimeFromString(this.event.endTime)
+                    : null;
+                this.addressId = this.event.addressId;
             }
         }
     },
@@ -239,6 +240,9 @@ export default {
 
             const success = await this.$store.dispatch(command, event);
             if (!!success) {
+                const id = this.id || success;
+                await this.$store.dispatch(ACTIONS.EVENTS.FETCH, id);
+
                 Toast.success("Event saved!");
                 this.close(success);
             } else {
