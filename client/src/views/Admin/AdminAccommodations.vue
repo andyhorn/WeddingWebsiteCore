@@ -110,7 +110,10 @@ export default {
             accommodationUnderEdit: null,
             categoryUnderEdit: null,
             categoryFields: [
-                "name",
+                {
+                    key: "name",
+                    sortable: true
+                },
                 {
                     key: "parentId",
                     label: "Subcategory Of"
@@ -122,7 +125,10 @@ export default {
                 }
             ],
             accommodationFields: [
-                "name",
+                {
+                    key: "name",
+                    sortable: true
+                },
                 "description",
                 {
                     key: "addressId",

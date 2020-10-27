@@ -3,15 +3,18 @@
         <b-row class="my-3">
             <b-col>
                 <h1 class="text-center">Guest List ({{ guests.length }})</h1>
-                <b-dropdown size="sm" no-caret variant="link">
-                    <template v-slot:button-content>
-                        <b-button size="sm" squared variant="success">
-                            <b-icon-plus /> New
-                        </b-button>
-                    </template>
-                    <b-dropdown-item-button @click="onNewFamily">Family</b-dropdown-item-button>
-                    <b-dropdown-item-button @click="() => onNewGuest()">Guest</b-dropdown-item-button>
-                </b-dropdown>
+                <div class="d-flex justify-content-between">
+                    <b-dropdown size="sm" no-caret variant="link">
+                        <template v-slot:button-content>
+                            <b-button size="sm" squared variant="success">
+                                <b-icon-plus /> New
+                            </b-button>
+                        </template>
+                        <b-dropdown-item-button @click="onNewFamily">Family</b-dropdown-item-button>
+                        <b-dropdown-item-button @click="() => onNewGuest()">Guest</b-dropdown-item-button>
+                    </b-dropdown>
+                    <b-button size="sm" squared variant="primary" @click="fetch"><b-icon-arrow-clockwise />Refresh</b-button>
+                </div>
             </b-col>
         </b-row>
         <b-row>
@@ -133,10 +136,14 @@ export default {
             isNewFamilyModalVisible: false,
             newGuestFamilyId: null,
             familyFields: [
-                "name",
+                {
+                    key: "name",
+                    sortable: true
+                },
                 {
                     key: "headMemberId",
                     label: "Head Member",
+                    sortable: "true",
                     formatter: key => {
                         const guest = this.guests.find(x => x.guestId == key);
 
@@ -154,6 +161,7 @@ export default {
                 "inviteCode",
                 {
                     key: "name",
+                    sortable: true,
                     formatter: (key, value, item) => `${item.firstName} ${item.lastName}`
                 },
                 {

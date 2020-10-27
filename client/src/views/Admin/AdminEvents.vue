@@ -54,7 +54,10 @@ export default {
       isEventEditVisible: false,
       eventUnderEdit: null,
       fields: [
-        "name",
+        {
+          key: "name",
+          sortable: true
+        },
         "description",
         "date",
         "time",
