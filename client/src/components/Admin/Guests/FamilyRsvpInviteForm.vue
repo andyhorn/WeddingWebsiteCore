@@ -87,7 +87,7 @@ export default {
         : "Mixed";
     },
     getRsvpsForGuest(guestId) {
-      const rsvps = this.$store.getters.findRsvpsForGuest(guestId);
+      const rsvps = this.$store.getters.rsvps.filter(x => x.guestId == guestId);
       return rsvps;
     },
     async onInviteAll(eventId) {
@@ -104,7 +104,7 @@ export default {
               eventId,
             };
 
-            await this.$store.dispatch(ACTIONS.RSVP_ACTIONS.CREATE, newRsvp);
+            await this.$store.dispatch(ACTIONS.RSVPS.CREATE, newRsvp);
           }
 
           resolve();
@@ -127,7 +127,7 @@ export default {
 
           if (eventInvite) {
             await this.$store.dispatch(
-              ACTIONS.RSVP_ACTIONS.DELETE,
+              ACTIONS.RSVPS.DELETE,
               eventInvite.rsvpId
             );
           }

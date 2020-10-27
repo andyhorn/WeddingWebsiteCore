@@ -46,7 +46,7 @@ export default {
       return this.$store.getters.events;
     },
     rsvps() {
-      return this.$store.getters.findRsvpsForGuest(this.guestId);
+      return this.$store.getters.rsvps.filter(x => x.guestId == this.guestId);
     },
   },
   data() {
@@ -89,7 +89,7 @@ export default {
       if (!!existingInvite && !isInvited) {
         // UNINVITE
         await this.$store.dispatch(
-          ACTIONS.RSVP_ACTIONS.DELETE,
+          ACTIONS.RSVPS.DELETE,
           existingInvite.rsvpId
         );
       } else if (!existingInvite && isInvited) {
@@ -99,7 +99,7 @@ export default {
           guestId: this.guestId,
         };
 
-        await this.$store.dispatch(ACTIONS.RSVP_ACTIONS.CREATE, newRsvp);
+        await this.$store.dispatch(ACTIONS.RSVPS.CREATE, newRsvp);
       }
     },
   },

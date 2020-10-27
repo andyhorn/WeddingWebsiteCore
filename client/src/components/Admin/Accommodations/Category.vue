@@ -40,7 +40,7 @@ export default {
     },
     methods: {
         onDelete() {
-            this.$store.dispatch(ACTIONS.CATEGORY_ACTIONS.DELETE, this.category.categoryId);
+            this.$store.dispatch(ACTIONS.CATEGORIES.DELETE, this.category.categoryId);
         }
     }
 }

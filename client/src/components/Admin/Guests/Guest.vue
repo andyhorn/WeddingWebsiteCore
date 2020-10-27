@@ -88,10 +88,10 @@ export default {
         const familyId = this.guest.familyId;
         const guestId = this.guest.guestId;
 
-        await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.DELETE, guestId);
+        await this.$store.dispatch(ACTIONS.GUESTS.DELETE, guestId);
 
         if (familyId) {
-          await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.FETCH, familyId);
+          await this.$store.dispatch(ACTIONS.FAMILIES.FETCH, familyId);
         }
       }
     },

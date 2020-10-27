@@ -127,7 +127,7 @@ export default {
       return sorted;
     },
     members() {
-      return this.$store.getters.guestsInFamily(this.family.familyId);
+      return this.$store.getters.guests.filter(x => x.familyId == this.family.familyId);
     },
   },
   methods: {
@@ -156,25 +156,25 @@ export default {
     async promoteGuest(guestId) {
       let family = { ...this.family };
       family.headMemberId = guestId;
-      await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.UPDATE, family);
+      await this.$store.dispatch(ACTIONS.FAMILIES.UPDATE, family);
     },
     async onDeleteFamily() {
       const name = this.family.name;
 
       if (confirm("Are you sure you want to delete the " + name + " family?")) {
         const id = this.family.familyId;
-        await this.$store.dispatch(ACTIONS.FAMILY_ACTIONS.DELETE, id);
+        await this.$store.dispatch(ACTIONS.FAMILIES.DELETE, id);
 
-        const affectedGuests = this.$store.getters.guestsInFamily(id);
+        const affectedGuests = this.$store.getters.guests.filter(x => x.familyId == id);
         for (let guest of affectedGuests) {
           guest.familyId = null;
-          await this.$store.dispatch(ACTIONS.GUEST_ACTIONS.UPDATE, guest);
+          await this.$store.dispatch(ACTIONS.GUESTS.UPDATE, guest);
         }
       }
     },
     async onAddressChange(addressId) {
       const updated = await this.$store.dispatch(
-        ACTIONS.FAMILY_ACTIONS.UPDATE,
+        ACTIONS.FAMILIES.UPDATE,
         this.family
       );
 

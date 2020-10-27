@@ -207,7 +207,6 @@ export default {
     },
     mounted() {
         this.fetch();
-        console.log(arraySort)
     },
     methods: {
         onGuestEditClose(id) {
