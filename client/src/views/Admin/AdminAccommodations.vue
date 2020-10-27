@@ -110,22 +110,18 @@ export default {
             accommodationUnderEdit: null,
             categoryUnderEdit: null,
             categoryFields: [
-                {
-                    key: "categoryId",
-                    label: "ID",
-                },
                 "name",
                 {
                     key: "parentId",
                     label: "Subcategory Of"
                 },
-                "options"
+                {
+                    key: "options",
+                    thClass: "text-center",
+                    tdClass: "text-center"
+                }
             ],
             accommodationFields: [
-                {
-                    key: "accommodationId",
-                    label: "ID"
-                },
                 "name",
                 "description",
                 {
@@ -138,7 +134,8 @@ export default {
                 },
                 {
                     key: "options",
-                    tdClass: "optionsColumn"
+                    thClass: "text-center",
+                    tdClass: "text-center"
                 }
             ]
         }
@@ -151,8 +148,7 @@ export default {
             return arraySort(this.$store.getters.accommodations, "name");
         },
         topLevelCategories() {
-            return arraySort(this.$store.getters.categories
-                .filter(x => x.parentId == null), "name");
+            return arraySort(this.$store.getters.categories.filter(x => x.parentId == null), "name");
         }
     },
     methods: {
