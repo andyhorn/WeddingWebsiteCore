@@ -24,7 +24,8 @@
                 <b-col>
                     <b-form-group>
                         <template slot="label">
-                            Icon (<b-button variant="link" size="sm" class="p-0 m-0" @click="onNewIcon">New</b-button>)
+                            Icon (<b-button variant="link" size="sm" class="p-0 m-0" 
+                            @click="isNewIconModalVisible = true">New</b-button>)
                         </template>
                         <b-dropdown variant="outline-secondary">
                             <template #button-content>
@@ -49,17 +50,22 @@
                 </b-col>
             </b-row>
         </b-form>
+        <NewIconModal :visible="isNewIconModalVisible" @close="onIconModalClose" />
     </b-container>
 </template>
 
 <script>
 import { ACTIONS } from "@/store";
 import { http } from "@/axios";
+import NewIconModal from "@/components/modals/NewIconModal";
 const Toast = require("@/helpers/toast");
 
 export default {
     name: "RegistryForm",
     props: [ "registry" ],
+    components: {
+        NewIconModal
+    },
     data() {
         return {
             id: null,
@@ -70,7 +76,8 @@ export default {
             nameState: null,
             urlState: null,
             urlTestTimeout: null,
-            isUrlTestBusy: false
+            isUrlTestBusy: false,
+            isNewIconModalVisible: false
         }
     },
     watch: {
@@ -137,6 +144,11 @@ export default {
         },
         onNewIcon() {
 
+        },
+        onIconModalClose(id) {
+            if (id) {
+                this.iconId = id;
+            }
         },
         async onSubmit() {
             if (!this.isFormValid) return;
