@@ -13,6 +13,7 @@ namespace WeddingWebsiteCore.DataAccess
         public DbSet<Guest> Guests { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<Registry> Registries { get; set; }
+        public DbSet<RegistryIcon> RegistryIcons { get; set; }
         public DbSet<Rsvp> Rsvps { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
         public DbSet<WeddingRole> WeddingRoles { get; set; }
@@ -71,6 +72,12 @@ namespace WeddingWebsiteCore.DataAccess
                 .HasOne(guest => guest.Parent)
                 .WithMany(parent => parent.Children)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Registry>()
+                .HasOne(x => x.Icon)
+                .WithMany()
+                .HasForeignKey(x => x.IconId)
+                .IsRequired(false);
 
             modelBuilder.Entity<WeddingRole>()
                 .HasIndex(weddingRole => weddingRole.Name)

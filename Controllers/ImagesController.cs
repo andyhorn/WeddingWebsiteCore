@@ -41,7 +41,7 @@ namespace WeddingWebsiteCore.Controllers
             return Ok(image);
         }
 
-        [HttpGet(RouteContracts.PostItem)]
+        [HttpPost(RouteContracts.PostItem)]
         public async Task<IActionResult> PostNewImage([FromBody] Image image)
         {
             if (!ModelState.IsValid)

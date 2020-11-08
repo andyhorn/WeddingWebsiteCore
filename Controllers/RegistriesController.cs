@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Win32;
 using WeddingWebsiteCore.Contracts;
 using WeddingWebsiteCore.DataAccess;
 
@@ -115,8 +112,10 @@ namespace WeddingWebsiteCore.Controllers
             try
             {
                 FormatUrl(registry);
-                _context.Entry(existing).State = EntityState.Detached;
-                _context.Entry(registry).State = EntityState.Modified;
+                // _context.Entry(existing).State = EntityState.Detached;
+                // _context.Entry(registry).State = EntityState.Modified;
+
+                _context.Entry(existing).CurrentValues.SetValues(registry);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)

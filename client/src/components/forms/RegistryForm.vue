@@ -21,6 +21,25 @@
                 </b-col>
             </b-row>
             <b-row>
+                <b-col>
+                    <b-form-group label="Icon">
+                        <b-dropdown variant="outline-secondary">
+                            <template #button-content>
+                                Selected: 
+                                <span v-if="iconId == null"><strong>None</strong></span>
+                                <span v-else><img class="img icon" :src="iconSrc"></span>
+                            </template>
+                            <b-dropdown-item href="#" @click="iconId = null">None</b-dropdown-item>
+                            <b-dropdown-item href="#" v-for="icon in icons" :key="icon.id"
+                                @click="onSelectIcon(icon.id)">
+                                <img class="img icon" :src="makeImgSrc(icon.data)"/>
+                                { icon.title }
+                            </b-dropdown-item>
+                        </b-dropdown>
+                    </b-form-group>
+                </b-col>
+            </b-row>
+            <b-row>
                 <b-col class="d-flex justify-content-between">
                     <b-button squared size="sm" variant="success" type="submit" :disabled="!isFormValid">Save</b-button>
                     <b-button squared size="sm" variant="danger" @click="onCancel">Cancel</b-button>
@@ -43,6 +62,8 @@ export default {
             id: null,
             name: null,
             url: null,
+            iconId: null,
+            iconData: null,
             nameState: null,
             urlState: null,
             urlTestTimeout: null,
@@ -64,7 +85,14 @@ export default {
 
                 this.id = this.registry.registryId;
                 this.name = this.registry.name;
-                this.url = this.registry.url;
+
+                if (this.registry.url) {
+                    const match = /https?:\/\//;
+                    this.url = this.registry.url;
+                    this.url = this.url.replace(match, "");
+                }
+
+                this.iconId = this.registry.iconId;
             }
         }
     },
@@ -72,15 +100,28 @@ export default {
         isFormValid() {
             return this.nameState === true
                 && this.urlState === true;
+        },
+        icons() {
+            return this.$store.getters.icons;
+        },
+        iconSrc() {
+            if (this.iconId == null)
+                return "";
+
+            return this.makeImgSrc(this.iconData);
         }
     },
     mounted() {
     },
     methods: {
+        makeImgSrc(data) {
+            return `data:image/gif;base64,${data}`;
+        },
         clear() {
             this.id = null;
             this.name = null;
             this.url = null;
+            this.iconId = null;
         },
         resetStates() {
             this.nameState = null;
@@ -97,7 +138,8 @@ export default {
             const registry = {
                 registryId: this.id || undefined,
                 name: this.name,
-                url: this.url
+                url: this.url,
+                iconId: this.iconId
             };
 
             const command = this.id == null

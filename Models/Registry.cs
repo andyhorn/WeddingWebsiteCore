@@ -11,5 +11,9 @@ namespace WeddingWebsiteCore.Models
 
         [DataType(DataType.Url)]
         public string Url { get; set; }
+
+        [ForeignKey(nameof(IconId))]
+        public RegistryIcon Icon { get; set; }
+        public int? IconId { get; set; }
     }
 }
