@@ -22,7 +22,10 @@
             </b-row>
             <b-row>
                 <b-col>
-                    <b-form-group label="Icon">
+                    <b-form-group>
+                        <template slot="label">
+                            Icon (<b-button variant="link" size="sm" class="p-0 m-0" @click="onNewIcon">New</b-button>)
+                        </template>
                         <b-dropdown variant="outline-secondary">
                             <template #button-content>
                                 Selected: 
@@ -131,6 +134,9 @@ export default {
             this.$emit("close", id);
             this.clear();
             this.resetStates();
+        },
+        onNewIcon() {
+
         },
         async onSubmit() {
             if (!this.isFormValid) return;
