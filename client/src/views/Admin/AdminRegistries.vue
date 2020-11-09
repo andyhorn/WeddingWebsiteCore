@@ -7,12 +7,19 @@
         </div>
         <b-table :fields="fields" :items="registries" show-empty selectable select-mode="single" @row-selected="onRegistrySelected">
 
+            <template v-slot:cell(name)="row">
+                <div class="d-flex align-items-center">
+                    <RegistryIcon :iconId="row.item.iconId" />
+                    <span>{{ row.item.name }}</span>
+                </div>
+            </template>
+
             <template v-slot:cell(url)="row">
                 <b-button variant="link" @click="openLink(row.item.url)">{{ row.item.url }}</b-button>
             </template>
 
             <template v-slot:cell(options)="row">
-                <b-button size="sm" variant="link" class="text-danger" @click="onDeleteRegistry(row.item.registryId)">Delete</b-button>
+                <b-button variant="link" class="text-danger" @click="onDeleteRegistry(row.item.registryId)">Delete</b-button>
             </template>
 
             <template v-slot:row-details="row">
@@ -33,12 +40,14 @@ import { ACTIONS } from "@/store";
 import arraySort from "@/helpers/arraySort";
 import NewRegistryModal from "@/components/modals/NewRegistryModal";
 import RegistryForm from "@/components/forms/RegistryForm";
+import RegistryIcon from "@/components/RegistryIcon";
 
 export default {
     name: "AdminRegistries",
     components: {
         NewRegistryModal,
-        RegistryForm
+        RegistryForm,
+        RegistryIcon
     },
     data() {
         return {
@@ -60,6 +69,7 @@ export default {
     },
     mounted() {
         this.fetchRegistries();
+        this.fetchRegistryIcons();
     },
     methods: {
         async fetchRegistries() {
@@ -67,6 +77,9 @@ export default {
         },
         async onNewRegistry() {
             this.isNewRegistryModalVisible = true;
+        },
+        async fetchRegistryIcons() {
+            await this.$store.dispatch(ACTIONS.REGISTRY_ICONS.FETCH_ALL);
         },
         onNewRegistryModalClose() {
             this.isNewRegistryModalVisible = false;

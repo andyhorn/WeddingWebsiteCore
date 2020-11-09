@@ -54,3 +54,7 @@ a:hover {
 .text-italic {
   font-style: italic !important;
 }
+
+img.icon {
+  max-height: 2rem;
+}

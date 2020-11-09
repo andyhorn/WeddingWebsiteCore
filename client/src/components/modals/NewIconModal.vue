@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { ACTIONS } from "@/store";
 import RegistryIconForm from "@/components/forms/RegistryIconForm";
 
 export default {
@@ -23,6 +24,9 @@ export default {
     methods: {
         onClose(id) {
             this.$emit("close", id);
+            if (id) {
+                this.$store.dispatch(ACTIONS.REGISTRY_ICONS.FETCH, id);
+            }
         }
     }
 }

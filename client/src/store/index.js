@@ -9,6 +9,7 @@ import rsvps from "@/store/modules/rsvps.store.js";
 import categories from "@/store/modules/categories.store.js";
 import accommodations from "@/store/modules/accommodations.store.js";
 import registries from "@/store/modules/registries.store.js";
+import registryIcons from "@/store/modules/registryIcons.store.js";
 import weddingRoles from "@/store/modules/weddingRoles.store.js";
 
 Vue.use(Vuex);
@@ -25,7 +26,8 @@ export const ACTIONS = {
   ACCOMMODATIONS: accommodations.ACTIONS,
   CATEGORIES: categories.ACTIONS,
   REGISTRIES: registries.ACTIONS,
-  WEDDING_ROLES: weddingRoles.ACTIONS,
+  REGISTRY_ICONS: registryIcons.ACTIONS,
+  WEDDING_ROLES: weddingRoles.ACTIONS
 };
 
 const defaultState = {
@@ -56,6 +58,7 @@ export default new Vuex.Store({
     categories,
     accommodations,
     registries,
+    registryIcons,
     weddingRoles,
   },
   getters: {

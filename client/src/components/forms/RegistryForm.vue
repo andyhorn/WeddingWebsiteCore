@@ -31,13 +31,14 @@
                             <template #button-content>
                                 Selected: 
                                 <span v-if="iconId == null"><strong>None</strong></span>
-                                <span v-else><img class="img icon" :src="iconSrc"></span>
+                                <span v-else><RegistryIcon :iconId="iconId"/></span>
                             </template>
                             <b-dropdown-item href="#" @click="iconId = null">None</b-dropdown-item>
                             <b-dropdown-item href="#" v-for="icon in icons" :key="icon.id"
                                 @click="onSelectIcon(icon.id)">
-                                <img class="img icon" :src="makeImgSrc(icon.data)"/>
-                                { icon.title }
+                                <!-- <img class="img icon" :src="makeImgSrc(icon.data)"/> -->
+                                <RegistryIcon :iconId="icon.id" />
+                                {{ icon.title }}
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-form-group>
@@ -58,13 +59,15 @@
 import { ACTIONS } from "@/store";
 import { http } from "@/axios";
 import NewIconModal from "@/components/modals/NewIconModal";
+import RegistryIcon from "@/components/RegistryIcon";
 const Toast = require("@/helpers/toast");
 
 export default {
     name: "RegistryForm",
     props: [ "registry" ],
     components: {
-        NewIconModal
+        NewIconModal,
+        RegistryIcon
     },
     data() {
         return {
@@ -112,13 +115,14 @@ export default {
                 && this.urlState === true;
         },
         icons() {
-            return this.$store.getters.icons;
+            return this.$store.getters.registryIcons;
         },
         iconSrc() {
             if (this.iconId == null)
                 return "";
 
-            return this.makeImgSrc(this.iconData);
+            const icon = this.icons.find(x => x.id == this.iconId);
+            return this.makeImgSrc(icon.data);
         }
     },
     mounted() {
@@ -149,6 +153,14 @@ export default {
             if (id) {
                 this.iconId = id;
             }
+
+            this.isNewIconModalVisible = false;
+        },
+        onSelectIcon(id) {
+            if (id) 
+                this.iconId = id;
+            else
+                this.iconId = null;
         },
         async onSubmit() {
             if (!this.isFormValid) return;
