@@ -127,9 +127,6 @@ export default {
     mounted() {
     },
     methods: {
-        makeImgSrc(data) {
-            return `data:image/gif;base64,${data}`;
-        },
         clear() {
             this.id = null;
             this.name = null;
