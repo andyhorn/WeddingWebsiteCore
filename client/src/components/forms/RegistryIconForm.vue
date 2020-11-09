@@ -51,21 +51,16 @@ export default {
         }
     },
     watch: {
-        "imageFile": function () {
+        "imageFile": async function () {
             if (this.imageFile == null) {
                 this.imageState = false;
                 return;
             }
 
-            const reader = new FileReader();
-
-            const vm = this;
-            reader.onload = e => {
-                vm.src = e.target.result;
-                this.imageState = true;
-            }
-
-            reader.readAsDataURL(this.imageFile);
+            const base64 = await this.getImageBase64String();
+            const resized = await this.getResizedBase64String(base64, 256, 256);
+            this.src = resized;
+            this.imageState = true;
         },
         "title": function () {
             this.titleState = !!this.title && !!this.title.trim();
@@ -78,6 +73,54 @@ export default {
         }
     },
     methods: {
+        getImageBase64String() {
+            const vm = this;
+            return new Promise(resolve => {
+                if (vm.imageFile == null) return resolve("");
+
+                const reader = new FileReader();
+
+                reader.onload = e => {
+                    const imageSrc = e.target.result;
+                    return resolve(imageSrc);
+                }
+                
+                reader.readAsDataURL(vm.imageFile);
+            });
+        },
+        getResizedBase64String(base64, width, height) {
+            return new Promise(resolve => {
+                const canvas = document.createElement("canvas");
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                const context = canvas.getContext("2d");
+                const image = document.createElement("img");
+
+                image.src = base64;
+                image.onload = function() {
+                    let scaleFactor = image.width > image.height
+                        ? width / image.width
+                        : height / image.height;
+
+                    if (scaleFactor > 1)
+                        scaleFactor = 1;
+
+                    context.scale(scaleFactor, scaleFactor);
+                    context.drawImage(image, 0, 0);
+
+                    return resolve(canvas.toDataURL());
+                }
+            });
+        },
+        stripBase64String(base64) {
+            const key = "base64,";
+            const length = key.length;
+            const index = base64.indexOf(key);
+            const stripped = base64.slice(index + length);
+            return stripped.trim();
+        },
         clear() {
             this.imageFile = null;
             this.title = null;
@@ -91,35 +134,12 @@ export default {
             this.resetStates();
             this.$emit("close", data);
         },
-        async onSubmit() {
-            const getImageData = () => {
-                const key = "base64,";
-                const index = this.src.indexOf(key);
-                const dataStr = this.src.slice(index + key.length);
-                return dataStr
-            };
-
-            const getBytes = base64String => {
-                const binaryString = atob(base64String);
-                const len = binaryString.length;
-                const bytes = new Uint8Array(len);
-
-                for (let i = 0; i < len; i++)
-                    bytes[i] = binaryString.charCodeAt(i);
-                
-                return bytes.buffer;
-            };
-
-            const base64StringData = getImageData();
-            const bytes = getBytes(base64StringData);
-            
+        async onSubmit() {            
             const icon = {
                 id: this.id || undefined,
                 title: this.title,
-                data: base64StringData
+                data: this.stripBase64String(this.src)
             };
-
-            console.log(icon)
 
             const command = this.id != null
                 ? ACTIONS.REGISTRY_ICONS.UPDATE

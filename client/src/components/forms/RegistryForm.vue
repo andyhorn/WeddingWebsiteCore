@@ -36,7 +36,6 @@
                             <b-dropdown-item href="#" @click="iconId = null">None</b-dropdown-item>
                             <b-dropdown-item href="#" v-for="icon in icons" :key="icon.id"
                                 @click="onSelectIcon(icon.id)">
-                                <!-- <img class="img icon" :src="makeImgSrc(icon.data)"/> -->
                                 <RegistryIcon :iconId="icon.id" />
                                 {{ icon.title }}
                             </b-dropdown-item>
