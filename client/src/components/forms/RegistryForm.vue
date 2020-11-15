@@ -33,11 +33,21 @@
                                 <span v-if="iconId == null"><strong>None</strong></span>
                                 <span v-else><RegistryIcon :iconId="iconId"/></span>
                             </template>
-                            <b-dropdown-item href="#" @click="iconId = null">None</b-dropdown-item>
+                            <b-dropdown-item href="#" @click="iconId = null">
+                                <span class="text-dark">None</span>
+                            </b-dropdown-item>
                             <b-dropdown-item href="#" v-for="icon in icons" :key="icon.id"
                                 @click="onSelectIcon(icon.id)">
-                                <RegistryIcon :iconId="icon.id" />
-                                {{ icon.title }}
+                                <div class="d-flex justify-content-between">
+                                    <span class="mr-2 text-dark">{{ icon.title }}</span>
+                                    <div class="icon-container">
+                                        <RegistryIcon :iconId="icon.id" :spaced="true" />
+                                        <b-button size="sm" variant="link" class="text-danger"
+                                            @click="onDeleteIcon(icon.id)">
+                                            <b-icon-x-circle class="text-sm" />
+                                        </b-button>
+                                    </div>
+                                </div>
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-form-group>
@@ -145,6 +155,18 @@ export default {
         onNewIcon() {
 
         },
+        async onDeleteIcon(id) {
+            if (!confirm("Delete this icon?")) return;
+
+            const success = await this.$store.dispatch(ACTIONS.REGISTRY_ICONS.DELETE, id);
+
+            if (success) {
+                this.iconId = null;
+                await this.$store.dispatch(ACTIONS.REGISTRY_ICONS.FETCH_ALL);
+                if (this.registryId)
+                    await this.$store.dispatch(ACTIONS.REGISTRIES.FETCH, this.registryId);
+            }
+        },
         onIconModalClose(id) {
             if (id) {
                 this.iconId = id;
@@ -204,3 +226,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .icon-container >>> .text-sm {
+        font-size: 0.85rem;
+    }
+</style>

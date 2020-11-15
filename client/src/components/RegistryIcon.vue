@@ -1,5 +1,5 @@
 <template>
-    <img class="img icon mx-2" :src="src" />
+    <img class="img icon" :src="src" :class="{ 'mx-2' : spaced }"/>
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import { ACTIONS } from "@/store";
 
 export default {
     name: "RegistryIcon",
-    props: [ "iconId" ],
+    props: [ "iconId", "spaced" ],
     computed: {
         src() {
             if (this.icon == null) return "";

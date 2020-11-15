@@ -77,7 +77,7 @@ namespace WeddingWebsiteCore.DataAccess
                 .HasOne(x => x.Icon)
                 .WithMany()
                 .HasForeignKey(x => x.IconId)
-                .IsRequired(false);
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<WeddingRole>()
                 .HasIndex(weddingRole => weddingRole.Name)
