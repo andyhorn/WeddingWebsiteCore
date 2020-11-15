@@ -1,16 +1,26 @@
 <template>
-    <b-container ref="container"
-        class="dropzone-container d-flex justify-content-center align-items-center" 
+    <b-container ref="container" 
+        class="dropzone-container d-flex flex-column align-items-center justify-content-center" 
         :style="{ height: containerHeight }" @click="onClick">
+        <p><b-icon-upload /></p>
         <label>{{ message }}</label>
+        <p v-if="value && value.length > 0">{{ value.length }} file(s) selected.</p>
+        <div class="files-list-container align-bottom d-flex">
+            <Tag v-for="(file, index) in value" :key="index" :content="file.name" 
+                @remove="onRemove(file)"/>
+        </div>
     </b-container>
 </template>
 
 <script>
 const defaultHeight = 250;
+import Tag from "@/components/Tag";
 
 export default {
     name: "Dropzone",
+    components: {
+        Tag
+    },
     props: [ "value", "multiple", "directory", "height", "accept" ],
     computed: {
         containerHeight() {
@@ -34,6 +44,14 @@ export default {
         this.$refs["container"].addEventListener("drop", e => this.onDrop(e));
     },
     methods: {
+        onRemove(file) {
+            const files = [...this.value];
+            const index = files.indexOf(file);
+            if (index != -1) {
+                files.splice(index, 1);
+                this.emitFiles(files);
+            }
+        },
         onDrop(e) {
             const files = e.dataTransfer.files;
             this.emitFiles(files);
@@ -43,6 +61,7 @@ export default {
             file.type = "file";
             
             file.setAttribute("accept", this.accept);
+            file.setAttribute("multiple", !!this.multiple)
             file.onchange = (e) => this.emitFiles(e.target.files);
                         
             file.click();
@@ -57,14 +76,19 @@ export default {
 
 <style scoped>
     .dropzone-container {
-        border: 1px solid grey;
+        position: relative;
+        border: 1px dashed grey;
         border-radius: 5px;
-        background: #89FAF3;
-        
+        background: #DEDCDC;
     }
     .dropzone-container:hover,
     .dropzone-container *:hover {
-        background: #CBF6F3;
+        background: #B3B3B3;
         cursor: pointer;
+    }
+    .files-list-container {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
     }
 </style>
