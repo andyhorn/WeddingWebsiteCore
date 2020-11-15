@@ -11,6 +11,7 @@ import AdminAddresses from "@/views/Admin/AdminAddresses";
 import AdminAccommodations from "@/views/Admin/AdminAccommodations";
 import AdminRegistries from "@/views/Admin/AdminRegistries";
 import AdminWeddingParty from "@/views/Admin/AdminWeddingParty";
+import AdminPhotos from "@/views/Admin/AdminPhotos";
 
 Vue.use(VueRouter)
 
@@ -59,6 +60,11 @@ const routes = [
     path: "/admin/party",
     name: "Admin-Party",
     component: AdminWeddingParty
+  },
+  {
+    path: "admin/photos",
+    name: "Admin-Photos",
+    component: AdminPhotos
   }
   // {
   //   path: '/about',
