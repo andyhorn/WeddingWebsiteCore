@@ -7,7 +7,7 @@
         <p v-if="value && value.length > 0">{{ value.length }} file(s) selected.</p>
         <div class="files-list-container align-bottom d-flex">
             <Tag v-for="(file, index) in value" :key="index" :content="file.name" 
-                @remove="onRemove(file)"/>
+                @remove="onRemove(file)" />
         </div>
     </b-container>
 </template>

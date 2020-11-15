@@ -18,14 +18,6 @@ export default {
             photoList: []
         }
     },
-    watch: {
-        "photoList": {
-            deep: true,
-            handler: function () {
-                console.log(this.photoList)
-            }
-        }
-    }
 }
 </script>
 

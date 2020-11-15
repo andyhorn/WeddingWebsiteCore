@@ -13,11 +13,16 @@
 <script>
 export default {
     name: "Tag",
-    props: [ "content" ],
+    props: [ "content", "busy" ],
     methods: {
         onClick(e) {
             e.preventDefault();
             e.stopPropagation();
+        }
+    },
+    computed: {
+        gradient() {
+
         }
     }
 }
