@@ -8,5 +8,6 @@ namespace WeddingWebsiteCore.Models
         public int ImageId { get; set; }
         public string Name { get; set; }
         public byte[] Data { get; set; }
+        public byte[] Preview { get; set; }
     }
 }

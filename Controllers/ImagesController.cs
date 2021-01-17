@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using WeddingWebsiteCore.Contracts;
 using WeddingWebsiteCore.DataAccess;
+using WeddingWebsiteCore.Helpers;
 using WeddingWebsiteCore.Models;
 
 namespace WeddingWebsiteCore.Controllers
@@ -45,15 +46,9 @@ namespace WeddingWebsiteCore.Controllers
         [HttpPost(RouteContracts.PostItem)]
         public async Task<IActionResult> PostNewImage()
         {
-            var imageData = Request.Form.Files[0];
-            var image = new Image();
-
-            using (var stream = new MemoryStream())
-            {
-                imageData.CopyTo(stream);
-                image.Data = stream.ToArray();
-                image.Name = imageData.Name;
-            }
+            var imageFile = Request.Form.Files[0];
+            
+            var image = ImageFactory.FromFile(imageFile);
 
             try
             {

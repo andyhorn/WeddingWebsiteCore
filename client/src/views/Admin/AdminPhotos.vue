@@ -38,7 +38,7 @@ export default {
                 const formData = new FormData();
                 formData.append(image.name, image);
 
-                await this.$store.dispatch(ACTIONS.IMAGES.CREATE, formData);
+                const result = await this.$store.dispatch(ACTIONS.IMAGES.CREATE, formData);
 
                 return resolve();
             });
