@@ -26,7 +26,7 @@ export default function (endpoint) {
 
         create: function (data) {
             return new Promise(resolve => {
-                http.post(endpoint, data)
+                http.post(endpoint, data, { maxContentLength: 100000000, maxBodyLength: 100000000 })
                     .then(res => {
                         const itemId = res.data;
                         resolve(itemId);

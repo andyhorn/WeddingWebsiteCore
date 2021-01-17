@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -42,17 +43,16 @@ namespace WeddingWebsiteCore.Controllers
         }
 
         [HttpPost(RouteContracts.PostItem)]
-        public async Task<IActionResult> PostNewImage([FromBody] Image image)
+        public async Task<IActionResult> PostNewImage()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.Values);
-            }
+            var imageData = Request.Form.Files[0];
+            var image = new Image();
 
-            var existingImage = await _context.Images.FindAsync(image.ImageId);
-            if (existingImage != null)
+            using (var stream = new MemoryStream())
             {
-                return BadRequest(ErrorMessageContracts.IdConflict);
+                imageData.CopyTo(stream);
+                image.Data = stream.ToArray();
+                image.Name = imageData.Name;
             }
 
             try
@@ -66,7 +66,7 @@ namespace WeddingWebsiteCore.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return CreatedAtAction(nameof(PostNewImage), image, image.ImageId);
+            return CreatedAtAction(nameof(PostNewImage), image.ImageId);
         }
 
         [HttpPut(RouteContracts.PutItem)]

@@ -68,7 +68,7 @@ export default {
             file.remove();
         },
         emitFiles(files) {
-            this.$emit("input", files);
+            this.$emit("input", [... files]);
         }
     }
 }
